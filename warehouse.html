@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="html-tag">
 <head>
@@ -195,6 +197,9 @@
                 <button onclick="switchTab('db-tab')" id="btn-db-tab" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-red-50 transition-all">
                     <i class="fa-solid fa-folder-open mr-1"></i> <span data-key="nav_database">Archive</span>
                 </button>
+                <button onclick="switchTab('network-tab')" id="btn-network-tab" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-red-50 transition-all">
+                    <i class="fa-solid fa-diagram-project mr-1"></i> <span>Network Map</span>
+                </button>
                 <button onclick="switchTab('guide-tab')" id="btn-guide-tab" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-red-50 transition-all">
                     <i class="fa-solid fa-circle-info mr-1"></i> <span data-key="nav_guide">Guide</span>
                 </button>
@@ -297,7 +302,7 @@
                                 </tr>
                             </thead>
                             <tbody id="asset-table-body">
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
 
@@ -366,6 +371,36 @@
         </div>
 
         <div id="warehouse-tab" class="tab-content hidden no-print">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Total Registered Employees</span>
+                        <span id="chart-total-emp" class="text-2xl font-black text-slate-900 mt-1 block">0</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-red-50 flex items-center justify-center text-red-600 text-xl"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Total Items in Storage</span>
+                        <span id="chart-total-stock" class="text-2xl font-black text-red-600 mt-1 block">0</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-red-50 flex items-center justify-center text-red-600 text-xl"><i class="fa-solid fa-boxes-stacked"></i></div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Warehouse Stock Ratios</span>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden flex">
+                        <div id="bar-available" class="bg-green-500 h-full transition-all" style="width: 0%"></div>
+                        <div id="bar-maintenance" class="bg-amber-500 h-full transition-all" style="width: 0%"></div>
+                        <div id="bar-damaged" class="bg-red-500 h-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] text-slate-500 font-bold mt-2">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> Available (<span id="txt-avail-pc">0</span>%)</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Repair (<span id="txt-maint-pc">0</span>%)</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Damaged (<span id="txt-dmg-pc">0</span>%)</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white p-4 rounded-xl shadow-sm mb-6 border border-red-100 flex flex-wrap gap-3 justify-between items-center">
                 <div>
                     <h2 class="text-sm font-black text-slate-900" id="w-panel-title" data-key="w_panel_title">Warehouse Return & Stock Log</h2>
@@ -476,7 +511,7 @@
                                 </tr>
                             </thead>
                             <tbody id="warehouse-list-body">
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -526,6 +561,54 @@
             </div>
         </div>
 
+        <div id="network-tab" class="tab-content hidden no-print">
+            <div class="bg-white p-6 rounded-2xl shadow-md border-2 border-red-100">
+                <div class="mb-4">
+                    <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-diagram-project text-red-600 mr-1.5"></i> Asia Aluminium - Logical Network Topology</h2>
+                    <p class="text-xs text-slate-500 mt-1">کۆنترۆڵ و بینینی ژێرخانی تۆڕی کارگە و بەشەکان (کلیک لەسەر هەر ئامێرێک بکە بۆ بینینی پۆرت و ڤیلانەکان)</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="lg:col-span-3 border border-slate-200 rounded-xl bg-slate-50 p-6 min-h-[500px] flex items-center justify-center">
+                        <div class="flex flex-col items-center space-y-12 w-full">
+                            <div onclick="showNodeDetails('Router', 'MikroTik CCR2004', '192.168.10.1', 'All VLANs Allowed', '12 Ports')" class="cursor-pointer bg-slate-900 text-white p-4 rounded-xl shadow-lg text-center w-48 border-2 border-slate-700 hover:scale-105 transition-all">
+                                <i class="fa-solid fa-server text-2xl text-red-500 mb-1"></i>
+                                <span class="block text-xs font-black">Main Gateway</span>
+                                <span class="text-[10px] text-slate-400 font-mono">192.168.10.1</span>
+                            </div>
+                            <div onclick="showNodeDetails('Core Switch', 'Ruijie RG-NBS3200-24GT4XS', '192.168.10.2', 'Management / Trunk', '24 Ports (6 Free)')" class="cursor-pointer bg-red-600 text-white p-4 rounded-xl shadow-lg text-center w-56 border-2 border-red-500 hover:scale-105 transition-all">
+                                <i class="fa-solid fa-network-wired text-2xl mb-1"></i>
+                                <span class="block text-xs font-black">Ruijie Core Switch</span>
+                                <span class="text-[10px] text-red-100 font-mono">192.168.10.2</span>
+                            </div>
+                            <div class="flex flex-wrap justify-center gap-6 w-full">
+                                <div onclick="showNodeDetails('Access Switch', 'Ruijie 24-Port Managed', '192.168.10.3', 'VLAN 20 (Staff / ERP)', 'Active')" class="cursor-pointer bg-white border-2 border-green-500 p-3 rounded-xl shadow text-center w-40 hover:scale-105 transition-all">
+                                    <i class="fa-solid fa-laptop text-xl text-green-600 mb-1"></i>
+                                    <span class="block text-[11px] font-bold text-slate-800">Rack-A (Admin & ERP)</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">VLAN 20</span>
+                                </div>
+                                <div onclick="showNodeDetails('Access Switch', 'Hikvision 24-Port Unmanaged', '192.168.30.5', 'VLAN 30 (CCTV Cameras)', '180+ Cameras Connected')" class="cursor-pointer bg-white border-2 border-amber-500 p-3 rounded-xl shadow text-center w-40 hover:scale-105 transition-all">
+                                    <i class="fa-solid fa-video text-xl text-amber-500 mb-1"></i>
+                                    <span class="block text-[11px] font-bold text-slate-800">Rack-B (CCTV NVR)</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">VLAN 30</span>
+                                </div>
+                                <div onclick="showNodeDetails('Wireless Link', 'Ubiquiti NanoStation M5', '192.168.10.15', 'Management / Factory Bridges', '18 Devices Links')" class="cursor-pointer bg-white border-2 border-blue-500 p-3 rounded-xl shadow text-center w-40 hover:scale-105 transition-all">
+                                    <i class="fa-solid fa-wifi text-xl text-blue-500 mb-1"></i>
+                                    <span class="block text-[11px] font-bold text-slate-800">Rack-C (Wireless Bridges)</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">VLAN 10/50</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs">
+                        <h3 class="font-black text-slate-800 border-b pb-2 mb-3 uppercase tracking-wider"><i class="fa-solid fa-circle-info text-red-600 mr-1"></i> Device Specifications</h3>
+                        <div id="node-details-content" class="space-y-3 text-slate-600">
+                            <p class="italic text-slate-400 text-center py-8">کلیک لەسەر هەر بەشێکی تۆڕەکە بکە بۆ دەرکەوتنی زانیارییە تەکنیکییەکانی لێرە...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="guide-tab" class="tab-content hidden no-print">
             <div class="bg-white rounded-2xl p-6 shadow-md border-2 border-red-100 text-xs leading-relaxed text-slate-700">
                 <h2 class="text-base font-black text-slate-900 mb-4 border-b pb-2"><i class="fa-solid fa-circle-info text-red-600 mr-1.5"></i> <span data-key="guide_main_title">User Guide Instructions</span></h2>
@@ -541,7 +624,6 @@
     </div>
 
     <script>
-        // Your Firebase credentials provided by the user
         const firebaseConfig = {
             apiKey: "AIzaSyC32BVdl1WOfxij22MVBtOYeoyxfQRQMrg",
             authDomain: "it-asset-system-3462d.firebaseapp.com",
@@ -553,7 +635,6 @@
             measurementId: "G-KKW4MEL5RF"
         };
 
-        // Initialize Firebase Apps
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
@@ -632,7 +713,6 @@
         let currentLanguage = "en"; 
         let currentDocId = "NEW";
         
-        // Runtime arrays fed by Firebase
         let db = [];
         let wDb = [];
         let loadedItemsState = null;
@@ -648,18 +728,18 @@
             changeLanguage(currentLanguage);
             applyAdminRestrictions();
 
-            // Firebase Live Listener for Forms Archive
             database.ref('it_forms_archive').on('value', (snapshot) => {
                 const data = snapshot.val();
                 db = data ? Object.values(data) : [];
                 renderArchiveList();
+                calculateAnalytics();
             });
 
-            // Firebase Live Listener for Warehouse Stocks
             database.ref('it_warehouse_inventory').on('value', (snapshot) => {
                 const data = snapshot.val();
                 wDb = data ? Object.values(data) : [];
                 renderWarehouseList();
+                calculateAnalytics();
             });
         };
 
@@ -851,7 +931,13 @@
         }
         function clearCanvas(id) { if (isAdminAuthenticated && signaturePads[id]) signaturePads[id].clear(); }
 
+        // UPDATED SWITCH TAB TO PREVENT VIEW-ONLY STAFF FROM ACCESSING NETWORK MAP
         function switchTab(tabId) {
+            if (tabId === 'network-tab' && !isAdminAuthenticated) {
+                alert(currentLanguage === 'en' ? "Coming Soon.. (Waiting for Administrator verification)" : "چاوەڕوان بن.. (تەنیا لەژێر چاودێری بەرپرسی ئایتی دەکرێتەوە)");
+                return;
+            }
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
             document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('bg-red-600', 'text-white'); btn.classList.add('text-slate-700', 'hover:bg-red-50'); });
@@ -866,7 +952,6 @@
         }
         function showToast(m, err = false) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = languages[currentLanguage][m] || m; t.classList.remove('translate-y-24'); setTimeout(() => { t.classList.add('translate-y-24'); }, 3000); }
 
-        // Form Storage via Firebase Realtime Database
         function saveCurrentForm() {
             if(!isAdminAuthenticated) return;
             const name = document.getElementById('emp-name').value.trim(); if (!name) { showToast("msg_enter_name", true); return; }
@@ -883,7 +968,6 @@
             const signatures = {}; canvasIds.forEach(id => { const pad = signaturePads[id]; signatures[id] = (pad && !pad.isEmpty()) ? pad.canvas.toDataURL() : null; });
             const formData = { id: saveId, employee: { name, dept: document.getElementById('emp-dept').value, empId: document.getElementById('emp-id').value, title: document.getElementById('emp-title').value, email: document.getElementById('emp-email').value, phone: document.getElementById('emp-phone').value }, items: itemsData, returnDate: document.getElementById('return-date-field').value, signatures, lastUpdated: new Date().toLocaleString() };
             
-            // Push directly to Firebase Realtime Database node
             database.ref('it_forms_archive/' + saveId).set(formData).then(() => {
                 currentDocId = saveId; document.getElementById('doc-id-display').innerText = saveId;
                 showToast("msg_saved");
@@ -931,7 +1015,34 @@
             });
         }
 
-        // ================= WAREHOUSE LOGIC VIA LIVE DB =================
+        // DYNAMIC DATA ANALYTICS & STOCK PERCENTAGE FUNCTION
+        function calculateAnalytics() {
+            if(document.getElementById('chart-total-emp')) {
+                document.getElementById('chart-total-emp').innerText = db.length;
+            }
+            if(document.getElementById('chart-total-stock')) {
+                document.getElementById('chart-total-stock').innerText = wDb.length;
+            }
+
+            if (wDb.length > 0) {
+                let avail = wDb.filter(i => i.status.includes("Available")).length;
+                let maint = wDb.filter(i => i.status.includes("Maintenance")).length;
+                let dmg = wDb.filter(i => i.status.includes("Scrapped") || i.status.includes("Damaged")).length;
+
+                let availPc = Math.round((avail / wDb.length) * 100);
+                let maintPc = Math.round((maint / wDb.length) * 100);
+                let dmgPc = 100 - (availPc + maintPc); // Balance remaining percentage
+
+                document.getElementById('bar-available').style.width = availPc + "%";
+                document.getElementById('bar-maintenance').style.width = maintPc + "%";
+                document.getElementById('bar-damaged').style.width = dmgPc + "%";
+
+                document.getElementById('txt-avail-pc').innerText = availPc;
+                document.getElementById('txt-maint-pc').innerText = maintPc;
+                document.getElementById('txt-dmg-pc').innerText = dmgPc;
+            }
+        }
+
         function logItemToWarehouse() {
             if(!isAdminAuthenticated) return;
             const assetTag = document.getElementById('w-asset-tag').value.trim(); const category = document.getElementById('w-category').value;
@@ -1052,6 +1163,22 @@
             db.forEach(d => { csv += `"${d.id}","${d.employee.name}","${d.employee.dept}","${d.employee.empId}","${d.employee.title}","${d.employee.email}","${d.employee.phone}","${d.lastUpdated}"\n`; });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", "IT_Handover_Archive.csv"); link.click();
         }
+
+        function showNodeDetails(type, model, ip, vlan, ports) {
+            const container = document.getElementById('node-details-content'); if(!container) return;
+            container.innerHTML = `
+                <div class="bg-white p-3 rounded-lg border border-red-100 shadow-sm">
+                    <span class="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-red-50 text-red-600">${type}</span>
+                    <h4 class="font-black text-slate-900 mt-2 text-sm">${model}</h4>
+                </div>
+                <div class="space-y-2 pt-2">
+                    <div><span class="font-bold text-slate-400 block">IP Address:</span> <span class="font-mono font-bold text-slate-800">${ip}</span></div>
+                    <div><span class="font-bold text-slate-400 block">Assigned VLAN:</span> <span class="font-semibold text-red-600">${vlan}</span></div>
+                    <div><span class="font-bold text-slate-400 block">Port Status:</span> <span class="font-medium text-slate-700">${ports}</span></div>
+                </div>
+            `;
+        }
+
         function printForm() { if (!document.getElementById('emp-name').value.trim()) { showToast("msg_enter_name", true); return; } window.print(); }
     </script>
 </body>
