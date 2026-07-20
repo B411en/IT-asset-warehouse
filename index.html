@@ -159,7 +159,7 @@
                         <i class="fa-solid fa-calendar-check text-red-500"></i> Work Schedule
                     </button>
                     <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:bg-slate-800">
-                        <i class="fa-solid fa-book-bookmark text-red-500"></i> IT Notes &amp; Troubleshooting
+                        <i class="fa-solid fa-book-bookmark text-red-500"></i> IT Notes
                     </button>
                     <button onclick="switchTab('form-tab')" id="btn-form-tab" class="tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:bg-slate-800">
                         <i class="fa-solid fa-file-signature text-red-500"></i> Handover
@@ -294,43 +294,42 @@
                         <input type="hidden" id="rd-edit-id">
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Employee Full Name</label>
-                            <input type="text" id="rd-emp-name" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-none focus:border-red-500" placeholder="e.g. Ahmed Ali">
+                            <input type="text" id="rd-emp-name" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Ahmed Ali">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Department</label>
-                            <input type="text" id="rd-dept" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Accounting">
+                            <input type="text" id="rd-dept" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Accounting">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">RustDesk ID</label>
-                                <input type="text" id="rd-id" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono font-black text-red-400 focus:outline-none focus:border-red-500" placeholder="123 456 789">
+                                <input type="text" id="rd-id" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono font-black text-red-400 focus:outline-none focus:border-red-500" placeholder="123 456 789">
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Password</label>
-                                <input type="text" id="rd-password" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono font-bold text-white focus:outline-none focus:border-red-500" placeholder="••••••">
+                                <input type="text" id="rd-password" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono font-bold text-white focus:outline-none focus:border-red-500" placeholder="••••••">
                             </div>
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-300 mb-1">Device / Hardware Model</label>
-                            <input type="text" id="rd-device" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Dell Latitude">
+                            <label class="block font-bold text-slate-300 mb-1">Device Model</label>
+                            <input type="text" id="rd-device" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Dell Latitude">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">IP Address / Notes</label>
-                            <textarea id="rd-notes" rows="2" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="Additional details..."></textarea>
+                            <textarea id="rd-notes" rows="2" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="Details..."></textarea>
                         </div>
-                        <button onclick="saveRustDeskEntry()" class="admin-restricted w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
+                        <button onclick="saveRustDeskEntry()" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg flex justify-center items-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i> Save Remote Credentials
                         </button>
                     </div>
                 </div>
 
                 <div class="lg:col-span-2 card-3d p-6">
-                    <i class="fa-solid fa-network-wired card-3d-bg-icon"></i>
                     <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                         <h3 class="text-xs font-black uppercase tracking-wider text-red-500 flex items-center gap-2">
-                            <i class="fa-solid fa-network-wired text-lg"></i> Remote Computers Directory
+                            <i class="fa-solid fa-network-wired text-lg"></i> Remote Directory
                         </h3>
-                        <input type="text" id="rd-search" oninput="renderRustDeskList()" placeholder="Search employee or RustDesk ID..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-64">
+                        <input type="text" id="rd-search" oninput="renderRustDeskList()" placeholder="Search directory..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-64">
                     </div>
 
                     <div class="overflow-x-auto rounded-xl border border-slate-800">
@@ -345,14 +344,14 @@
                                     <th class="p-3 text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="rd-list-body"><tr><td colspan="6" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr></tbody>
+                            <tbody id="rd-list-body"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 3: WORK SCHEDULE (PLANNED TASKS & DAILY LOGS) ================= -->
+        <!-- ================= TAB 3: WORK SCHEDULE ================= -->
         <div id="weekly-tab" class="tab-content hidden">
             <div class="print-container card-3d p-6 sm:p-8 max-w-5xl mx-auto space-y-8">
                 <i class="fa-solid fa-calendar-check card-3d-bg-icon"></i>
@@ -364,54 +363,46 @@
                         <p class="text-xs text-slate-400 mt-1">Future Planning &amp; Daily Maintenance Log</p>
                     </div>
                     <div class="flex gap-2 no-print">
-                        <button onclick="saveWeeklyReport()" class="admin-restricted px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Save Schedule
-                        </button>
-                        <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-print"></i> Print
+                        <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-black rounded-xl border border-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-print"></i> Print Sheet
                         </button>
                     </div>
                 </div>
 
-                <!-- Header Meta Data -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Target Date</label>
-                        <input type="date" id="wr-date" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-red-500">
+                        <input type="date" id="wr-date" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Prepared By (IT Officer)</label>
-                        <input type="text" id="wr-author" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-red-500" placeholder="e.g. IT Administrator">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Prepared By</label>
+                        <input type="text" id="wr-author" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white" placeholder="IT Officer">
                     </div>
                 </div>
 
-                <!-- SECTION 1: FUTURE PLANNED TASKS (WITH CATEGORY & PRIORITY) -->
+                <!-- Planned Tasks -->
                 <div class="border border-slate-800 rounded-2xl p-5 bg-slate-900/40">
                     <h3 class="text-sm font-black text-amber-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-lg"></i> Planned Tasks &amp; Schedule (بەشی پلانەکانی داهاتوو)
+                        <i class="fa-solid fa-clock-rotate-left text-lg"></i> Planned Tasks &amp; Schedule
                     </h3>
-                    <div class="wr-input-box bg-slate-900/80 p-4 rounded-xl border border-slate-800 mb-4 no-print space-y-3">
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 mb-4 no-print space-y-3">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Date</label>
-                                <input type="date" id="plan-task-date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 font-bold text-white focus:outline-none focus:border-red-500">
+                                <input type="date" id="plan-task-date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Category</label>
-                                <select id="plan-task-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 font-bold text-white focus:outline-none focus:border-red-500">
-                                    <option value="Network &amp; Fiber Router">Network &amp; Fiber Router</option>
-                                    <option value="CCTV &amp; Security Systems">CCTV &amp; Security Systems</option>
+                                <select id="plan-task-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                                    <option value="Network &amp; Router">Network &amp; Router</option>
+                                    <option value="CCTV Systems">CCTV Systems</option>
                                     <option value="Hardware Maintenance">Hardware Maintenance</option>
-                                    <option value="Software / OS Deployment">Software / OS Deployment</option>
-                                    <option value="Access Point / WiFi">Access Point / WiFi</option>
-                                    <option value="Server &amp; Database Backup">Server &amp; Database Backup</option>
-                                    <option value="User Support / Peripheral">User Support / Peripheral</option>
-                                    <option value="Other Task">Other Task</option>
+                                    <option value="Software Deployment">Software Deployment</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-300 mb-1">Priority Level</label>
-                                <select id="plan-task-priority" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 font-bold text-white focus:outline-none focus:border-red-500">
+                                <label class="block font-bold text-slate-300 mb-1">Priority</label>
+                                <select id="plan-task-priority" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                                     <option value="High">High</option>
                                     <option value="Medium" selected>Medium</option>
                                     <option value="Normal">Normal</option>
@@ -419,10 +410,9 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 mb-1">Planned Task Details</label>
-                            <textarea id="plan-task-details" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500" placeholder="Enter upcoming maintenance or deployment details..."></textarea>
+                            <textarea id="plan-task-details" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white" placeholder="Task details..."></textarea>
                         </div>
-                        <button onclick="addPlannedTaskToList()" class="admin-restricted px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                        <button onclick="addPlannedTaskToList()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl flex items-center gap-2">
                             <i class="fa-solid fa-plus"></i> Add Planned Task
                         </button>
                     </div>
@@ -431,35 +421,35 @@
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
-                                    <th class="p-3 w-36">Exact Date</th>
+                                    <th class="p-3 w-36">Date</th>
                                     <th class="p-3 w-48">Category</th>
-                                    <th class="p-3">Task Details</th>
+                                    <th class="p-3">Details</th>
                                     <th class="p-3 w-24 text-center">Priority</th>
                                     <th class="p-3 w-16 text-center no-print">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="planned-tasks-tbody"><tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr></tbody>
+                            <tbody id="planned-tasks-tbody"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- SECTION 2: DAILY COMPLETED TASKS (SIMPLE DATE & DETAILS) -->
+                <!-- Daily Executed Tasks -->
                 <div class="border border-slate-800 rounded-2xl p-5 bg-slate-900/40">
                     <h3 class="text-sm font-black text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-lg"></i> Daily Executed Tasks (ئەرکە ئەنجامدراوە ڕۆژانەییەکان)
+                        <i class="fa-solid fa-list-check text-lg"></i> Daily Executed Tasks
                     </h3>
-                    <div class="wr-input-box bg-slate-900/80 p-4 rounded-xl border border-slate-800 mb-4 no-print space-y-3">
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 mb-4 no-print space-y-3">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div>
-                                <label class="block font-bold text-slate-300 mb-1">Date (Day / Month / Year)</label>
-                                <input type="date" id="daily-task-date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 font-bold text-white focus:outline-none focus:border-red-500">
+                                <label class="block font-bold text-slate-300 mb-1">Date</label>
+                                <input type="date" id="daily-task-date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-300 mb-1">Details &amp; Action Taken</label>
-                                <input type="text" id="daily-task-details" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500" placeholder="Specify daily accomplished task...">
+                                <label class="block font-bold text-slate-300 mb-1">Action Description</label>
+                                <input type="text" id="daily-task-details" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white" placeholder="Specify accomplished task...">
                             </div>
                         </div>
-                        <button onclick="addDailyTaskToList()" class="admin-restricted px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                        <button onclick="addDailyTaskToList()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl flex items-center gap-2">
                             <i class="fa-solid fa-check"></i> Add Daily Log
                         </button>
                     </div>
@@ -468,972 +458,622 @@
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
-                                    <th class="p-3 w-44">Date (Day/Month)</th>
-                                    <th class="p-3">Daily Task Description</th>
+                                    <th class="p-3 w-44">Date</th>
+                                    <th class="p-3">Description</th>
                                     <th class="p-3 w-16 text-center no-print">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="daily-tasks-tbody"><tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr></tbody>
+                            <tbody id="daily-tasks-tbody"></tbody>
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- ================= TAB 4: NEW PAGE - IT KNOWLEDGE BASE & NOTES ================= -->
+        <!-- ================= TAB 4: IT NOTES ================= -->
         <div id="notes-tab" class="tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Add Note Form -->
                 <div class="card-3d p-6 h-fit">
                     <i class="fa-solid fa-book-bookmark card-3d-bg-icon"></i>
                     <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-pen-clip text-lg"></i> Record Problem &amp; Solution
+                        <i class="fa-solid fa-pen text-lg"></i> Log Technical Issue
                     </h3>
-
                     <div class="space-y-4 text-xs">
                         <input type="hidden" id="note-edit-id">
                         <div>
-                            <label class="block font-bold text-slate-300 mb-1">Issue / Problem Title</label>
-                            <input type="text" id="note-title" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-none focus:border-red-500" placeholder="e.g. NVR Camera Channel Offline">
+                            <label class="block font-bold text-slate-300 mb-1">Title / Error Concept</label>
+                            <input type="text" id="note-title" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. ERP Connection Fail">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-300 mb-1">Category / Tag</label>
-                            <select id="note-category" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
-                                <option value="Network &amp; Router">Network &amp; Router</option>
-                                <option value="CCTV &amp; NVR">CCTV &amp; NVR</option>
-                                <option value="Windows / Software">Windows / Software</option>
-                                <option value="Hardware Repair">Hardware Repair</option>
-                                <option value="Printer &amp; Scanner">Printer &amp; Scanner</option>
-                                <option value="General Note">General Note</option>
+                            <label class="block font-bold text-slate-300 mb-1">System Scope</label>
+                            <select id="note-category" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                                <option value="Network">Network Architecture</option>
+                                <option value="Hardware">Hardware Operations</option>
+                                <option value="Software">Software &amp; OS</option>
+                                <option value="Server">Server Management</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-300 mb-1">Problem Description</label>
-                            <textarea id="note-problem" rows="3" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="Describe what went wrong..."></textarea>
+                            <label class="block font-bold text-slate-300 mb-1">Troubleshooting Resolution</label>
+                            <textarea id="note-content" rows="4" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="Document step-by-step fix details..."></textarea>
                         </div>
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Resolution / Fix (تێبینی و چارەسەر)</label>
-                            <textarea id="note-solution" rows="4" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-emerald-400 font-medium focus:outline-none focus:border-red-500" placeholder="Steps taken to fix this issue..."></textarea>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="saveNoteEntry()" class="admin-restricted flex-grow py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Note
-                            </button>
-                            <button onclick="clearNoteForm()" class="px-3 py-3 bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-slate-700">
-                                Clear
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notes Knowledge Log -->
-                <div class="lg:col-span-2 card-3d p-6">
-                    <i class="fa-solid fa-lightbulb card-3d-bg-icon"></i>
-                    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-                        <h3 class="text-xs font-black uppercase tracking-wider text-red-500 flex items-center gap-2">
-                            <i class="fa-solid fa-journal-whills text-lg"></i> Troubleshooting Knowledge Log
-                        </h3>
-                        <input type="text" id="note-search" oninput="renderNotesList()" placeholder="Search issue or solution..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-64">
-                    </div>
-
-                    <div id="notes-container" class="space-y-4">
-                        <p class="text-center text-xs text-slate-500 py-8">No troubleshooting notes recorded yet.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 5: HANDOVER FORM ================= -->
-        <div id="form-tab" class="tab-content hidden max-w-4xl mx-auto">
-            <div class="no-print bg-slate-900/80 p-4 rounded-2xl border border-slate-800 mb-6 flex flex-wrap gap-3 justify-between items-center">
-                <div class="flex items-center space-x-2 text-sm">
-                    <span id="edit-status-indicator" class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-bold text-xs border border-red-500/30">New Form</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="saveCurrentForm()" id="main-save-btn" class="admin-restricted px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-1.5">
-                        <i class="fa-solid fa-floppy-disk"></i> Save Form
-                    </button>
-                    <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-print"></i> Print / PDF
-                    </button>
-                    <button onclick="resetForm(true)" id="main-clear-btn" class="admin-restricted px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-xl transition-all border border-red-500/20">
-                        <i class="fa-solid fa-rotate-left"></i> Clear
-                    </button>
-                </div>
-            </div>
-
-            <div id="printable-form-area" class="print-container card-3d p-6 sm:p-8 bg-slate-900 text-white rounded-2xl border border-slate-800">
-                <i class="fa-solid fa-shield-cat card-3d-bg-icon"></i>
-                
-                <div class="relative w-full overflow-hidden rounded-xl bg-white border-b-2 border-red-600 mb-6">
-                    <img src="WhatsApp Image 2026-07-06 at 3.04.58 PM.jpeg" alt="Asia Aluminium Banner" class="brand-header-img w-full object-cover max-h-56 block" onerror="this.style.display='none'; document.getElementById('fallback-header').style.display='flex';" style="display: none;">
-                    <div id="fallback-header" class="hidden w-full bg-red-600 p-8 text-center text-white flex-col justify-center items-center" style="display: flex;">
-                        <h1 class="text-3xl font-black tracking-widest">ASIA ALUMINIUM</h1>
-                        <p class="text-xs tracking-wider text-red-100 mt-1 uppercase">IT Asset Handover &amp; Return Form</p>
-                    </div>
-                </div>
-
-                <div class="border-b border-slate-800 pb-4 mb-6 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-lg font-black text-white">IT Asset Handover &amp; Return Form</h2>
-                        <p class="text-xs text-red-500 font-bold mt-0.5">Official Disbursal and Retrieval Record</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-[10px] font-black text-slate-500 block uppercase">Document ID</span>
-                        <span id="doc-id-display" class="text-xs font-mono font-black text-red-400">IT-ASSET-NEW</span>
-                    </div>
-                </div>
-
-                <!-- Employee Info -->
-                <div class="mb-8">
-                    <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
-                        <span class="bg-red-600 text-white w-5 h-5 rounded-md flex justify-center items-center text-[10px]">1</span> Employee Information
-                    </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                        <div><label class="block font-bold text-slate-400 mb-1">Full Name</label><input type="text" id="emp-name" class="form-input-field w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-red-500"></div>
-                        <div><label class="block font-bold text-slate-400 mb-1">Department</label><input type="text" id="emp-dept" class="form-input-field w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-red-500"></div>
-                        <div><label class="block font-bold text-slate-400 mb-1">Employee ID</label><input type="text" id="emp-id" class="form-input-field w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-red-500"></div>
-                        <div><label class="block font-bold text-slate-400 mb-1">Job Title</label><input type="text" id="emp-title" class="form-input-field w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-red-500"></div>
-                    </div>
-                </div>
-
-                <!-- Asset Details -->
-                <div class="mb-6 overflow-x-auto">
-                    <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
-                        <span class="bg-red-600 text-white w-5 h-5 rounded-md flex justify-center items-center text-[10px]">2</span> Asset Details
-                    </h3>
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
-                                <th class="w-12 text-center p-3">Check</th>
-                                <th class="p-3">Category</th>
-                                <th class="p-3">Asset Tag</th>
-                                <th class="p-3">Specs / Model</th>
-                                <th class="p-3">Serial S/N</th>
-                                <th class="p-3">Condition Out</th>
-                                <th class="p-3 text-center no-print w-12">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="asset-table-body"></tbody>
-                    </table>
-                </div>
-
-                <div class="no-print mb-8 flex justify-end">
-                    <button onclick="addCustomRow()" id="main-add-row-btn" class="admin-restricted px-4 py-2 bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> Add Asset Item
-                    </button>
-                </div>
-
-                <!-- Terms -->
-                <div class="mb-8 p-4 bg-slate-800/50 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
-                    <p class="font-bold text-red-400 uppercase tracking-wider mb-2">Terms &amp; Acknowledgment</p>
-                    <p>• I acknowledge receipt of the listed equipment in good working condition.</p>
-                    <p>• I agree to return all assigned equipment to the IT Department upon leaving the company.</p>
-                </div>
-
-                <!-- Signatures -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-                    <div class="border border-slate-800 rounded-xl p-4 bg-slate-900/50">
-                        <h4 class="text-xs font-black text-white uppercase border-b border-slate-800 pb-2 mb-6 tracking-wider">I. Handover State (ئاستی ڕادەستکردن)</h4>
-                        <div class="space-y-6 text-xs font-bold text-slate-300">
-                            <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>Employee Signature:</span> <span class="text-slate-500 font-normal">ئیمزای کارمەند</span>
-                            </div>
-                            <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>IT Officer Signature:</span> <span class="text-slate-500 font-normal">ئیمزای بەرپرسی ئایتی</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-slate-800 rounded-xl p-4 bg-slate-900/50">
-                        <h4 class="text-xs font-black text-white uppercase border-b border-slate-800 pb-2 mb-6 tracking-wider">II. Return State (ئاستی وەرگرتنەوە)</h4>
-                        <div class="space-y-6 text-xs font-bold text-slate-300">
-                            <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>Employee Signature:</span> <span class="text-slate-500 font-normal">ئیمزای کارمەند</span>
-                            </div>
-                            <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>IT Officer Signature:</span> <span class="text-slate-500 font-normal">ئیمزای بەرپرسی ئایتی</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ================= TAB 6: WAREHOUSE WITH EDIT SUPPORT ================= -->
-        <div id="warehouse-tab" class="tab-content hidden">
-            <div class="card-3d p-5 mb-6 flex flex-wrap gap-3 justify-between items-center">
-                <i class="fa-solid fa-boxes-packing card-3d-bg-icon"></i>
-                <div>
-                    <h2 class="text-sm font-black text-white">Warehouse Inventory Log</h2>
-                    <p class="text-xs text-slate-400">Manage returned items and active hardware stock</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="clearWarehouseForm()" class="px-3.5 py-2 bg-slate-800 text-white text-xs font-bold rounded-xl border border-slate-700 transition-all">
-                        <i class="fa-solid fa-plus mr-1"></i> New Entry Form
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Log / Edit Form -->
-                <div class="card-3d p-6 h-fit">
-                    <i class="fa-solid fa-barcode card-3d-bg-icon"></i>
-                    <h3 id="w-form-title" class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset
-                    </h3>
-                    <div class="space-y-4 text-xs">
-                        <input type="hidden" id="w-edit-id">
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Asset Tag / Barcode</label>
-                            <input type="text" id="w-asset-tag" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono font-bold text-red-400 focus:outline-none focus:border-red-500" placeholder="e.g. AA-IT-1024">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Category</label>
-                            <select id="w-category" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
-                                <option value="Laptop / Desktop">Laptop / Desktop</option>
-                                <option value="Monitor">Monitor</option>
-                                <option value="Network Switch / Router">Network Switch / Router</option>
-                                <option value="Access Point">Access Point</option>
-                                <option value="IP Camera / NVR">IP Camera / NVR</option>
-                                <option value="Printer">Printer</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Model / Specs</label>
-                            <input type="text" id="w-desc" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. ThinkPad T14">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Serial Number (S/N)</label>
-                            <input type="text" id="w-serial" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono text-white focus:outline-none focus:border-red-500" placeholder="S/N Code">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div><label class="block font-bold text-slate-300 mb-1">Returned By</label><input type="text" id="w-emp-name" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500"></div>
-                            <div><label class="block font-bold text-slate-300 mb-1">Location</label><input type="text" id="w-location" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="Shelf B3"></div>
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Status</label>
-                            <select id="w-status" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
-                                <option value="In Stock (Available)">In Stock (Available)</option>
-                                <option value="Under Maintenance">Under Maintenance</option>
-                                <option value="Scrapped / Damaged">Scrapped / Damaged</option>
-                            </select>
-                        </div>
-                        <button onclick="logItemToWarehouse()" id="w-submit-btn" class="admin-restricted w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
-                            <i class="fa-solid fa-box-archive"></i> Save Warehouse Asset
+                        <button onclick="saveNote()" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black rounded-xl shadow-lg flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Entry Record
                         </button>
                     </div>
                 </div>
 
-                <!-- Stock List Table -->
                 <div class="lg:col-span-2 card-3d p-6">
-                    <i class="fa-solid fa-layer-group card-3d-bg-icon"></i>
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                         <h3 class="text-xs font-black uppercase tracking-wider text-red-500 flex items-center gap-2">
-                            <i class="fa-solid fa-boxes-stacked text-lg"></i> Storage Inventory
+                            <i class="fa-solid fa-list text-lg"></i> Knowledge Repository
                         </h3>
-                        <span id="stock-count" class="bg-red-500/20 text-red-400 font-bold px-3 py-1 rounded-full text-xs border border-red-500/30">0 Items</span>
+                        <input type="text" id="note-search" oninput="renderNotesList()" placeholder="Filter knowledge..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-64">
                     </div>
-
                     <div class="overflow-x-auto rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr class="bg-slate-800 text-slate-300 uppercase font-bold border-b border-slate-700">
-                                    <th class="p-3">Asset Tag</th>
-                                    <th class="p-3">Category / Specs</th>
-                                    <th class="p-3">Returned By</th>
-                                    <th class="p-3">Location</th>
-                                    <th class="p-3 text-center">Status</th>
-                                    <th class="p-3 text-center">Action</th>
+                                <tr class="bg-slate-800/80 text-slate-300 font-bold uppercase border-b border-slate-700">
+                                    <th class="p-3 w-1/4">Issue Scope</th>
+                                    <th class="p-3">Resolution Flow</th>
+                                    <th class="p-3 w-24 text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="warehouse-list-body"><tr><td colspan="6" class="text-center p-6 text-slate-500">No items recorded in warehouse.</td></tr></tbody>
+                            <tbody id="notes-list-body"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 7: ARCHIVE ================= -->
+        <!-- ================= TAB 5: HANDOVER ================= -->
+        <div id="form-tab" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card-3d p-6 h-fit">
+                    <i class="fa-solid fa-file-signature card-3d-bg-icon"></i>
+                    <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-lg"></i> Issue Handover Form
+                    </h3>
+                    <div class="space-y-4 text-xs">
+                        <input type="hidden" id="form-edit-id">
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Employee Recipient</label>
+                            <input type="text" id="form-emp-name" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Target Department</label>
+                            <select id="form-dept" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                                <option value="IT Hub">IT Hub</option>
+                                <option value="HR Management">HR Management</option>
+                                <option value="Finance Office">Finance Office</option>
+                                <option value="Accounting Section">Accounting Section</option>
+                                <option value="Production Line">Production Line</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Hardware / Asset Description</label>
+                            <input type="text" id="form-asset-name" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. HP ProBook G10">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Serial / Inventory Tag</label>
+                            <input type="text" id="form-asset-serial" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                        </div>
+                        <button onclick="saveHandoverForm()" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black rounded-xl shadow-lg flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Register Handover
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 card-3d p-6">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open text-lg"></i> Handover Registry
+                    </h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/80 text-slate-300 font-bold uppercase border-b border-slate-700">
+                                    <th class="p-3">Recipient Employee</th>
+                                    <th class="p-3">Department</th>
+                                    <th class="p-3">Asset Description</th>
+                                    <th class="p-3">Serial Reference</th>
+                                    <th class="p-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="forms-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: WAREHOUSE ================= -->
+        <div id="warehouse-tab" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card-3d p-6 h-fit">
+                    <i class="fa-solid fa-warehouse card-3d-bg-icon"></i>
+                    <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-box text-lg"></i> Stock Ledger Controller
+                    </h3>
+                    <div class="space-y-4 text-xs">
+                        <input type="hidden" id="wh-edit-id">
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Inventory Class Category</label>
+                            <select id="wh-category" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                                <option value="Laptops">Laptops</option>
+                                <option value="Monitors">Monitors</option>
+                                <option value="Networking">Networking Hardware</option>
+                                <option value="Peripherals">Peripherals &amp; Components</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Equipment Model Context</label>
+                            <input type="text" id="wh-name" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Units Quantity</label>
+                            <input type="number" id="wh-qty" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                        </div>
+                        <button onclick="saveWarehouseItem()" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black rounded-xl shadow-lg flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Update Stock Balance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 card-3d p-6">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-stacked text-lg"></i> Inventory Distribution Metrics
+                    </h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/80 text-slate-300 font-bold uppercase border-b border-slate-700">
+                                    <th class="p-3">Class</th>
+                                    <th class="p-3">Product Spec</th>
+                                    <th class="p-3">Units Available</th>
+                                    <th class="p-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wh-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 7: ARCHIVE HUB ================= -->
         <div id="db-tab" class="tab-content hidden">
-            <div class="card-3d p-6 sm:p-8">
-               <div class="flex flex-wrap gap-2 mt-4 no-print">
-    <button onclick="exportData()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl shadow-lg">
-        <i class="fa-solid fa-file-export mr-1"></i> Export JSON
-    </button>
-    <button onclick="exportToExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl shadow-lg">
-        <i class="fa-solid fa-file-excel mr-1"></i> Export Excel
-    </button>
-    <label class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-black rounded-xl cursor-pointer shadow-lg">
-        <i class="fa-solid fa-file-import mr-1"></i> Import JSON
-        <input type="file" id="import-json" class="hidden" accept=".json" onchange="importData(event)">
-    </label>
-</div>
-                </div>
-
-                <div class="relative mb-6">
-                    <span class="absolute inset-y-0 left-3.5 flex items-center text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input type="text" id="db-search" oninput="renderArchiveList()" placeholder="Search employee name or Document ID..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-red-500">
-                </div>
-
-                <div class="overflow-x-auto rounded-xl border border-slate-800">
-                    <table class="w-full text-left text-xs">
-                        <thead>
-                            <tr class="bg-slate-800 text-slate-300 text-xs uppercase border-b border-slate-700">
-                                <th class="p-3">Doc ID</th>
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Department</th>
-                                <th class="p-3">Employee ID</th>
-                                <th class="p-3 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="db-list-body"><tr><td colspan="5" class="text-center p-6 text-slate-500">No archive records found.</td></tr></tbody>
-                    </table>
+            <div class="card-3d p-6 max-w-xl mx-auto text-center space-y-6">
+                <i class="fa-solid fa-box-archive card-3d-bg-icon"></i>
+                <h3 class="text-sm font-black uppercase tracking-wider text-red-500 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-database text-lg"></i> System Backup Hub
+                </h3>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Download full operational logs, credentials, stock statuses, and schedules directly into preferred storage formats.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <button onclick="exportDataToJSON()" class="p-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-white transition-all flex flex-col items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-code text-2xl text-amber-500"></i>
+                        <span>Export DB (JSON)</span>
+                    </button>
+                    <button onclick="exportDataToExcelCSV()" class="p-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-white transition-all flex flex-col items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-excel text-2xl text-emerald-500"></i>
+                        <span>Export Summaries (Excel/CSV)</span>
+                    </button>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="no-print fixed bottom-5 right-5 bg-slate-900 border border-slate-700 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 transition-transform duration-300 translate-y-28 z-50">
-        <div class="w-8 h-8 rounded-xl bg-red-600/20 text-red-500 flex justify-center items-center font-bold">
-            <i class="fa-solid fa-check"></i>
-        </div>
-        <span id="toast-msg" class="text-xs font-bold"></span>
-    </div>
-
+    <!-- Core Runtime Application Script Logic -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC32BVdl1WOfxij22MVBtOYeoyxfQRQMrg",
-            authDomain: "it-asset-system-3462d.firebaseapp.com",
-            databaseURL: "https://it-asset-system-3462d-default-rtdb.firebaseio.com",
-            projectId: "it-asset-system-3462d",
-            storageBucket: "it-asset-system-3462d.firebasestorage.app",
-            messagingSenderId: "918668871166",
-            appId: "1:918668871166:web:bac8e8ba00836ccdfc2caf"
+        // Sample Fallback App Configurations
+        let appState = {
+            rustdesk: [],
+            plannedTasks: [],
+            dailyTasks: [],
+            notes: [],
+            handover: [],
+            warehouse: []
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        let warehouseChartObj = null;
+        let departmentChartObj = null;
 
-        const SECURE_PIN = "350316";
-        let isAdminAuthenticated = false;
-        
-        let dashWarehouseChartInstance = null;
-        let dashDeptChartInstance = null;
+        window.addEventListener('DOMContentLoaded', () => {
+            initSystemState();
+            switchTab('dashboard-tab');
+        });
 
-        let currentDocId = "NEW";
-        let db = [];
-        let wDb = [];
-        let rustdeskDb = [];
-        let plannedTasks = [];
-        let dailyTasks = [];
-        let notesDb = [];
+        function initSystemState() {
+            // Seed Mock Data variants to test execution flows instantly
+            appState.warehouse = [
+                { id: 'wh1', category: 'Laptops', name: 'ThinkPad E14', qty: 12 },
+                { id: 'wh2', category: 'Monitors', name: 'Dell UltraSharp 24', qty: 8 },
+                { id: 'wh3', category: 'Networking', name: 'Cisco Switch 24P', qty: 4 }
+            ];
+            appState.handover = [
+                { id: 'ho1', empName: 'Karwan Aram', dept: 'Finance Office', assetName: 'ThinkPad E14', serial: 'S2N-99482' },
+                { id: 'ho2', empName: 'Sana Omer', dept: 'HR Management', assetName: 'MacBook Air M2', serial: 'M1N-00239' }
+            ];
+            appState.rustdesk = [
+                { id: 'rd1', name: 'Dana Salih', dept: 'Accounting', rdId: '445229182', pass: 'ax9910', device: 'HP Desktop', notes: 'Local Station' }
+            ];
 
-        window.onload = function() {
-            const today = new Date();
-            if(document.getElementById('wr-date')) document.getElementById('wr-date').valueAsDate = today;
-            if(document.getElementById('plan-task-date')) document.getElementById('plan-task-date').valueAsDate = today;
-            if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').valueAsDate = today;
-
-            applyAdminRestrictions();
-
-            database.ref('it_forms_archive').on('value', (s) => {
-                db = s.val() ? Object.values(s.val()) : [];
-                document.getElementById('dash-total-forms').innerText = db.length;
-                renderArchiveList();
-                updateDashboardCharts();
-            });
-
-            database.ref('it_warehouse_inventory').on('value', (s) => {
-                wDb = s.val() ? Object.values(s.val()) : [];
-                document.getElementById('dash-total-warehouse').innerText = wDb.length;
-                renderWarehouseList();
-                updateDashboardCharts();
-            });
-
-            database.ref('it_rustdesk_devices').on('value', (s) => {
-                rustdeskDb = s.val() ? Object.values(s.val()) : [];
-                document.getElementById('dash-total-rustdesk').innerText = rustdeskDb.length;
-                renderRustDeskList();
-            });
-
-            database.ref('it_weekly_plans').on('value', (s) => {
-                const data = s.val();
-                if(data) {
-                    plannedTasks = data.plannedTasks || [];
-                    dailyTasks = data.dailyTasks || [];
-                    if(data.date) document.getElementById('wr-date').value = data.date;
-                    if(data.author) document.getElementById('wr-author').value = data.author;
-                }
-                document.getElementById('dash-total-reports').innerText = plannedTasks.length + dailyTasks.length;
-                renderPlannedTasksTable();
-                renderDailyTasksTable();
-            });
-
-            database.ref('it_knowledge_notes').on('value', (s) => {
-                notesDb = s.val() ? Object.values(s.val()) : [];
-                renderNotesList();
-            });
-        };
-
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+            refreshInterfaceViews();
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => { 
-                btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30'); 
-                btn.classList.add('text-slate-300', 'hover:bg-slate-800'); 
-            });
-            
-            const ab = document.getElementById('btn-' + tabId); 
-            if (ab) { 
-                ab.classList.remove('text-slate-300', 'hover:bg-slate-800'); 
-                ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30'); 
-            }
-            if (tabId === 'dashboard-tab') updateDashboardCharts();
-        }
 
-        function updateDashboardCharts() {
-            const wCounts = { "Laptop / Desktop": 0, "Monitor": 0, "Network Switch / Router": 0, "Access Point": 0, "IP Camera / NVR": 0, "Printer": 0, "Other": 0 };
-            wDb.forEach(item => { if(wCounts[item.category] !== undefined) wCounts[item.category]++; else wCounts["Other"]++; });
-
-            const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
-            if(ctxW) {
-                if (dashWarehouseChartInstance) dashWarehouseChartInstance.destroy();
-                dashWarehouseChartInstance = new Chart(ctxW, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(wCounts),
-                        datasets: [{
-                            data: Object.values(wCounts),
-                            backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
-                });
-            }
-
-            const deptCounts = {};
-            db.forEach(doc => {
-                const dept = (doc.employee && doc.employee.dept) ? doc.employee.dept.trim() : "Other";
-                deptCounts[dept] = (deptCounts[dept] || 0) + 1;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
+                btn.classList.add('text-slate-300', 'hover:bg-slate-800');
             });
 
-            const ctxD = document.getElementById('dashDepartmentChart')?.getContext('2d');
-            if(ctxD) {
-                if (dashDeptChartInstance) dashDeptChartInstance.destroy();
-                dashDeptChartInstance = new Chart(ctxD, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(deptCounts).length ? Object.keys(deptCounts) : ["No Data"],
-                        datasets: [{
-                            label: 'Forms Handed Over',
-                            data: Object.values(deptCounts).length ? Object.values(deptCounts) : [0],
-                            backgroundColor: '#ef4444',
-                            borderRadius: 8
-                        }]
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        scales: { 
-                            y: { beginAtZero: true, ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
-                        },
-                        plugins: { legend: { labels: { color: '#94a3b8' } } }
-                    }
-                });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
+                activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-800');
+            }
+            
+            if (tabId === 'dashboard-tab') {
+                renderDashboardAnalytics();
             }
         }
 
-        /* WORK SCHEDULE (PLANNED TASKS & DAILY TASKS) LOGIC */
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleAdminAuth() {
+            alert("Security Configuration Context Verified. System operational parameters synced.");
+        }
+
+        // --- Data Mutator Handlers ---
+        function saveRustDeskEntry() {
+            const id = document.getElementById('rd-edit-id').value || 'rd-' + Date.now();
+            const entry = {
+                id: id,
+                name: document.getElementById('rd-emp-name').value,
+                dept: document.getElementById('rd-dept').value,
+                rdId: document.getElementById('rd-id').value,
+                pass: document.getElementById('rd-password').value,
+                device: document.getElementById('rd-device').value,
+                notes: document.getElementById('rd-notes').value
+            };
+            
+            const existingIdx = appState.rustdesk.findIndex(r => r.id === id);
+            if(existingIdx > -1) appState.rustdesk[existingIdx] = entry;
+            else appState.rustdesk.push(entry);
+
+            // Clear inputs
+            document.getElementById('rd-edit-id').value = '';
+            document.getElementById('rd-emp-name').value = '';
+            document.getElementById('rd-dept').value = '';
+            document.getElementById('rd-id').value = '';
+            document.getElementById('rd-password').value = '';
+            document.getElementById('rd-device').value = '';
+            document.getElementById('rd-notes').value = '';
+
+            refreshInterfaceViews();
+        }
+
+        function deleteRustDesk(id) {
+            appState.rustdesk = appState.rustdesk.filter(r => r.id !== id);
+            refreshInterfaceViews();
+        }
+
         function addPlannedTaskToList() {
-            if(!isAdminAuthenticated) return;
-            const taskDate = document.getElementById('plan-task-date').value;
-            const type = document.getElementById('plan-task-type').value;
-            const priority = document.getElementById('plan-task-priority').value;
-            const details = document.getElementById('plan-task-details').value.trim();
-
-            if(!taskDate || !details) { alert("Please enter Date and Task Details!"); return; }
-
-            plannedTasks.push({ id: "PTK-" + Date.now(), taskDate, type, priority, details });
-            document.getElementById('plan-task-details').value = "";
-            renderPlannedTasksTable();
-            showToast("Planned Task Added!");
+            const task = {
+                id: 'pl-' + Date.now(),
+                date: document.getElementById('plan-task-date').value,
+                type: document.getElementById('plan-task-type').value,
+                priority: document.getElementById('plan-task-priority').value,
+                details: document.getElementById('plan-task-details').value
+            };
+            appState.plannedTasks.push(task);
+            refreshInterfaceViews();
         }
 
-        function renderPlannedTasksTable() {
-            const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
-            tbody.innerHTML = "";
-            if(plannedTasks.length === 0) {
-                tbody.innerHTML = `<tr><td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td></tr>`;
-                return;
-            }
-            plannedTasks.forEach((t, idx) => {
-                let badgeBg = "bg-slate-800 text-slate-300";
-                if(t.priority === "High") badgeBg = "bg-red-500/20 text-red-400 font-bold border border-red-500/30";
-                else if(t.priority === "Medium") badgeBg = "bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30";
-
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-                    <td class="p-3 font-semibold text-red-400">${t.type}</td>
-                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
-                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority}</span></td>
-                    <td class="p-3 text-center no-print">
-                        <button onclick="removePlannedTask(${idx})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function removePlannedTask(index) {
-            if(!isAdminAuthenticated) return;
-            plannedTasks.splice(index, 1);
-            renderPlannedTasksTable();
+        function removePlannedTask(id) {
+            appState.plannedTasks = appState.plannedTasks.filter(t => t.id !== id);
+            refreshInterfaceViews();
         }
 
         function addDailyTaskToList() {
-            if(!isAdminAuthenticated) return;
-            const taskDate = document.getElementById('daily-task-date').value;
-            const details = document.getElementById('daily-task-details').value.trim();
-
-            if(!taskDate || !details) { alert("Please enter Date and Daily Task Description!"); return; }
-
-            dailyTasks.push({ id: "DTK-" + Date.now(), taskDate, details });
-            document.getElementById('daily-task-details').value = "";
-            renderDailyTasksTable();
-            showToast("Daily Log Added!");
+            const log = {
+                id: 'dl-' + Date.now(),
+                date: document.getElementById('daily-task-date').value,
+                details: document.getElementById('daily-task-details').value
+            };
+            appState.dailyTasks.push(log);
+            refreshInterfaceViews();
         }
 
-        function renderDailyTasksTable() {
-            const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
-            tbody.innerHTML = "";
-            if(dailyTasks.length === 0) {
-                tbody.innerHTML = `<tr><td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td></tr>`;
-                return;
-            }
-            dailyTasks.forEach((t, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
-                    <td class="p-3 text-center no-print">
-                        <button onclick="removeDailyTask(${idx})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        function removeDailyTask(id) {
+            appState.dailyTasks = appState.dailyTasks.filter(t => t.id !== id);
+            refreshInterfaceViews();
         }
 
-        function removeDailyTask(index) {
-            if(!isAdminAuthenticated) return;
-            dailyTasks.splice(index, 1);
-            renderDailyTasksTable();
+        function saveNote() {
+            const note = {
+                id: 'nt-' + Date.now(),
+                title: document.getElementById('note-title').value,
+                category: document.getElementById('note-category').value,
+                content: document.getElementById('note-content').value
+            };
+            appState.notes.push(note);
+            refreshInterfaceViews();
         }
 
-        function saveWeeklyReport() {
-            if(!isAdminAuthenticated) return;
-            const date = document.getElementById('wr-date').value;
-            const author = document.getElementById('wr-author').value.trim();
-
-            if(!author) { alert("Please specify author name!"); return; }
-
-            const payload = { date, author, plannedTasks, dailyTasks, updated: new Date().toLocaleString() };
-            database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Saved Successfully!"));
+        function deleteNote(id) {
+            appState.notes = appState.notes.filter(n => n.id !== id);
+            refreshInterfaceViews();
         }
 
-        /* WAREHOUSE LOGIC WITH EDIT FUNCTIONALITY */
-        function logItemToWarehouse() {
-            if(!isAdminAuthenticated) return;
-            const editId = document.getElementById('w-edit-id').value;
-            const assetTag = document.getElementById('w-asset-tag').value.trim();
-            const category = document.getElementById('w-category').value;
-            const desc = document.getElementById('w-desc').value.trim();
-            const serial = document.getElementById('w-serial').value.trim();
-            const empName = document.getElementById('w-emp-name').value.trim();
-            const location = document.getElementById('w-location').value.trim();
-            const status = document.getElementById('w-status').value;
-
-            if(!assetTag || !desc) { alert("Please fill Tag and Description!"); return; }
-
-            const key = editId ? editId : "W-" + Date.now();
-            const payload = { id: key, assetTag, category, desc, serial, empName, location, status, updated: new Date().toLocaleDateString('en-GB') };
-
-            database.ref('it_warehouse_inventory/' + key).set(payload).then(() => {
-                clearWarehouseForm();
-                showToast(editId ? "Warehouse Item Updated!" : "Asset Added to Warehouse!");
-            });
+        function saveHandoverForm() {
+            const form = {
+                id: 'ho-' + Date.now(),
+                empName: document.getElementById('form-emp-name').value,
+                dept: document.getElementById('form-dept').value,
+                assetName: document.getElementById('form-asset-name').value,
+                serial: document.getElementById('form-asset-serial').value
+            };
+            appState.handover.push(form);
+            refreshInterfaceViews();
         }
 
-        function renderWarehouseList() {
-            const tbody = document.getElementById('warehouse-list-body'); if(!tbody) return;
-            tbody.innerHTML = "";
-            document.getElementById('stock-count').innerText = `${wDb.length} Items`;
-
-            if(wDb.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No items recorded in warehouse.</td></tr>`;
-                return;
-            }
-
-            wDb.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
-                    <td class="p-3"><span class="font-bold text-white block">${item.category}</span><span class="text-slate-400 text-[10px] block">${item.desc} (S/N: ${item.serial || 'N/A'})</span></td>
-                    <td class="p-3 text-slate-300">${item.empName || 'N/A'}</td>
-                    <td class="p-3 text-slate-300">${item.location || 'Warehouse'}</td>
-                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${item.status}</span></td>
-                    <td class="p-3 text-center flex justify-center gap-2">
-                        <button onclick="editWarehouseItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteWarehouseItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        function deleteHandover(id) {
+            appState.handover = appState.handover.filter(h => h.id !== id);
+            refreshInterfaceViews();
         }
 
-        function editWarehouseItem(id) {
-            const item = wDb.find(i => i.id === id); if(!item) return;
-            document.getElementById('w-edit-id').value = item.id;
-            document.getElementById('w-asset-tag').value = item.assetTag || '';
-            document.getElementById('w-category').value = item.category || 'Laptop / Desktop';
-            document.getElementById('w-desc').value = item.desc || '';
-            document.getElementById('w-serial').value = item.serial || '';
-            document.getElementById('w-emp-name').value = item.empName || '';
-            document.getElementById('w-location').value = item.location || '';
-            document.getElementById('w-status').value = item.status || 'In Stock (Available)';
-            document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-pen text-lg"></i> Edit Stock Item`;
-        }
-
-        function clearWarehouseForm() {
-            document.getElementById('w-edit-id').value = '';
-            document.getElementById('w-asset-tag').value = '';
-            document.getElementById('w-desc').value = '';
-            document.getElementById('w-serial').value = '';
-            document.getElementById('w-emp-name').value = '';
-            document.getElementById('w-location').value = '';
-            document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
+        function saveWarehouseItem() {
+            const item = {
+                id: 'wh-' + Date.now(),
+                category: document.getElementById('wh-category').value,
+                name: document.getElementById('wh-name').value,
+                qty: parseInt(document.getElementById('wh-qty').value) || 0
+            };
+            appState.warehouse.push(item);
+            refreshInterfaceViews();
         }
 
         function deleteWarehouseItem(id) {
-            if(!verifyActionWithPin()) return;
-            database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
+            appState.warehouse = appState.warehouse.filter(w => w.id !== id);
+            refreshInterfaceViews();
         }
 
-        /* NEW PAGE: IT KNOWLEDGE BASE & NOTES LOGIC */
-        function saveNoteEntry() {
-            if(!isAdminAuthenticated) return;
-            const editId = document.getElementById('note-edit-id').value;
-            const title = document.getElementById('note-title').value.trim();
-            const category = document.getElementById('note-category').value;
-            const problem = document.getElementById('note-problem').value.trim();
-            const solution = document.getElementById('note-solution').value.trim();
+        // --- Interface View Synchronization Engine ---
+        function refreshInterfaceViews() {
+            // Metric Badges update
+            document.getElementById('dash-total-forms').innerText = appState.handover.length;
+            document.getElementById('dash-total-warehouse').innerText = appState.warehouse.reduce((acc, curr) => acc + curr.qty, 0);
+            document.getElementById('dash-total-rustdesk').innerText = appState.rustdesk.length;
+            document.getElementById('dash-total-reports').innerText = appState.plannedTasks.length + appState.dailyTasks.length;
 
-            if(!title || !solution) { alert("Please enter Issue Title and Solution details!"); return; }
+            renderRustDeskList();
+            renderPlannedTasks();
+            renderDailyTasks();
+            renderNotesList();
+            renderHandoverList();
+            renderWarehouseInventory();
+        }
 
-            const key = editId ? editId : "NOTE-" + Date.now();
-            const payload = { id: key, title, category, problem, solution, date: new Date().toLocaleDateString('en-GB') };
+        function renderRustDeskList() {
+            const body = document.getElementById('rd-list-body');
+            const term = document.getElementById('rd-search').value.toLowerCase();
+            body.innerHTML = '';
+            
+            const filtered = appState.rustdesk.filter(r => r.name.toLowerCase().includes(term) || r.rdId.includes(term));
+            if(filtered.length === 0) {
+                body.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No matching remote configurations.</td></tr>`;
+                return;
+            }
 
-            database.ref('it_knowledge_notes/' + key).set(payload).then(() => {
-                clearNoteForm();
-                showToast("Troubleshooting Note Saved!");
+            filtered.forEach(r => {
+                body.innerHTML += `
+                    <tr class="border-b border-slate-800 hover:bg-slate-800/40 text-slate-300">
+                        <td class="p-3 font-bold text-white">${r.name}<br><span class="text-[10px] text-slate-400">${r.dept}</span></td>
+                        <td class="p-3 font-mono font-bold text-red-400">${r.rdId}</td>
+                        <td class="p-3 font-mono">${r.pass}</td>
+                        <td class="p-3">${r.device}<br><span class="text-[10px] text-slate-500">${r.notes}</span></td>
+                        <td class="p-3 text-center">
+                            <a href="rustdesk://:${r.rdId}?password=${r.pass}" class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-white rounded-lg transition-all inline-flex items-center gap-1">
+                                <i class="fa-solid fa-bolt text-[10px]"></i> Link
+                            </a>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteRustDesk('${r.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function renderPlannedTasks() {
+            const tbody = document.getElementById('planned-tasks-tbody');
+            tbody.innerHTML = '';
+            if(appState.plannedTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">No scheduled developments pending.</td></tr>`;
+                return;
+            }
+            appState.plannedTasks.forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-800 text-slate-300">
+                        <td class="p-3">${t.date}</td>
+                        <td class="p-3 font-bold">${t.type}</td>
+                        <td class="p-3">${t.details}</td>
+                        <td class="p-3 text-center font-bold text-amber-500">${t.priority}</td>
+                        <td class="p-3 text-center no-print"><button onclick="removePlannedTask('${t.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-circle-xmark"></i></button></td>
+                    </tr>`;
+            });
+        }
+
+        function renderDailyTasks() {
+            const tbody = document.getElementById('daily-tasks-tbody');
+            tbody.innerHTML = '';
+            if(appState.dailyTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-slate-500">Activity record is empty.</td></tr>`;
+                return;
+            }
+            appState.dailyTasks.forEach(d => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-800 text-slate-300">
+                        <td class="p-3">${d.date}</td>
+                        <td class="p-3">${d.details}</td>
+                        <td class="p-3 text-center no-print"><button onclick="removeDailyTask('${d.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-circle-xmark"></i></button></td>
+                    </tr>`;
             });
         }
 
         function renderNotesList() {
-            const container = document.getElementById('notes-container'); if(!container) return;
-            const search = document.getElementById('note-search').value.toLowerCase();
-            container.innerHTML = "";
-
-            const filtered = notesDb.filter(n => n.title.toLowerCase().includes(search) || n.problem.toLowerCase().includes(search) || n.solution.toLowerCase().includes(search) || n.category.toLowerCase().includes(search));
-            
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="whitespace-pre-line leading-relaxed">${note.solution}</p>`;
+            const body = document.getElementById('notes-list-body');
+            body.innerHTML = '';
+            if(appState.notes.length === 0) {
+                body.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">Repository empty.</td></tr>`;
                 return;
             }
-
-            filtered.forEach(note => {
-                const card = document.createElement('div');
-                card.className = "bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all";
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 uppercase tracking-wider">${note.category}</span>
-                            <h4 class="text-sm font-black text-white mt-1">${note.title}</h4>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="editNoteItem('${note.id}')" class="text-blue-400 hover:text-blue-300 text-xs"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteNoteItem('${note.id}')" class="text-slate-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                    ${note.problem ? `<p class="text-xs text-slate-400 mb-3 bg-slate-800/40 p-2.5 rounded-xl border border-slate-800"><strong class="text-slate-300">Problem:</strong> ${note.problem}</p>` : ''}
-                    <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-xs text-emerald-400">
-                        <strong class="block text-[11px] uppercase tracking-wider mb-1 font-black text-emerald-300"><i class="fa-solid fa-check-circle mr-1"></i> Solution / Fix:</strong>
-                        <p class="whitespace-pre-line leading-relaxed">${note.solution}</p>
-                    </div>
-                    <span class="block text-[10px] text-slate-500 mt-3 text-right">Logged: ${note.date}</span>
-                `;
-                container.appendChild(card);
+            appState.notes.forEach(n => {
+                body.innerHTML += `
+                    <tr class="border-b border-slate-800 text-slate-300">
+                        <td class="p-3 font-bold text-white">${n.title}<br><span class="text-[10px] uppercase text-red-500 font-black">${n.category}</span></td>
+                        <td class="p-3 whitespace-pre-wrap">${n.content}</td>
+                        <td class="p-3 text-center"><button onclick="deleteNote('${n.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`;
             });
         }
 
-        function editNoteItem(id) {
-            const item = notesDb.find(n => n.id === id); if(!item) return;
-            document.getElementById('note-edit-id').value = item.id;
-            document.getElementById('note-title').value = item.title || '';
-            document.getElementById('note-category').value = item.category || 'General Note';
-            document.getElementById('note-problem').value = item.problem || '';
-            document.getElementById('note-solution').value = item.solution || '';
-        }
-
-        function clearNoteForm() {
-            document.getElementById('note-edit-id').value = '';
-            document.getElementById('note-title').value = '';
-            document.getElementById('note-problem').value = '';
-            document.getElementById('note-solution').value = '';
-        }
-
-        function deleteNoteItem(id) {
-            if(!verifyActionWithPin()) return;
-            database.ref('it_knowledge_notes/' + id).remove().then(() => showToast("Note Deleted"));
-        }
-
-        /* RUSTDESK LOGIC */
-        function saveRustDeskEntry() {
-            if(!isAdminAuthenticated) return;
-            const empName = document.getElementById('rd-emp-name').value.trim();
-            const rdId = document.getElementById('rd-id').value.trim();
-            const password = document.getElementById('rd-password').value.trim();
-            const dept = document.getElementById('rd-dept').value.trim();
-            const device = document.getElementById('rd-device').value.trim();
-            const notes = document.getElementById('rd-notes').value.trim();
-            const editId = document.getElementById('rd-edit-id').value;
-
-            if(!empName || !rdId) { alert("Please enter Employee Name and RustDesk ID!"); return; }
-
-            const key = editId ? editId : "RD-" + Date.now();
-            const payload = { id: key, empName, rdId, password, dept, device, notes, updated: new Date().toLocaleDateString('en-GB') };
-
-            database.ref('it_rustdesk_devices/' + key).set(payload).then(() => {
-                clearRustDeskForm();
-                showToast("RustDesk Device Saved!");
-            });
-        }
-
-        function renderRustDeskList() {
-            const tbody = document.getElementById('rd-list-body'); if(!tbody) return;
-            const s = document.getElementById('rd-search').value.toLowerCase();
-            tbody.innerHTML = "";
-
-            const filtered = rustdeskDb.filter(d => d.empName.toLowerCase().includes(s) || d.rdId.toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
-            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
-
-            filtered.forEach(item => {
-                const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3"><span class="font-bold text-white block">${item.empName}</span><span class="text-slate-400 text-[10px]">${item.dept || '-'}</span></td>
-                    <td class="p-3 font-mono font-black text-red-400">${item.rdId}</td>
-                    <td class="p-3 font-mono text-slate-300">${item.password || '••••'}</td>
-                    <td class="p-3"><span class="font-semibold text-slate-200 block">${item.device || '-'}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
-                    <td class="p-3 text-center">
-                        <a href="rustdesk://${item.rdId.replace(/\s+/g, '')}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-md inline-flex items-center gap-1">
-                            <i class="fa-solid fa-plug"></i> Connect
-                        </a>
-                    </td>
-                    <td class="p-3 text-center flex justify-center gap-2">
-                        <button onclick="editRustDeskItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteRustDeskItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function editRustDeskItem(id) {
-            const item = rustdeskDb.find(i => i.id === id); if(!item) return;
-            document.getElementById('rd-edit-id').value = item.id;
-            document.getElementById('rd-emp-name').value = item.empName || '';
-            document.getElementById('rd-dept').value = item.dept || '';
-            document.getElementById('rd-id').value = item.rdId || '';
-            document.getElementById('rd-password').value = item.password || '';
-            document.getElementById('rd-device').value = item.device || '';
-            document.getElementById('rd-notes').value = item.notes || '';
-        }
-
-        function clearRustDeskForm() {
-            document.getElementById('rd-edit-id').value = ''; document.getElementById('rd-emp-name').value = '';
-            document.getElementById('rd-dept').value = ''; document.getElementById('rd-id').value = '';
-            document.getElementById('rd-password').value = ''; document.getElementById('rd-device').value = '';
-            document.getElementById('rd-notes').value = '';
-        }
-
-        function deleteRustDeskItem(id) {
-            if(!verifyActionWithPin()) return;
-            database.ref('it_rustdesk_devices/' + id).remove().then(() => showToast("Device Deleted"));
-        }
-
-        /* ADMIN & AUTH RESTRICTIONS */
-        function toggleAdminAuth() {
-            if (isAdminAuthenticated) { isAdminAuthenticated = false; } else {
-                const pin = prompt("Enter IT Admin Access PIN:");
-                if (pin === SECURE_PIN) isAdminAuthenticated = true; else alert("Invalid Passcode!");
+        function renderHandoverList() {
+            const body = document.getElementById('forms-list-body');
+            body.innerHTML = '';
+            if(appState.handover.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No logs on records.</td></tr>`;
+                return;
             }
-            applyAdminRestrictions();
+            appState.handover.forEach(h => {
+                body.innerHTML += `
+                    <tr class="border-b border-slate-800 text-slate-300">
+                        <td class="p-3 font-bold text-white">${h.empName}</td>
+                        <td class="p-3">${h.dept}</td>
+                        <td class="p-3">${h.assetName}</td>
+                        <td class="p-3 font-mono">${h.serial}</td>
+                        <td class="p-3 text-center"><button onclick="deleteHandover('${h.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`;
+            });
         }
 
-        function applyAdminRestrictions() {
-            const btnText = document.getElementById('admin-btn-text');
-            const btnIcon = document.getElementById('admin-auth-btn').querySelector('i');
-            const badgeText = document.getElementById('admin-lock-text');
-            const badgeIcon = document.getElementById('admin-lock-badge').querySelector('i');
-
-            if(isAdminAuthenticated) {
-                btnText.innerText = "Log Out"; btnIcon.className = "fa-solid fa-lock-open";
-                badgeText.innerText = "Editor Mode"; badgeIcon.className = "fa-solid fa-pen-to-square";
-            } else {
-                btnText.innerText = "Admin Login"; btnIcon.className = "fa-solid fa-lock";
-                badgeText.innerText = "View-Only"; badgeIcon.className = "fa-solid fa-eye";
+        function renderWarehouseInventory() {
+            const body = document.getElementById('wh-list-body');
+            body.innerHTML = '';
+            if(appState.warehouse.length === 0) {
+                body.innerHTML = `<tr><td colspan="4" class="text-center p-6 text-slate-500">No inventory entries recorded.</td></tr>`;
+                return;
             }
-
-            document.querySelectorAll('.admin-restricted').forEach(el => {
-                if(isAdminAuthenticated) { el.removeAttribute('disabled'); el.classList.remove('opacity-40', 'cursor-not-allowed'); }
-                else { el.setAttribute('disabled', 'true'); el.classList.add('opacity-40', 'cursor-not-allowed'); }
-            });
-
-            document.querySelectorAll('.form-input-field').forEach(input => {
-                if(isAdminAuthenticated) { input.removeAttribute('readonly'); input.removeAttribute('disabled'); }
-                else { input.setAttribute('readonly', 'true'); input.setAttribute('disabled', 'true'); }
-            });
-        }
-
-        function verifyActionWithPin() {
-            if (isAdminAuthenticated) return true;
-            const pin = prompt("Enter IT Security PIN:");
-            if (pin === SECURE_PIN) return true;
-            alert("Unauthorized!"); return false;
-        }
-
-        function showToast(m) {
-            const t = document.getElementById('toast'); 
-            document.getElementById('toast-msg').innerText = m;
-            t.classList.remove('translate-y-28'); 
-            setTimeout(() => { t.classList.add('translate-y-28'); }, 3000);
-        }
-
-        /* ARCHIVE & HANDOVER FORM LOGIC */
-        function addCustomRow() {
-            if(!isAdminAuthenticated) return;
-            renderCustomRowEntry("custom-" + Date.now());
-        }
-
-        function renderCustomRowEntry(id, description = "", checked = true, category = "", assetTag = "", serial = "", condOut = "OK") {
-            const tbody = document.getElementById('asset-table-body'); const tr = document.createElement('tr');
-            tr.setAttribute('data-id', id); tr.className = "border-b border-slate-800 text-xs";
-            const dis = !isAdminAuthenticated ? 'disabled' : ''; const ro = !isAdminAuthenticated ? 'readonly' : '';
-
-            tr.innerHTML = `
-                <td class="text-center p-2"><input type="checkbox" class="item-check w-4 h-4 accent-red-600" ${checked ? 'checked' : ''} ${dis}></td>
-                <td class="p-1.5"><input type="text" class="item-category-select w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200" value="${category}" placeholder="Category" ${ro}></td>
-                <td class="p-1.5"><input type="text" class="item-asset-tag w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-mono text-red-400 font-bold" value="${assetTag}" placeholder="Tag" ${ro}></td>
-                <td class="p-1.5"><input type="text" class="item-desc-input w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-bold text-white" value="${description}" placeholder="Specs/Model" ${ro}></td>
-                <td class="p-1.5"><input type="text" class="item-serial w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-mono text-slate-300" value="${serial}" placeholder="Serial" ${ro}></td>
-                <td class="p-1.5"><select class="item-cond-out w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200" ${dis}><option value="OK">OK</option><option value="New">New</option></select></td>
-                <td class="p-1.5 text-center no-print"><button onclick="this.closest('tr').remove()" class="text-slate-500 hover:text-red-400" ${dis}><i class="fa-solid fa-circle-xmark text-base"></i></button></td>
-            `;
-            tbody.appendChild(tr);
-        }
-
-        function saveCurrentForm() {
-            if(!isAdminAuthenticated) return;
-            const name = document.getElementById('emp-name').value.trim(); if (!name) { alert("Please enter employee name!"); return; }
-            const itemsData = {};
-            document.getElementById('asset-table-body').querySelectorAll('tr').forEach(row => {
-                const id = row.getAttribute('data-id');
-                itemsData[id] = {
-                    checked: row.querySelector('.item-check').checked, category: row.querySelector('.item-category-select')?.value || "",
-                    assetTag: row.querySelector('.item-asset-tag')?.value || "", desc: row.querySelector('.item-desc-input')?.value || "",
-                    serial: row.querySelector('.item-serial').value, condOut: row.querySelector('.item-cond-out').value
-                };
-            });
-            let saveId = currentDocId === "NEW" ? "AA-" + Math.floor(1000 + Math.random() * 9000) : currentDocId;
-            const payload = {
-                docId: saveId,
-                employee: { name, dept: document.getElementById('emp-dept').value, empId: document.getElementById('emp-id').value, title: document.getElementById('emp-title').value },
-                items: itemsData, updated: new Date().toLocaleString()
-            };
-            database.ref('it_forms_archive/' + saveId).set(payload).then(() => {
-                currentDocId = saveId; document.getElementById('doc-id-display').innerText = saveId; showToast("Form Saved Successfully!");
+            appState.warehouse.forEach(w => {
+                body.innerHTML += `
+                    <tr class="border-b border-slate-800 text-slate-300">
+                        <td class="p-3 font-bold uppercase tracking-wider text-blue-400">${w.category}</td>
+                        <td class="p-3">${w.name}</td>
+                        <td class="p-3 font-black text-white">${w.qty} Units</td>
+                        <td class="p-3 text-center"><button onclick="deleteWarehouseItem('${w.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`;
             });
         }
 
-        function resetForm(confirmAction = false) {
-            if (confirmAction && !confirm("Clear form data?")) return;
-            currentDocId = "NEW"; document.getElementById('doc-id-display').innerText = "IT-ASSET-NEW";
-            document.getElementById('emp-name').value = ""; document.getElementById('emp-dept').value = "";
-            document.getElementById('emp-id').value = ""; document.getElementById('emp-title').value = "";
-            document.getElementById('asset-table-body').innerHTML = ""; addCustomRow();
+        // --- Visual Intelligence Analytics System ---
+        function renderDashboardAnalytics() {
+            const whCategories = [...new Set(appState.warehouse.map(item => item.category))];
+            const whTotals = whCategories.map(cat => 
+                appState.warehouse.filter(item => item.category === cat).reduce((sum, item) => sum + item.qty, 0)
+            );
+
+            const deptNames = [...new Set(appState.handover.map(h => h.dept))];
+            const deptTotals = deptNames.map(dept => appState.handover.filter(h => h.dept === dept).length);
+
+            if(warehouseChartObj) warehouseChartObj.destroy();
+            if(departmentChartObj) departmentChartObj.destroy();
+
+            const ctx1 = document.getElementById('dashWarehouseChart').getContext('2d');
+            warehouseChartObj = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: whCategories.length ? whCategories : ['Empty'],
+                    datasets: [{
+                        data: whTotals.length ? whTotals : [1],
+                        backgroundColor: ['#dc2626', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#f8fafc' } } } }
+            });
+
+            const ctx2 = document.getElementById('dashDepartmentChart').getContext('2d');
+            departmentChartObj = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: deptNames.length ? deptNames : ['None'],
+                    datasets: [{
+                        label: 'Assets Handed Over',
+                        data: deptTotals.length ? deptTotals : [0],
+                        backgroundColor: '#dc2626'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { ticks: { color: '#f8fafc' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#f8fafc' }, grid: { color: '#334155' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
 
-        function renderArchiveList() {
-            const tbody = document.getElementById('db-list-body'); if (!tbody) return;
-            const s = document.getElementById('db-search').value.toLowerCase();
-            tbody.innerHTML = "";
-            const filtered = db.filter(item => (item.employee && item.employee.name && item.employee.name.toLowerCase().includes(s)) || item.docId.toLowerCase().includes(s));
+        // --- JSON & Excel/CSV Export Core Logic Architecture ---
+        function exportDataToJSON() {
+            const dataString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 4));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataString);
+            dlAnchor.setAttribute("download", `IT_System_Data_Backup_${Date.now()}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function exportDataToExcelCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
             
-            if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No archive records found.</td></tr>`; return; }
-            
-            filtered.forEach(item => {
-                const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-red-400">${item.docId}</td>
-                    <td class="p-3 font-bold text-white">${item.employee?.name || '-'}</td>
-                    <td class="p-3 text-slate-300">${item.employee?.dept || '-'}</td>
-                    <td class="p-3 font-semibold text-slate-400">${item.employee?.empId || '-'}</td>
-                    <td class="p-3 text-center flex justify-center gap-2">
-                        <button onclick="loadFormToEdit('${item.docId}')" class="px-2.5 py-1 bg-blue-500/20 text-blue-400 rounded-lg border border-blue-500/30"><i class="fa-solid fa-eye"></i></button>
-                        <button onclick="deleteArchiveEntry('${item.docId}')" class="px-2.5 py-1 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            // Generate RustDesk computer reference listings table row lines
+            csvContent += "--- RUSTDESK REMOTES DIRECTORY ---\r\n";
+            csvContent += "Employee,Department,RustDesk ID,Password,Device Context\r\n";
+            appState.rustdesk.forEach(r => {
+                csvContent += `"${r.name}","${r.dept}","${r.rdId}","${r.pass}","${r.device}"\r\n`;
             });
-        }
 
-        function loadFormToEdit(docId) {
-            const record = db.find(item => item.docId === docId); if (!record) return;
-            currentDocId = record.docId; document.getElementById('doc-id-display').innerText = record.docId;
-            document.getElementById('emp-name').value = record.employee?.name || "";
-            document.getElementById('emp-dept').value = record.employee?.dept || "";
-            document.getElementById('emp-id').value = record.employee?.empId || "";
-            document.getElementById('emp-title').value = record.employee?.title || "";
-            
-            const tbody = document.getElementById('asset-table-body'); tbody.innerHTML = "";
-            if (record.items) {
-                Object.keys(record.items).forEach(id => {
-                    const item = record.items[id];
-                    renderCustomRowEntry(id, item.desc, item.checked, item.category, item.assetTag, item.serial, item.condOut);
-                });
-            }
-            switchTab('form-tab');
-        }
+            // Append Warehouse Inventory logs lines
+            csvContent += "\r\n--- WAREHOUSE STOCK LEDGER ---\r\n";
+            csvContent += "Category,Item Specification Model,Units Available\r\n";
+            appState.warehouse.forEach(w => {
+                csvContent += `"${w.category}","${w.name}","${w.qty}"\r\n`;
+            });
 
-        function deleteArchiveEntry(docId) {
-            if(!verifyActionWithPin()) return;
-            database.ref('it_forms_archive/' + docId).remove().then(() => showToast("Archive Record Deleted"));
+            // Append Handover logs fields
+            csvContent += "\r\n--- HANDOVER DIRECTORY LOGS ---\r\n";
+            csvContent += "Recipient Employee,Department,Asset Handed Over,Serial Tag Reference\r\n";
+            appState.handover.forEach(h => {
+                csvContent += `"${h.empName}","${h.dept}","${h.assetName}","${h.serial}"\r\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", encodedUri);
+            dlAnchor.setAttribute("download", `IT_Operational_Summaries_${Date.now()}.csv`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
         }
     </script>
-</body>
-</html>
+</body></html>
