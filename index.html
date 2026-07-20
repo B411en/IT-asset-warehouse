@@ -1,13 +1,14 @@
 <html lang="en" dir="ltr" id="html-tag"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asia Aluminium - IT Management System</title>
+    <title>Asia Aluminium - IT Officer System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
@@ -75,6 +76,25 @@
             border-radius: 4px;
         }
 
+        #lock-screen {
+            background-color: #020617;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(220, 38, 38, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.18) 0px, transparent 50%);
+        }
+
+        @keyframes shake-x {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+
+        .shake { animation: shake-x 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .table-scroll table { min-width: 720px; }
+
         @media print {
             body {
                 background: white !important;
@@ -121,7 +141,37 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col pb-12 antialiased">
+<body class="antialiased">
+
+    <!-- ================= ACCESS LOCK SCREEN ================= -->
+    <div id="lock-screen" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div class="card-3d w-full max-w-sm p-8 text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center shadow-lg shadow-red-600/30 mb-5 icon-3d-glow">
+                <i class="fa-solid fa-lock text-white text-2xl"></i>
+            </div>
+            <h1 class="text-lg font-black text-white mb-1 tracking-wide">ASIA ALUMINIUM</h1>
+            <p class="text-[11px] text-slate-400 mb-6 uppercase tracking-widest">IT Management System &middot; Restricted Access</p>
+            <form id="lock-form" autocomplete="off">
+                <input type="password" id="lock-pin-input" inputmode="numeric" autocomplete="off" placeholder="Enter Access Passcode" class="w-full text-center tracking-[0.4em] font-black bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-red-500 mb-3">
+                <p id="lock-error" class="text-xs font-bold text-red-400 mb-3 hidden">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Incorrect passcode. Try again.
+                </p>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-unlock"></i> Unlock
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-root" class="hidden min-h-screen flex-col pb-12">
+
+    <!-- Setup Warning: shown until an access passcode has been set -->
+    <div id="setup-warning-banner" class="no-print hidden bg-amber-500/15 border-b border-amber-500/30 text-amber-300 text-xs sm:text-sm px-4 py-2.5 flex flex-wrap items-center justify-center gap-2 text-center">
+        <span><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> No access passcode is set &mdash; anyone with this link can view and edit this system.</span>
+        <button onclick="openChangePasscodeModal()" class="px-3 py-1 bg-amber-500 text-slate-900 font-black text-[11px] uppercase tracking-wider rounded-lg hover:bg-amber-400 transition-all">
+            Set Passcode Now
+        </button>
+    </div>
 
     <!-- Navigation Bar -->
     <nav id="main-nav" class="no-print bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 sticky top-0 z-50">
@@ -134,16 +184,18 @@
                     </div>
                     <div>
                         <span class="font-black text-base sm:text-lg tracking-wider text-white block leading-none">ASIA ALUMINIUM</span>
-                        <span class="text-[10px] font-bold tracking-widest text-red-500 uppercase">3D IT HUB &amp; MANAGEMENT</span>
                     </div>
                 </div>
 
                 <div class="hidden lg:flex items-center gap-3 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
-                    <span id="admin-lock-badge" class="text-xs font-extrabold text-amber-500 flex items-center gap-1.5">
-                        <i class="fa-solid fa-pen-to-square"></i> <span id="admin-lock-text">Editor Mode</span>
+                    <span class="text-xs font-extrabold text-emerald-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-unlock"></i> Unlocked
                     </span>
-                    <button onclick="toggleAdminAuth()" id="admin-auth-btn" class="px-3 py-1 text-[11px] font-black uppercase tracking-wider rounded-lg bg-red-600 text-white hover:bg-red-700 transition-all flex items-center gap-1.5 shadow-md shadow-red-600/20">
-                        <i class="fa-solid fa-lock-open"></i> <span id="admin-btn-text">Log Out</span>
+                    <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="px-3 py-1 text-[11px] font-black uppercase tracking-wider rounded-lg bg-slate-700 text-white hover:bg-slate-600 transition-all flex items-center gap-1.5 shadow-md" title="Change Passcode">
+                        <i class="fa-solid fa-key"></i> <span id="passcode-nav-btn-text">Passcode</span>
+                    </button>
+                    <button onclick="lockApp()" class="px-3 py-1 text-[11px] font-black uppercase tracking-wider rounded-lg bg-red-600 text-white hover:bg-red-700 transition-all flex items-center gap-1.5 shadow-md shadow-red-600/20">
+                        <i class="fa-solid fa-lock"></i> Lock
                     </button>
                 </div>
 
@@ -173,8 +225,11 @@
                 </div>
 
                 <div class="flex md:hidden items-center gap-2">
-                    <button onclick="toggleAdminAuth()" class="p-2 rounded-lg bg-slate-800 text-amber-500 border border-slate-700 text-xs">
-                        <i class="fa-solid fa-user-shield"></i>
+                    <button onclick="openChangePasscodeModal()" id="passcode-nav-btn-mobile" class="p-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs" title="Change Passcode">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                    <button onclick="lockApp()" class="p-2 rounded-lg bg-slate-800 text-red-500 border border-slate-700 text-xs" title="Lock App">
+                        <i class="fa-solid fa-lock"></i>
                     </button>
                     <button onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-800 text-white border border-slate-700 focus:outline-none">
                         <i class="fa-solid fa-bars text-lg"></i>
@@ -264,7 +319,7 @@
                     <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-chart-pie text-lg"></i> IT Asset Distribution
                     </h3>
-                    <div class="relative h-64">
+                    <div class="relative h-56 sm:h-64">
                         <canvas id="dashWarehouseChart"></canvas>
                     </div>
                 </div>
@@ -274,7 +329,7 @@
                     <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-chart-bar text-lg"></i> Handover Forms by Department
                     </h3>
-                    <div class="relative h-64">
+                    <div class="relative h-56 sm:h-64">
                         <canvas id="dashDepartmentChart"></canvas>
                     </div>
                 </div>
@@ -318,7 +373,7 @@
                             <label class="block font-bold text-slate-300 mb-1">IP Address / Notes</label>
                             <textarea id="rd-notes" rows="2" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="Additional details..."></textarea>
                         </div>
-                        <button onclick="saveRustDeskEntry()" class="admin-restricted w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
+                        <button onclick="saveRustDeskEntry()" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i> Save Remote Credentials
                         </button>
                     </div>
@@ -333,7 +388,7 @@
                         <input type="text" id="rd-search" oninput="renderRustDeskList()" placeholder="Search employee or RustDesk ID..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-64">
                     </div>
 
-                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800/80 text-slate-300 font-bold uppercase border-b border-slate-700">
@@ -364,7 +419,7 @@
                         <p class="text-xs text-slate-400 mt-1">Future Planning &amp; Daily Maintenance Log</p>
                     </div>
                     <div class="flex gap-2 no-print">
-                        <button onclick="saveWeeklyReport()" class="admin-restricted px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-2">
+                        <button onclick="saveWeeklyReport()" class="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up"></i> Save Schedule
                         </button>
                         <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-2">
@@ -422,12 +477,12 @@
                             <label class="block text-xs font-bold text-slate-300 mb-1">Planned Task Details</label>
                             <textarea id="plan-task-details" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500" placeholder="Enter upcoming maintenance or deployment details..."></textarea>
                         </div>
-                        <button onclick="addPlannedTaskToList()" class="admin-restricted px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                        <button onclick="addPlannedTaskToList()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
                             <i class="fa-solid fa-plus"></i> Add Planned Task
                         </button>
                     </div>
 
-                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
@@ -459,12 +514,12 @@
                                 <input type="text" id="daily-task-details" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500" placeholder="Specify daily accomplished task...">
                             </div>
                         </div>
-                        <button onclick="addDailyTaskToList()" class="admin-restricted px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                        <button onclick="addDailyTaskToList()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
                             <i class="fa-solid fa-check"></i> Add Daily Log
                         </button>
                     </div>
 
-                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
@@ -517,7 +572,7 @@
                             <textarea id="note-solution" rows="4" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-emerald-400 font-medium focus:outline-none focus:border-red-500" placeholder="Steps taken to fix this issue..."></textarea>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="saveNoteEntry()" class="admin-restricted flex-grow py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
+                            <button onclick="saveNoteEntry()" class="flex-grow py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Note
                             </button>
                             <button onclick="clearNoteForm()" class="px-3 py-3 bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-slate-700">
@@ -551,13 +606,13 @@
                     <span id="edit-status-indicator" class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-bold text-xs border border-red-500/30">New Form</span>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="saveCurrentForm()" id="main-save-btn" class="admin-restricted px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-1.5">
+                    <button onclick="saveCurrentForm()" id="main-save-btn" class="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-1.5">
                         <i class="fa-solid fa-floppy-disk"></i> Save Form
                     </button>
                     <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-1.5">
                         <i class="fa-solid fa-print"></i> Print / PDF
                     </button>
-                    <button onclick="resetForm(true)" id="main-clear-btn" class="admin-restricted px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-xl transition-all border border-red-500/20">
+                    <button onclick="resetForm(true)" id="main-clear-btn" class="px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-xl transition-all border border-red-500/20">
                         <i class="fa-solid fa-rotate-left"></i> Clear
                     </button>
                 </div>
@@ -599,14 +654,13 @@
                 </div>
 
                 <!-- Asset Details -->
-                <div class="mb-6 overflow-x-auto">
+                <div class="mb-6 overflow-x-auto table-scroll">
                     <h3 class="text-xs font-black uppercase tracking-wider text-red-500 mb-4 flex items-center gap-2">
                         <span class="bg-red-600 text-white w-5 h-5 rounded-md flex justify-center items-center text-[10px]">2</span> Asset Details
                     </h3>
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
-                                <th class="w-12 text-center p-3">Check</th>
                                 <th class="p-3">Category</th>
                                 <th class="p-3">Asset Tag</th>
                                 <th class="p-3">Specs / Model</th>
@@ -620,7 +674,7 @@
                 </div>
 
                 <div class="no-print mb-8 flex justify-end">
-                    <button onclick="addCustomRow()" id="main-add-row-btn" class="admin-restricted px-4 py-2 bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-1.5">
+                    <button onclick="addCustomRow()" id="main-add-row-btn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-black rounded-xl transition-all border border-slate-700 flex items-center gap-1.5">
                         <i class="fa-solid fa-plus"></i> Add Asset Item
                     </button>
                 </div>
@@ -638,10 +692,10 @@
                         <h4 class="text-xs font-black text-white uppercase border-b border-slate-800 pb-2 mb-6 tracking-wider">I. Handover State (ئاستی ڕادەستکردن)</h4>
                         <div class="space-y-6 text-xs font-bold text-slate-300">
                             <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>Employee Signature:</span> <span class="text-slate-500 font-normal">ئیمزای کارمەند</span>
+                                <span>Employee Signature:</span> 
                             </div>
                             <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>IT Officer Signature:</span> <span class="text-slate-500 font-normal">ئیمزای بەرپرسی ئایتی</span>
+                                <span>IT Officer Signature:</span> 
                             </div>
                         </div>
                     </div>
@@ -650,10 +704,10 @@
                         <h4 class="text-xs font-black text-white uppercase border-b border-slate-800 pb-2 mb-6 tracking-wider">II. Return State (ئاستی وەرگرتنەوە)</h4>
                         <div class="space-y-6 text-xs font-bold text-slate-300">
                             <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>Employee Signature:</span> <span class="text-slate-500 font-normal">ئیمزای کارمەند</span>
+                                <span>Employee Signature:</span>
                             </div>
                             <div class="border-b border-slate-700 pb-1 flex justify-between">
-                                <span>IT Officer Signature:</span> <span class="text-slate-500 font-normal">ئیمزای بەرپرسی ئایتی</span>
+                                <span>IT Officer Signature:</span> 
                             </div>
                         </div>
                     </div>
@@ -722,7 +776,7 @@
                                 <option value="Scrapped / Damaged">Scrapped / Damaged</option>
                             </select>
                         </div>
-                        <button onclick="logItemToWarehouse()" id="w-submit-btn" class="admin-restricted w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
+                        <button onclick="logItemToWarehouse()" id="w-submit-btn" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
                             <i class="fa-solid fa-box-archive"></i> Save Warehouse Asset
                         </button>
                     </div>
@@ -738,7 +792,7 @@
                         <span id="stock-count" class="bg-red-500/20 text-red-400 font-bold px-3 py-1 rounded-full text-xs border border-red-500/30">0 Items</span>
                     </div>
 
-                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 uppercase font-bold border-b border-slate-700">
@@ -779,7 +833,7 @@
                     <input type="text" id="db-search" oninput="renderArchiveList()" placeholder="Search employee name or Document ID..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-red-500">
                 </div>
 
-                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                     <table class="w-full text-left text-xs">
                         <thead>
                             <tr class="bg-slate-800 text-slate-300 text-xs uppercase border-b border-slate-700">
@@ -799,12 +853,47 @@
     </main>
 
     <!-- Notification Toast -->
-    <div id="toast" class="no-print fixed bottom-5 right-5 bg-slate-900 border border-slate-700 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 transition-transform duration-300 translate-y-28 z-50">
+    <div id="toast" class="no-print fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 sm:max-w-sm bg-slate-900 border border-slate-700 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 transition-transform duration-300 translate-y-28 z-50">
         <div class="w-8 h-8 rounded-xl bg-red-600/20 text-red-500 flex justify-center items-center font-bold">
             <i class="fa-solid fa-check"></i>
         </div>
         <span id="toast-msg" class="text-xs font-bold"></span>
     </div>
+
+    <!-- Change Passcode Modal -->
+    <div id="change-pin-modal" class="no-print hidden fixed inset-0 z-[9998] items-center justify-center bg-black/70 p-4">
+        <div class="card-3d w-full max-w-sm p-6">
+            <h3 id="cp-modal-title" class="text-sm font-black text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-key text-red-500"></i> Change Access Passcode
+            </h3>
+            <p id="cp-modal-subtitle" class="hidden text-xs text-slate-400 mb-4">No passcode is protecting this system yet. Set one now so only people who know it can view or edit this data.</p>
+            <form id="change-pin-form" class="space-y-3 text-xs" autocomplete="off">
+                <div id="cp-current-wrap">
+                    <label class="block font-bold text-slate-300 mb-1">Current Passcode</label>
+                    <input type="password" id="cp-current" autocomplete="off" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">New Passcode (min. 6 characters)</label>
+                    <input type="password" id="cp-new" autocomplete="off" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Confirm New Passcode</label>
+                    <input type="password" id="cp-confirm" autocomplete="off" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                </div>
+                <p id="cp-error" class="text-xs font-bold text-red-400 hidden"></p>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="flex-grow py-2.5 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white font-black rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> <span id="cp-submit-text">Save New Passcode</span>
+                    </button>
+                    <button type="button" onclick="closeChangePasscodeModal()" class="px-4 py-2.5 bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div><!-- /#app-root -->
 
     <script>
         const firebaseConfig = {
@@ -817,12 +906,24 @@
             appId: "1:918668871166:web:bac8e8ba00836ccdfc2caf"
         };
 
+        const LOCK_SESSION_KEY = "aa_it_unlocked";
+        const FAIL_COUNT_KEY = "aa_it_fail_count";
+        const LOCKOUT_UNTIL_KEY = "aa_it_lockout_until";
+        const ACCESS_SETTINGS_PATH = "it_system_settings/access";
+        const ACCESS_ITERATIONS = 150000; // PBKDF2-SHA256 rounds used whenever a new passcode is saved
+
+        let currentAccessSalt = null;
+        let currentAccessHash = null;
+        let currentAccessIterations = ACCESS_ITERATIONS;
+
+        // 'unconfigured' = no passcode ever set (open access + setup prompt)
+        // 'configured'   = a passcode hash was loaded from Firebase, lock screen enforced
+        // 'unknown'      = couldn't reach Firebase to check, so fail SAFE (lock screen shown, but blocked)
+        let accessState = 'unknown';
+
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        const SECURE_PIN = "350316";
-        let isAdminAuthenticated = false;
-        
         let dashWarehouseChartInstance = null;
         let dashDeptChartInstance = null;
 
@@ -834,14 +935,112 @@
         let dailyTasks = [];
         let notesDb = [];
 
-        window.onload = function() {
+        /* ================= ACCESS LOCK SCREEN (PBKDF2, salt+hash stored in Firebase) ================= */
+        function bytesToHex(bytes) {
+            return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function hexToBytes(hex) {
+            const arr = new Uint8Array(hex.length / 2);
+            for (let i = 0; i < arr.length; i++) arr[i] = parseInt(hex.substr(i * 2, 2), 16);
+            return arr;
+        }
+
+        function randomSaltHex(len = 16) {
+            return bytesToHex(crypto.getRandomValues(new Uint8Array(len)));
+        }
+
+        async function pbkdf2Hash(passcode, saltHex, iterations) {
+            const keyMaterial = await crypto.subtle.importKey('raw', new TextEncoder().encode(passcode), 'PBKDF2', false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits(
+                { name: 'PBKDF2', salt: hexToBytes(saltHex), iterations, hash: 'SHA-256' },
+                keyMaterial, 256
+            );
+            return bytesToHex(new Uint8Array(bits));
+        }
+
+        // Only reads the auth salt/hash itself (not any business data) so we can tell whether
+        // a passcode has ever been set, and validate one if so. Never invents a default passcode:
+        // if Firebase has nothing saved, the system is genuinely open until someone sets one.
+        async function loadAccessSettings() {
+            try {
+                const snap = await database.ref(ACCESS_SETTINGS_PATH).once('value');
+                const val = snap.val();
+                if (val && val.hash && val.salt) {
+                    currentAccessSalt = val.salt;
+                    currentAccessHash = val.hash;
+                    currentAccessIterations = val.iterations || ACCESS_ITERATIONS;
+                    accessState = 'configured';
+                } else {
+                    accessState = 'unconfigured';
+                }
+            } catch (e) {
+                console.warn('Could not reach Firebase to check the access passcode.', e);
+                accessState = 'unknown';
+            }
+        }
+
+        /* Failed-attempt rate limiting (deterrent against online passcode guessing) */
+        function lockoutSecondsFor(count) {
+            if (count >= 12) return 300;
+            if (count >= 8) return 60;
+            if (count >= 5) return 20;
+            if (count >= 3) return 5;
+            return 0;
+        }
+
+        function clearFailedAttempts() {
+            try { sessionStorage.removeItem(FAIL_COUNT_KEY); sessionStorage.removeItem(LOCKOUT_UNTIL_KEY); } catch (e) {}
+        }
+
+        function registerFailedAttempt() {
+            let count = 0;
+            try { count = parseInt(sessionStorage.getItem(FAIL_COUNT_KEY) || '0', 10) + 1; sessionStorage.setItem(FAIL_COUNT_KEY, String(count)); } catch (e) {}
+            const wait = lockoutSecondsFor(count);
+            if (wait > 0) {
+                const until = Date.now() + wait * 1000;
+                try { sessionStorage.setItem(LOCKOUT_UNTIL_KEY, String(until)); } catch (e) {}
+                startLockoutCountdown(wait);
+            }
+        }
+
+        function startLockoutCountdown(seconds) {
+            const btn = document.querySelector('#lock-form button[type="submit"]');
+            const input = document.getElementById('lock-pin-input');
+            const errorMsg = document.getElementById('lock-error');
+            if (!btn || !input || !errorMsg) return;
+            let remaining = Math.ceil(seconds);
+            input.setAttribute('disabled', 'true'); btn.setAttribute('disabled', 'true'); btn.classList.add('opacity-40', 'cursor-not-allowed');
+            errorMsg.classList.remove('hidden');
+            const tick = () => {
+                errorMsg.innerHTML = `<i class="fa-solid fa-hourglass-half mr-1"></i> Too many attempts. Try again in ${remaining}s.`;
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    input.removeAttribute('disabled'); btn.removeAttribute('disabled'); btn.classList.remove('opacity-40', 'cursor-not-allowed');
+                    errorMsg.classList.add('hidden');
+                    input.focus();
+                    return;
+                }
+                remaining--;
+            };
+            tick();
+            const timer = setInterval(tick, 1000);
+        }
+
+        function resumeLockoutIfActive() {
+            let until = 0;
+            try { until = parseInt(sessionStorage.getItem(LOCKOUT_UNTIL_KEY) || '0', 10); } catch (e) {}
+            if (Date.now() < until) startLockoutCountdown((until - Date.now()) / 1000);
+        }
+
+        function initDefaultDates() {
             const today = new Date();
             if(document.getElementById('wr-date')) document.getElementById('wr-date').valueAsDate = today;
             if(document.getElementById('plan-task-date')) document.getElementById('plan-task-date').valueAsDate = today;
             if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').valueAsDate = today;
+        }
 
-            applyAdminRestrictions();
-
+        function attachDataListeners() {
             database.ref('it_forms_archive').on('value', (s) => {
                 db = s.val() ? Object.values(s.val()) : [];
                 document.getElementById('dash-total-forms').innerText = db.length;
@@ -879,7 +1078,201 @@
                 notesDb = s.val() ? Object.values(s.val()) : [];
                 renderNotesList();
             });
-        };
+        }
+
+        function unlockApp() {
+            const lockScreen = document.getElementById('lock-screen');
+            const appRoot = document.getElementById('app-root');
+            if(lockScreen) lockScreen.remove();
+            appRoot.classList.remove('hidden');
+            appRoot.classList.add('flex');
+            initDefaultDates();
+            attachDataListeners();
+            updateAccessUIState();
+        }
+
+        // Reflects accessState in the nav button + the "no passcode set" banner.
+        function updateAccessUIState() {
+            const banner = document.getElementById('setup-warning-banner');
+            const navBtn = document.getElementById('passcode-nav-btn');
+            const navBtnText = document.getElementById('passcode-nav-btn-text');
+            const navBtnMobile = document.getElementById('passcode-nav-btn-mobile');
+            if(!banner || !navBtn) return;
+
+            if(accessState === 'unconfigured') {
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
+                navBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
+                navBtn.classList.add('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
+                navBtnText.innerText = 'Set Passcode';
+                navBtnMobile.classList.remove('text-slate-300');
+                navBtnMobile.classList.add('text-amber-400');
+            } else {
+                banner.classList.add('hidden');
+                banner.classList.remove('flex');
+                navBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
+                navBtn.classList.remove('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
+                navBtnText.innerText = 'Passcode';
+                navBtnMobile.classList.add('text-slate-300');
+                navBtnMobile.classList.remove('text-amber-400');
+            }
+        }
+
+        function lockApp() {
+            try { sessionStorage.removeItem(LOCK_SESSION_KEY); } catch(e) {}
+            location.reload();
+        }
+
+        async function handleUnlockSubmit(evt) {
+            evt.preventDefault();
+            let lockedOut = false;
+            try { lockedOut = Date.now() < parseInt(sessionStorage.getItem(LOCKOUT_UNTIL_KEY) || '0', 10); } catch(e) {}
+            if(lockedOut) return false;
+
+            const input = document.getElementById('lock-pin-input');
+            const errorMsg = document.getElementById('lock-error');
+            const val = input.value.trim();
+            if(!val) return false;
+
+            const enteredHash = await pbkdf2Hash(val, currentAccessSalt, currentAccessIterations);
+            if(enteredHash === currentAccessHash) {
+                clearFailedAttempts();
+                try { sessionStorage.setItem(LOCK_SESSION_KEY, '1'); } catch(e) {}
+                errorMsg.classList.add('hidden');
+                unlockApp();
+            } else {
+                errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Incorrect passcode. Try again.`;
+                errorMsg.classList.remove('hidden');
+                input.value = '';
+                input.focus();
+                const card = document.querySelector('#lock-screen .card-3d');
+                if(card) { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
+                registerFailedAttempt();
+            }
+            return false;
+        }
+
+        async function initApp() {
+            const lockForm = document.getElementById('lock-form');
+            const submitBtn = lockForm.querySelector('button[type="submit"]');
+            const pinInput = document.getElementById('lock-pin-input');
+            const errorMsg = document.getElementById('lock-error');
+
+            // Deterrent only: this cannot fully prevent a technical user with devtools from
+            // bypassing a client-side lock in a page with no backend auth server.
+            document.getElementById('lock-screen').addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', (e) => {
+                if(document.getElementById('lock-screen')) {
+                    if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            submitBtn.setAttribute('disabled', 'true');
+            submitBtn.classList.add('opacity-40', 'cursor-not-allowed');
+            await loadAccessSettings();
+
+            if(accessState === 'unconfigured') {
+                // Nobody has set a passcode yet — open the app directly and prompt to set one.
+                unlockApp();
+                openChangePasscodeModal();
+                return;
+            }
+
+            if(accessState === 'unknown') {
+                // Couldn't verify against Firebase — fail SAFE (stay locked) rather than let anyone in.
+                errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Can't reach the server to verify the passcode. Check your connection and reload.`;
+                errorMsg.classList.remove('hidden');
+                pinInput.setAttribute('disabled', 'true');
+                return;
+            }
+
+            let alreadyUnlocked = false;
+            try { alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1'; } catch(e) {}
+            if(alreadyUnlocked) { unlockApp(); return; }
+
+            submitBtn.removeAttribute('disabled');
+            submitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+
+            lockForm.addEventListener('submit', handleUnlockSubmit);
+            pinInput.focus();
+            resumeLockoutIfActive();
+        }
+
+        /* ================= CHANGE / SET PASSCODE ================= */
+        function openChangePasscodeModal() {
+            const isSetMode = accessState === 'unconfigured';
+            document.getElementById('cp-current').value = '';
+            document.getElementById('cp-new').value = '';
+            document.getElementById('cp-confirm').value = '';
+            document.getElementById('cp-error').classList.add('hidden');
+
+            document.getElementById('cp-modal-title').innerHTML = isSetMode
+                ? `<i class="fa-solid fa-key text-amber-500"></i> Set Access Passcode`
+                : `<i class="fa-solid fa-key text-red-500"></i> Change Access Passcode`;
+            document.getElementById('cp-modal-subtitle').classList.toggle('hidden', !isSetMode);
+            document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
+            document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
+
+            const modal = document.getElementById('change-pin-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById(isSetMode ? 'cp-new' : 'cp-current').focus();
+        }
+
+        function closeChangePasscodeModal() {
+            const modal = document.getElementById('change-pin-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function handleChangePasscodeSubmit(evt) {
+            evt.preventDefault();
+            const isSetMode = accessState === 'unconfigured';
+            const current = document.getElementById('cp-current').value;
+            const next = document.getElementById('cp-new').value;
+            const confirmVal = document.getElementById('cp-confirm').value;
+            const errorMsg = document.getElementById('cp-error');
+            const showErr = (msg) => { errorMsg.innerText = msg; errorMsg.classList.remove('hidden'); };
+            errorMsg.classList.add('hidden');
+
+            if(!isSetMode && !current) { showErr("Please enter your current passcode."); return false; }
+            if(!next || !confirmVal) { showErr("Please fill in all fields."); return false; }
+            if(next.length < 6) { showErr("New passcode must be at least 6 characters."); return false; }
+            if(next !== confirmVal) { showErr("New passcode and confirmation do not match."); return false; }
+
+            if(!isSetMode) {
+                if(current === next) { showErr("New passcode must be different from the current one."); return false; }
+                const currentHash = await pbkdf2Hash(current, currentAccessSalt, currentAccessIterations);
+                if(currentHash !== currentAccessHash) { showErr("Current passcode is incorrect."); return false; }
+            }
+
+            const newSalt = randomSaltHex(16);
+            const newIterations = ACCESS_ITERATIONS;
+            const newHash = await pbkdf2Hash(next, newSalt, newIterations);
+
+            try {
+                await database.ref(ACCESS_SETTINGS_PATH).set({
+                    salt: newSalt, hash: newHash, iterations: newIterations, updatedAt: new Date().toISOString()
+                });
+                currentAccessSalt = newSalt;
+                currentAccessHash = newHash;
+                currentAccessIterations = newIterations;
+                accessState = 'configured';
+                try { sessionStorage.setItem(LOCK_SESSION_KEY, '1'); } catch(e) {}
+                updateAccessUIState();
+                closeChangePasscodeModal();
+                showToast(isSetMode ? "Passcode set! This system is now protected." : "Passcode updated successfully!");
+            } catch(err) {
+                showErr("Failed to save passcode: " + err.message);
+            }
+            return false;
+        }
+
+        document.getElementById('change-pin-form').addEventListener('submit', handleChangePasscodeSubmit);
+
+        document.addEventListener('DOMContentLoaded', initApp);
 
         function toggleMobileMenu() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
@@ -957,7 +1350,6 @@
 
         /* WORK SCHEDULE (PLANNED TASKS & DAILY TASKS) LOGIC */
         function addPlannedTaskToList() {
-            if(!isAdminAuthenticated) return;
             const taskDate = document.getElementById('plan-task-date').value;
             const type = document.getElementById('plan-task-type').value;
             const priority = document.getElementById('plan-task-priority').value;
@@ -975,7 +1367,7 @@
             const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
             tbody.innerHTML = "";
             if(plannedTasks.length === 0) {
-                tbody.innerHTML = `<tr><td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`;
                 return;
             }
             plannedTasks.forEach((t, idx) => {
@@ -999,13 +1391,11 @@
         }
 
         function removePlannedTask(index) {
-            if(!isAdminAuthenticated) return;
             plannedTasks.splice(index, 1);
             renderPlannedTasksTable();
         }
 
         function addDailyTaskToList() {
-            if(!isAdminAuthenticated) return;
             const taskDate = document.getElementById('daily-task-date').value;
             const details = document.getElementById('daily-task-details').value.trim();
 
@@ -1021,7 +1411,7 @@
             const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
             tbody.innerHTML = "";
             if(dailyTasks.length === 0) {
-                tbody.innerHTML = `<tr><td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`;
                 return;
             }
             dailyTasks.forEach((t, idx) => {
@@ -1039,13 +1429,11 @@
         }
 
         function removeDailyTask(index) {
-            if(!isAdminAuthenticated) return;
             dailyTasks.splice(index, 1);
             renderDailyTasksTable();
         }
 
         function saveWeeklyReport() {
-            if(!isAdminAuthenticated) return;
             const date = document.getElementById('wr-date').value;
             const author = document.getElementById('wr-author').value.trim();
 
@@ -1057,7 +1445,6 @@
 
         /* WAREHOUSE LOGIC WITH EDIT FUNCTIONALITY */
         function logItemToWarehouse() {
-            if(!isAdminAuthenticated) return;
             const editId = document.getElementById('w-edit-id').value;
             const assetTag = document.getElementById('w-asset-tag').value.trim();
             const category = document.getElementById('w-category').value;
@@ -1130,13 +1517,12 @@
         }
 
         function deleteWarehouseItem(id) {
-            if(!verifyActionWithPin()) return;
+            if(!confirmDelete("Delete this warehouse item?")) return;
             database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
         }
 
         /* NEW PAGE: IT KNOWLEDGE BASE & NOTES LOGIC */
         function saveNoteEntry() {
-            if(!isAdminAuthenticated) return;
             const editId = document.getElementById('note-edit-id').value;
             const title = document.getElementById('note-title').value.trim();
             const category = document.getElementById('note-category').value;
@@ -1162,7 +1548,7 @@
             const filtered = notesDb.filter(n => n.title.toLowerCase().includes(search) || n.problem.toLowerCase().includes(search) || n.solution.toLowerCase().includes(search) || n.category.toLowerCase().includes(search));
             
             if(filtered.length === 0) {
-                container.innerHTML = `<p class="whitespace-pre-line leading-relaxed">${note.solution}</p>`;
+                container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">No troubleshooting notes found.</p>`;
                 return;
             }
 
@@ -1208,13 +1594,12 @@
         }
 
         function deleteNoteItem(id) {
-            if(!verifyActionWithPin()) return;
+            if(!confirmDelete("Delete this troubleshooting note?")) return;
             database.ref('it_knowledge_notes/' + id).remove().then(() => showToast("Note Deleted"));
         }
 
         /* RUSTDESK LOGIC */
         function saveRustDeskEntry() {
-            if(!isAdminAuthenticated) return;
             const empName = document.getElementById('rd-emp-name').value.trim();
             const rdId = document.getElementById('rd-id').value.trim();
             const password = document.getElementById('rd-password').value.trim();
@@ -1282,49 +1667,13 @@
         }
 
         function deleteRustDeskItem(id) {
-            if(!verifyActionWithPin()) return;
+            if(!confirmDelete("Delete this RustDesk device entry?")) return;
             database.ref('it_rustdesk_devices/' + id).remove().then(() => showToast("Device Deleted"));
         }
 
-        /* ADMIN & AUTH RESTRICTIONS */
-        function toggleAdminAuth() {
-            if (isAdminAuthenticated) { isAdminAuthenticated = false; } else {
-                const pin = prompt("Enter IT Admin Access PIN:");
-                if (pin === SECURE_PIN) isAdminAuthenticated = true; else alert("Invalid Passcode!");
-            }
-            applyAdminRestrictions();
-        }
-
-        function applyAdminRestrictions() {
-            const btnText = document.getElementById('admin-btn-text');
-            const btnIcon = document.getElementById('admin-auth-btn').querySelector('i');
-            const badgeText = document.getElementById('admin-lock-text');
-            const badgeIcon = document.getElementById('admin-lock-badge').querySelector('i');
-
-            if(isAdminAuthenticated) {
-                btnText.innerText = "Log Out"; btnIcon.className = "fa-solid fa-lock-open";
-                badgeText.innerText = "Editor Mode"; badgeIcon.className = "fa-solid fa-pen-to-square";
-            } else {
-                btnText.innerText = "Admin Login"; btnIcon.className = "fa-solid fa-lock";
-                badgeText.innerText = "View-Only"; badgeIcon.className = "fa-solid fa-eye";
-            }
-
-            document.querySelectorAll('.admin-restricted').forEach(el => {
-                if(isAdminAuthenticated) { el.removeAttribute('disabled'); el.classList.remove('opacity-40', 'cursor-not-allowed'); }
-                else { el.setAttribute('disabled', 'true'); el.classList.add('opacity-40', 'cursor-not-allowed'); }
-            });
-
-            document.querySelectorAll('.form-input-field').forEach(input => {
-                if(isAdminAuthenticated) { input.removeAttribute('readonly'); input.removeAttribute('disabled'); }
-                else { input.setAttribute('readonly', 'true'); input.setAttribute('disabled', 'true'); }
-            });
-        }
-
-        function verifyActionWithPin() {
-            if (isAdminAuthenticated) return true;
-            const pin = prompt("Enter IT Security PIN:");
-            if (pin === SECURE_PIN) return true;
-            alert("Unauthorized!"); return false;
+        /* DESTRUCTIVE ACTION CONFIRMATION */
+        function confirmDelete(msg) {
+            return confirm(msg || "Are you sure you want to delete this? This cannot be undone.");
         }
 
         function showToast(m) {
@@ -1336,29 +1685,26 @@
 
         /* ARCHIVE & HANDOVER FORM LOGIC */
         function addCustomRow() {
-            if(!isAdminAuthenticated) return;
             renderCustomRowEntry("custom-" + Date.now());
         }
 
         function renderCustomRowEntry(id, description = "", checked = true, category = "", assetTag = "", serial = "", condOut = "OK") {
             const tbody = document.getElementById('asset-table-body'); const tr = document.createElement('tr');
             tr.setAttribute('data-id', id); tr.className = "border-b border-slate-800 text-xs";
-            const dis = !isAdminAuthenticated ? 'disabled' : ''; const ro = !isAdminAuthenticated ? 'readonly' : '';
 
             tr.innerHTML = `
-                <td class="text-center p-2"><input type="checkbox" class="item-check w-4 h-4 accent-red-600" ${checked ? 'checked' : ''} ${dis}></td>
-                <td class="p-1.5"><input type="text" class="item-category-select w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200" value="${category}" placeholder="Category" ${ro}></td>
-                <td class="p-1.5"><input type="text" class="item-asset-tag w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-mono text-red-400 font-bold" value="${assetTag}" placeholder="Tag" ${ro}></td>
-                <td class="p-1.5"><input type="text" class="item-desc-input w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-bold text-white" value="${description}" placeholder="Specs/Model" ${ro}></td>
-                <td class="p-1.5"><input type="text" class="item-serial w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-mono text-slate-300" value="${serial}" placeholder="Serial" ${ro}></td>
-                <td class="p-1.5"><select class="item-cond-out w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200" ${dis}><option value="OK">OK</option><option value="New">New</option></select></td>
-                <td class="p-1.5 text-center no-print"><button onclick="this.closest('tr').remove()" class="text-slate-500 hover:text-red-400" ${dis}><i class="fa-solid fa-circle-xmark text-base"></i></button></td>
+                <td class="text-center p-2"><input type="checkbox" class="item-check w-4 h-4 accent-red-600" ${checked ? 'checked' : ''}></td>
+                <td class="p-1.5"><input type="text" class="item-category-select w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200" value="${category}" placeholder="Category"></td>
+                <td class="p-1.5"><input type="text" class="item-asset-tag w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-mono text-red-400 font-bold" value="${assetTag}" placeholder="Tag"></td>
+                <td class="p-1.5"><input type="text" class="item-desc-input w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-bold text-white" value="${description}" placeholder="Specs/Model"></td>
+                <td class="p-1.5"><input type="text" class="item-serial w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg font-mono text-slate-300" value="${serial}" placeholder="Serial"></td>
+                <td class="p-1.5"><select class="item-cond-out w-full p-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200"><option value="OK">OK</option><option value="New">New</option></select></td>
+                <td class="p-1.5 text-center no-print"><button onclick="this.closest('tr').remove()" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-circle-xmark text-base"></i></button></td>
             `;
             tbody.appendChild(tr);
         }
 
         function saveCurrentForm() {
-            if(!isAdminAuthenticated) return;
             const name = document.getElementById('emp-name').value.trim(); if (!name) { alert("Please enter employee name!"); return; }
             const itemsData = {};
             document.getElementById('asset-table-body').querySelectorAll('tr').forEach(row => {
@@ -1431,8 +1777,134 @@
         }
 
         function deleteArchiveEntry(docId) {
-            if(!verifyActionWithPin()) return;
+            if(!confirmDelete("Delete this archive record? This cannot be undone.")) return;
             database.ref('it_forms_archive/' + docId).remove().then(() => showToast("Archive Record Deleted"));
+        }
+
+        /* ================= BACKUP: EXPORT / IMPORT ================= */
+        function buildBackupPayload() {
+            return {
+                source: "Asia Aluminium IT Management System",
+                exportedAt: new Date().toISOString(),
+                data: {
+                    it_forms_archive: db,
+                    it_warehouse_inventory: wDb,
+                    it_rustdesk_devices: rustdeskDb,
+                    it_weekly_plans: {
+                        plannedTasks, dailyTasks,
+                        date: document.getElementById('wr-date')?.value || "",
+                        author: document.getElementById('wr-author')?.value || ""
+                    },
+                    it_knowledge_notes: notesDb
+                }
+            };
+        }
+
+        function downloadBlob(content, filename, mime) {
+            const blob = new Blob([content], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportData() {
+            const payload = buildBackupPayload();
+            const stamp = new Date().toISOString().slice(0, 10);
+            downloadBlob(JSON.stringify(payload, null, 2), `asia-aluminium-backup-${stamp}.json`, 'application/json');
+            showToast("Backup JSON Exported!");
+        }
+
+        function exportToExcel() {
+            if (typeof XLSX === 'undefined') { alert("Excel export library failed to load. Check your internet connection and try again."); return; }
+            const wb = XLSX.utils.book_new();
+
+            const addSheet = (rows, name) => {
+                XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.length ? rows : [{ Note: "No records" }]), name);
+            };
+
+            addSheet(db.map(item => ({
+                "Doc ID": item.docId, "Employee": item.employee?.name || "", "Department": item.employee?.dept || "",
+                "Employee ID": item.employee?.empId || "", "Job Title": item.employee?.title || "", "Updated": item.updated || ""
+            })), "Handover Forms");
+
+            addSheet(wDb.map(i => ({
+                "Asset Tag": i.assetTag, "Category": i.category, "Description": i.desc, "Serial": i.serial,
+                "Returned By": i.empName, "Location": i.location, "Status": i.status, "Updated": i.updated
+            })), "Warehouse");
+
+            addSheet(rustdeskDb.map(i => ({
+                "Employee": i.empName, "Department": i.dept, "RustDesk ID": i.rdId, "Password": i.password,
+                "Device": i.device, "Notes": i.notes, "Updated": i.updated
+            })), "RustDesk");
+
+            addSheet(plannedTasks.map(t => ({
+                "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
+            })), "Planned Tasks");
+
+            addSheet(dailyTasks.map(t => ({ "Date": t.taskDate, "Details": t.details })), "Daily Log");
+
+            addSheet(notesDb.map(n => ({
+                "Title": n.title, "Category": n.category, "Problem": n.problem, "Solution": n.solution, "Date": n.date
+            })), "IT Notes");
+
+            const stamp = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `asia-aluminium-report-${stamp}.xlsx`);
+            showToast("Excel Report Exported!");
+        }
+
+        function arrayToKeyedObject(arr, idField) {
+            const obj = {};
+            const list = Array.isArray(arr) ? arr : Object.values(arr || {});
+            list.forEach((item, idx) => {
+                const key = item[idField] || (idField + '-' + Date.now() + '-' + idx);
+                obj[key] = item;
+            });
+            return obj;
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.name.toLowerCase().endsWith('.json')) {
+                alert("Please select a valid .json backup file (created with Export JSON).");
+                event.target.value = ""; return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                let parsed;
+                try { parsed = JSON.parse(e.target.result); }
+                catch (err) { alert("This file is not valid JSON."); event.target.value = ""; return; }
+
+                const payload = parsed.data ? parsed.data : parsed;
+                const knownKeys = ['it_forms_archive', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_weekly_plans', 'it_knowledge_notes'];
+                if (!knownKeys.some(k => payload[k] !== undefined)) {
+                    alert("This file doesn't look like an Asia Aluminium backup.");
+                    event.target.value = ""; return;
+                }
+
+                if (!confirm("Importing will OVERWRITE current live data with the contents of this backup file. This cannot be undone. Continue?")) {
+                    event.target.value = ""; return;
+                }
+
+                const updates = {};
+                if (payload.it_forms_archive) updates['it_forms_archive'] = arrayToKeyedObject(payload.it_forms_archive, 'docId');
+                if (payload.it_warehouse_inventory) updates['it_warehouse_inventory'] = arrayToKeyedObject(payload.it_warehouse_inventory, 'id');
+                if (payload.it_rustdesk_devices) updates['it_rustdesk_devices'] = arrayToKeyedObject(payload.it_rustdesk_devices, 'id');
+                if (payload.it_weekly_plans) updates['it_weekly_plans'] = payload.it_weekly_plans;
+                if (payload.it_knowledge_notes) updates['it_knowledge_notes'] = arrayToKeyedObject(payload.it_knowledge_notes, 'id');
+
+                database.ref().update(updates).then(() => {
+                    showToast("Backup Restored Successfully!");
+                    event.target.value = "";
+                }).catch(err => {
+                    alert("Import failed: " + err.message);
+                    event.target.value = "";
+                });
+            };
+            reader.readAsText(file);
         }
     </script>
 </body>
