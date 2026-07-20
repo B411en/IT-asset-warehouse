@@ -971,7 +971,7 @@
             const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
             tbody.innerHTML = "";
             if(plannedTasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`;
+                tbody.innerHTML = `<tr><td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td></tr>`;
                 return;
             }
             plannedTasks.forEach((t, idx) => {
@@ -1017,7 +1017,7 @@
             const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
             tbody.innerHTML = "";
             if(dailyTasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td></tr>`;
                 return;
             }
             dailyTasks.forEach((t, idx) => {
@@ -1158,7 +1158,7 @@
             const filtered = notesDb.filter(n => n.title.toLowerCase().includes(search) || n.problem.toLowerCase().includes(search) || n.solution.toLowerCase().includes(search) || n.category.toLowerCase().includes(search));
             
             if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">No matching notes found.</p>`;
+                container.innerHTML = `<p class="whitespace-pre-line leading-relaxed">${note.solution}</p>`;
                 return;
             }
 
