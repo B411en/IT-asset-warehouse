@@ -1303,7 +1303,7 @@
         }
 
         function updateDashboardCharts() {
-            const wCounts = { "Laptop / Desktop": 0, "Monitor": 0, "Network Switch / Router": 0, "Access Point": 0, "IP Camera / NVR": 0, "Printer": 0, "Other": 0 };
+            const wCounts = { "Laptop":0 Desktop": 0, "Monitor": 0, "Network Switch" 0 "Router": 0, "Access Point": 0, "IP Camera":0 "NVR": 0, "Printer": 0, "Hard": 0, "Memory":0, "catridge":0 };
             wDb.forEach(item => { if(wCounts[item.category] !== undefined) wCounts[item.category]++; else wCounts["Other"]++; });
 
             const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
@@ -1315,10 +1315,10 @@
                         labels: Object.keys(wCounts),
                         datasets: [{
                             data: Object.values(wCounts),
-                            backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b']
+                            backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b', '#06b6d4', '#6366f1', '#84cc16', '#f97316', '#f43f5e']
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#475569' } } } }
                 });
             }
 
