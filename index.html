@@ -1303,7 +1303,7 @@
         }
 
         function updateDashboardCharts() {
-            const wCounts = { "Laptop":0, Desktop": 0, "Monitor": 0, "Network Switch" 0 "Router": 0, "Access Point": 0, "IP Camera":0 "NVR": 0, "Printer": 0, "Hard": 0, "Memory":0, "catridge":0 };
+            const wCounts = { "Laptop":0 Desktop": 0, "Monitor": 0, "Network Switch" 0 "Router": 0, "Access Point": 0, "IP Camera":0 "NVR": 0, "Printer": 0, "Hard": 0, "Memory":0, "catridge":0 };
             wDb.forEach(item => { if(wCounts[item.category] !== undefined) wCounts[item.category]++; else wCounts["Other"]++; });
 
             const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
