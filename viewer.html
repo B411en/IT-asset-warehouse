@@ -488,11 +488,18 @@
             database.ref('it_weekly_plans').on('value', (s) => {
                 const data = s.val();
                 if(data) {
-                    plannedTasks = data.plannedTasks || [];
-                    plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
-                    dailyTasks = data.dailyTasks || [];
-                    dailyTasks.sort((a, b) => new Date(a.taskDate || a.date) - new Date(b.taskDate || b.date));
+                    const rawPlanned = data.plannedTasks || [];
+                    plannedTasks = Array.isArray(rawPlanned) ? rawPlanned : Object.values(rawPlanned);
+                    plannedTasks.sort((a, b) => new Date(a.taskDate || a.date || 0) - new Date(b.taskDate || b.date || 0));
+
+                    const rawDaily = data.dailyTasks || [];
+                    dailyTasks = Array.isArray(rawDaily) ? rawDaily : Object.values(rawDaily);
+                    dailyTasks.sort((a, b) => new Date(b.taskDate || b.date || 0) - new Date(a.taskDate || a.date || 0));
+
                     if(data.author) reportAuthor = data.author;
+                } else {
+                    plannedTasks = [];
+                    dailyTasks = [];
                 }
                 document.getElementById('dash-total-reports').innerText = plannedTasks.length + dailyTasks.length;
                 renderPlannedTasksTable();
@@ -509,7 +516,7 @@
             if(!taskDate || !details) { alert("Please enter Date and Task Details!"); return; }
 
             plannedTasks.push({ id: "PTK-" + Date.now(), taskDate, type, priority, details });
-            plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            plannedTasks.sort((a, b) => new Date(a.taskDate || a.date || 0) - new Date(b.taskDate || b.date || 0));
 
             const payload = {
                 date: new Date().toISOString().slice(0, 10),
@@ -685,8 +692,8 @@
             dailyTasks.forEach((t) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                const taskDate = t.taskDate || t.date || '-';
-                const details = t.details || t.description || t.task || t.text || '-';
+                const taskDate = t.taskDate || t.date || t.timestamp || '-';
+                const details = t.details || t.description || t.task || t.text || t.note || '-';
                 tr.innerHTML = `
                     <td class="p-3 font-mono font-bold text-slate-200">${taskDate}</td>
                     <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${details}</td>
