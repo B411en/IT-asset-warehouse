@@ -83,7 +83,7 @@
                     </div>
                 </div>
 
-                <!-- Navigation Links (IT Notes Removed) -->
+                <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
                     <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-red-600 text-white shadow-lg shadow-red-600/30">
                         <i class="fa-solid fa-chart-pie"></i> Dashboard
@@ -241,7 +241,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 3: RUSTDESK REMOTE ================= -->
+        <!-- ================= TAB 3: RUSTDESK REMOTE (NO PASSWORDS) ================= -->
         <div id="rustdesk-tab" class="tab-content hidden">
             <div class="card-3d p-6">
                 <i class="fa-solid fa-network-wired card-3d-bg-icon"></i>
@@ -258,12 +258,11 @@
                             <tr class="bg-slate-800/80 text-slate-300 font-bold uppercase border-b border-slate-700">
                                 <th class="p-3">Employee / Dept</th>
                                 <th class="p-3">RustDesk ID</th>
-                                <th class="p-3">Password</th>
                                 <th class="p-3">Device / Notes</th>
                                 <th class="p-3 text-center">Connect</th>
                             </tr>
                         </thead>
-                        <tbody id="rd-list-body"><tr><td colspan="5" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr></tbody>
+                        <tbody id="rd-list-body"><tr><td colspan="4" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -558,14 +557,13 @@
             tbody.innerHTML = "";
 
             const filtered = rustdeskDb.filter(d => d.empName.toLowerCase().includes(s) || d.rdId.toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
-            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
+            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
 
             filtered.forEach(item => {
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
                 tr.innerHTML = `
                     <td class="p-3"><span class="font-bold text-white block">${item.empName}</span><span class="text-slate-400 text-[10px]">${item.dept || '-'}</span></td>
                     <td class="p-3 font-mono font-black text-red-400">${item.rdId}</td>
-                    <td class="p-3 font-mono text-slate-300">${item.password || '••••'}</td>
                     <td class="p-3"><span class="font-semibold text-slate-200 block">${item.device || '-'}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
                     <td class="p-3 text-center">
                         <a href="rustdesk://${item.rdId.replace(/\s+/g, '')}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-md inline-flex items-center gap-1">
