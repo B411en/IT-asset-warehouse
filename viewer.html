@@ -185,7 +185,7 @@
                 <i class="fa-solid fa-address-book card-3d-bg-icon"></i>
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                     <h3 class="text-xs font-black uppercase tracking-wider text-red-500 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-lg"></i> Employees Directory (داتابەیسی کارمەندان)
+                        <i class="fa-solid fa-users text-lg"></i> Employees Directory
                     </h3>
                     <div class="flex items-center gap-3">
                         <input type="text" id="employee-search" oninput="renderEmployeesList()" placeholder="Search name, ID, department..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-56">
@@ -242,7 +242,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 3: RUSTDESK REMOTE (NO PASSWORDS) ================= -->
+        <!-- ================= TAB 3: RUSTDESK REMOTE ================= -->
         <div id="rustdesk-tab" class="tab-content hidden">
             <div class="card-3d p-6">
                 <i class="fa-solid fa-network-wired card-3d-bg-icon"></i>
@@ -269,7 +269,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 4: WORK SCHEDULE (FULL DETAILS FOR PLANNED & DAILY TASKS) ================= -->
+        <!-- ================= TAB 4: WORK SCHEDULE ================= -->
         <div id="weekly-tab" class="tab-content hidden">
             <div class="card-3d p-6 sm:p-8 max-w-5xl mx-auto space-y-8">
                 <i class="fa-solid fa-calendar-check card-3d-bg-icon"></i>
@@ -282,10 +282,10 @@
                     </div>
                 </div>
 
-                <!-- Planned Tasks Section (With input form for Kak Ranj) -->
+                <!-- Planned Tasks Section -->
                 <div class="border border-slate-800 rounded-2xl p-5 bg-slate-900/40">
                     <h3 class="text-sm font-black text-amber-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-lg"></i> Planned Tasks &amp; Schedule (زیادکردنی ئەرک لەلایەن کاک ڕەنجەوە)
+                        <i class="fa-solid fa-clock-rotate-left text-lg"></i> Planned Tasks &amp; Schedule
                     </h3>
                     
                     <div class="bg-slate-900/90 p-4 rounded-xl border border-amber-500/30 mb-4 space-y-3">
@@ -340,10 +340,10 @@
                     </div>
                 </div>
 
-                <!-- Daily Executed Tasks Section (Detailed View) -->
+                <!-- Daily Executed Tasks Section -->
                 <div class="border border-slate-800 rounded-2xl p-5 bg-slate-900/40">
                     <h3 class="text-sm font-black text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-lg"></i> Daily Executed Tasks (وردەکاری ئەرکە جێبەجێکراوەکانی ڕۆژانە)
+                        <i class="fa-solid fa-list-check text-lg"></i> Daily Executed Tasks Log
                     </h3>
                     <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
@@ -491,7 +491,7 @@
                     plannedTasks = data.plannedTasks || [];
                     plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
                     dailyTasks = data.dailyTasks || [];
-                    dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+                    dailyTasks.sort((a, b) => new Date(a.taskDate || a.date) - new Date(b.taskDate || b.date));
                     if(data.author) reportAuthor = data.author;
                 }
                 document.getElementById('dash-total-reports').innerText = plannedTasks.length + dailyTasks.length;
@@ -666,10 +666,10 @@
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
                 tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-                    <td class="p-3 font-semibold text-red-400">${t.type}</td>
-                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
-                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority}</span></td>
+                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || t.date || '-'}</td>
+                    <td class="p-3 font-semibold text-red-400">${t.type || '-'}</td>
+                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details || t.description || t.task || '-'}</td>
+                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority || 'Normal'}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -685,9 +685,11 @@
             dailyTasks.forEach((t) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+                const taskDate = t.taskDate || t.date || '-';
+                const details = t.details || t.description || t.task || t.text || '-';
                 tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
+                    <td class="p-3 font-mono font-bold text-slate-200">${taskDate}</td>
+                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${details}</td>
                 `;
                 tbody.appendChild(tr);
             });
