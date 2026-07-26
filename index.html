@@ -508,7 +508,11 @@
                                 <option value="IP camera">IP camera</option>
                                 <option value="NVR">NVR</option>
                                 <option value="Access point">Access point</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Ram">Ram</option>
                                 <option value="Other">Other</option>
+
+
                             </select>
                         </div>
 
@@ -1313,7 +1317,7 @@
         }
 
         function updateDashboardCharts() {
-            const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Access point": 0, "Other": 0 };
+            const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "hard":0, "Ram":0, "Access point": 0, "Other": 0 };
             let inUseCount = 0;
             wDb.forEach(item => { 
                 if(wCounts[item.category] !== undefined) wCounts[item.category]++; else wCounts["Other"]++; 
