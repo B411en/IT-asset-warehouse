@@ -269,7 +269,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 4: WORK SCHEDULE (KAK RANJ CAN ADD PLANNED TASKS) ================= -->
+        <!-- ================= TAB 4: WORK SCHEDULE (FULL DETAILS FOR PLANNED & DAILY TASKS) ================= -->
         <div id="weekly-tab" class="tab-content hidden">
             <div class="card-3d p-6 sm:p-8 max-w-5xl mx-auto space-y-8">
                 <i class="fa-solid fa-calendar-check card-3d-bg-icon"></i>
@@ -278,16 +278,16 @@
                         <h2 class="text-xl font-black text-white flex items-center gap-2">
                             <i class="fa-solid fa-calendar-days text-red-500"></i> IT Work Schedule &amp; Activity Log
                         </h2>
-                        <p class="text-xs text-slate-400 mt-1">Add Upcoming Planned Tasks for Ballen</p>
+                        <p class="text-xs text-slate-400 mt-1">Detailed View of Planned &amp; Executed Daily Tasks</p>
                     </div>
                 </div>
 
+                <!-- Planned Tasks Section (With input form for Kak Ranj) -->
                 <div class="border border-slate-800 rounded-2xl p-5 bg-slate-900/40">
                     <h3 class="text-sm font-black text-amber-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-lg"></i> Add Planned Task (کاک ڕەنج دەتوانێت ئەرک بنووسێت)
+                        <i class="fa-solid fa-clock-rotate-left text-lg"></i> Planned Tasks &amp; Schedule (زیادکردنی ئەرک لەلایەن کاک ڕەنجەوە)
                     </h3>
                     
-                    <!-- Form for Kak Ranj to add planned tasks -->
                     <div class="bg-slate-900/90 p-4 rounded-xl border border-amber-500/30 mb-4 space-y-3">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                             <div>
@@ -340,16 +340,17 @@
                     </div>
                 </div>
 
+                <!-- Daily Executed Tasks Section (Detailed View) -->
                 <div class="border border-slate-800 rounded-2xl p-5 bg-slate-900/40">
                     <h3 class="text-sm font-black text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-lg"></i> Daily Executed Tasks 
+                        <i class="fa-solid fa-list-check text-lg"></i> Daily Executed Tasks (وردەکاری ئەرکە جێبەجێکراوەکانی ڕۆژانە)
                     </h3>
                     <div class="overflow-x-auto table-scroll rounded-xl border border-slate-800">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
                                     <th class="p-3 w-44">Date (Day/Month)</th>
-                                    <th class="p-3">Daily Task Description</th>
+                                    <th class="p-3">Daily Task Description &amp; Details</th>
                                 </tr>
                             </thead>
                             <tbody id="daily-tasks-tbody"><tr><td colspan="2" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr></tbody>
