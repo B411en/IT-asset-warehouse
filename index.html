@@ -345,7 +345,7 @@
             <!-- Custom Dashboard Banner with Your Exact Uploaded Image & Text -->
             <div class="card-3d relative overflow-hidden p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
                 <div class="absolute inset-0 z-0">
-                    <img src=https://github.com/B411en/IT-asset-warehouse/blob/main/Gemini_Generated_Image_.png?raw=true class="w-full h-full object-cover opacity-20 filter brightness-50" alt="Background">
+                    <img src="https://github.com/B411en/IT-asset-warehouse/blob/main/Gemini_Generated_Image_.png?raw=true" class="w-full h-full object-cover opacity-20 filter brightness-50" alt="Background">
                     <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/90 to-slate-950/60"></div>
                 </div>
                 <div class="relative z-10 max-w-xl">
@@ -360,7 +360,7 @@
                     </div>
                 </div>
                 <div class="relative z-10 w-full md:w-80 h-48 rounded-2xl overflow-hidden border border-red-500/30 shadow-2xl group">
-                    <img src=https://github.com/B411en/IT-asset-warehouse/blob/main/Gemini_Generated_Image_.png?raw=true q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Ballen IT Officer Setup">
+                    <img src="https://github.com/B411en/IT-asset-warehouse/blob/main/Gemini_Generated_Image_.png?raw=true" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Ballen IT Officer Setup">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent flex items-end p-3">
                         <span class="text-[11px] font-black text-white bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700 backdrop-blur-md">Ballen IT Officer at Asia Aluminium</span>
                     </div>
@@ -411,6 +411,25 @@
                             <label class="block font-bold text-slate-300 mb-1">Section</label>
                             <input type="text" id="emp-section" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Main Office">
                         </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-300 mb-1">Status</label>
+                                <select id="emp-status" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                                    <option value="Active">Active</option>
+                                    <option value="Left">Left (Resigned)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-300 mb-1">Start Date</label>
+                                <input type="date" id="emp-start-date" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">End Date (If Left)</label>
+                            <input type="date" id="emp-end-date" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                        </div>
+
                         <button onclick="saveEmployeeEntry()" id="emp-submit-btn" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 text-white font-black rounded-xl transition-all shadow-lg shadow-red-600/30 flex justify-center items-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i> Save Employee
                         </button>
@@ -435,10 +454,10 @@
                                 <tr class="bg-slate-800 text-slate-300 uppercase font-bold border-b border-slate-700">
                                     <th class="p-3 w-12">#</th>
                                     <th class="p-3">ID</th>
-                                    <th class="p-3">Employee Name</th>
+                                    <th class="p-3">Employee Name & Status</th>
                                     <th class="p-3">Position</th>
                                     <th class="p-3">Department</th>
-                                    <th class="p-3">Section</th>
+                                    <th class="p-3">Dates</th>
                                     <th class="p-3 text-center">Action</th>
                                 </tr>
                             </thead>
@@ -478,7 +497,7 @@
                         </div>
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Category</label>
-                            <select id="w-category" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
+                            <select id="w-category" onchange="toggleIpField()" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500">
                                 <option value="Laptop">Laptop</option>
                                 <option value="PC">PC</option>
                                 <option value="Cable">Cable</option>
@@ -492,9 +511,16 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+
+                        <!-- IP Address Field (Shown dynamically) -->
+                        <div id="w-ip-container" class="hidden">
+                            <label class="block font-bold text-slate-300 mb-1">IP Address (For Camera/NVR/Network)</label>
+                            <input type="text" id="w-ip-address" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono text-white focus:outline-none focus:border-red-500" placeholder="e.g. 192.168.1.100">
+                        </div>
+
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Model / Specs</label>
-                            <input type="text" id="w-desc" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. ThinkPad T14">
+                            <input type="text" id="w-desc" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. ThinkPad T14 / Camera 4MP">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Serial Number (S/N)</label>
@@ -503,7 +529,8 @@
                         
                         <div>
                             <label class="block font-bold text-amber-400 mb-1">Select Employee (Auto-fill Details)</label>
-                            <select id="w-emp-select" onchange="onWarehouseEmployeeSelected()" class="form-input-field w-full bg-slate-900/80 border border-amber-500/50 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="w-emp-search" oninput="populateWarehouseEmployeeDropdown()" placeholder="🔍 Search employee name..." class="w-full bg-slate-900/80 border border-amber-500/50 rounded-t-xl px-3.5 py-2 mb-[1px] text-white focus:outline-none focus:border-amber-500 text-xs">
+                            <select id="w-emp-select" onchange="onWarehouseEmployeeSelected()" class="form-input-field w-full bg-slate-900/80 border border-amber-500/50 rounded-b-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500">
                                 <option value="">-- Choose Employee --</option>
                             </select>
                         </div>
@@ -566,7 +593,7 @@
                             <i class="fa-solid fa-boxes-stacked text-lg"></i> Storage Inventory
                         </h3>
                         <div class="flex items-center gap-3">
-                            <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search employee, tag, or spec..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-56">
+                            <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search employee, tag, spec or IP..." class="bg-slate-900/80 border border-slate-700 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-red-500 w-full sm:w-56">
                             <span id="stock-count" class="bg-red-500/20 text-red-400 font-bold px-3 py-1 rounded-full text-xs border border-red-500/30 whitespace-nowrap">0 Items</span>
                         </div>
                     </div>
@@ -576,7 +603,7 @@
                             <thead>
                                 <tr class="bg-slate-800 text-slate-300 uppercase font-bold border-b border-slate-700">
                                     <th class="p-3">Asset Tag</th>
-                                    <th class="p-3">Category / Specs</th>
+                                    <th class="p-3">Category / Specs & IP</th>
                                     <th class="p-3">Assignment & Dept</th>
                                     <th class="p-3">Dates (Handover/Return)</th>
                                     <th class="p-3 text-center">Status</th>
@@ -730,7 +757,7 @@
                             <textarea id="plan-task-details" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500" placeholder="Enter upcoming maintenance or deployment details..."></textarea>
                         </div>
                         <button onclick="addPlannedTaskToList()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-plus"></i> Add Planned Task
+                            <i class="fa-solid fa-plus"></i> Save Planned Task
                         </button>
                     </div>
 
@@ -742,7 +769,7 @@
                                     <th class="p-3 w-48">Category</th>
                                     <th class="p-3">Task Details</th>
                                     <th class="p-3 w-24 text-center">Priority</th>
-                                    <th class="p-3 w-16 text-center no-print">Action</th>
+                                    <th class="p-3 w-20 text-center no-print">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="planned-tasks-tbody"><tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr></tbody>
@@ -766,7 +793,7 @@
                             </div>
                         </div>
                         <button onclick="addDailyTaskToList()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-check"></i> Add Daily Log
+                            <i class="fa-solid fa-check"></i> Save Daily Log
                         </button>
                     </div>
 
@@ -776,7 +803,7 @@
                                 <tr class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
                                     <th class="p-3 w-44">Date (Day/Month)</th>
                                     <th class="p-3">Daily Task Description</th>
-                                    <th class="p-3 w-16 text-center no-print">Action</th>
+                                    <th class="p-3 w-20 text-center no-print">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="daily-tasks-tbody"><tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr></tbody>
@@ -928,6 +955,9 @@
         let plannedTasks = [];
         let dailyTasks = [];
         let notesDb = [];
+
+        let currentEditPlannedIdx = -1;
+        let currentEditDailyIdx = -1;
 
         /* ================= ACCESS LOCK SCREEN ================= */
         function bytesToHex(bytes) {
@@ -1350,11 +1380,14 @@
             const position = document.getElementById('emp-position').value.trim();
             const department = document.getElementById('emp-department').value.trim();
             const section = document.getElementById('emp-section').value.trim();
+            const status = document.getElementById('emp-status').value;
+            const startDate = document.getElementById('emp-start-date').value;
+            const endDate = document.getElementById('emp-end-date').value;
 
             if(!empId || !fullName) { alert("Please enter Employee ID and Full Name!"); return; }
 
             const key = editId ? editId : "EMP-" + Date.now();
-            const payload = { id: key, empId, fullName, position, department, section, updated: new Date().toLocaleDateString('en-GB') };
+            const payload = { id: key, empId, fullName, position, department, section, status, startDate, endDate, updated: new Date().toLocaleDateString('en-GB') };
 
             database.ref('it_employees_directory/' + key).set(payload).then(() => {
                 clearEmployeeForm();
@@ -1389,16 +1422,25 @@
             filtered.forEach((emp, idx) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+                
+                const statBadge = emp.status === 'Left' ? `<span class="text-[10px] text-red-400 font-bold bg-red-500/20 px-2 py-0.5 rounded ml-2">Left</span>` : `<span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/20 px-2 py-0.5 rounded ml-2">Active</span>`;
+                
                 tr.innerHTML = `
                     <td class="p-3 font-mono text-slate-400">${idx + 1}</td>
                     <td class="p-3 font-mono font-bold text-red-400">${emp.empId}</td>
-                    <td class="p-3 font-bold text-white">${emp.fullName}</td>
+                    <td class="p-3 font-bold text-white flex items-center">${emp.fullName} ${statBadge}</td>
                     <td class="p-3 text-slate-300">${emp.position || '-'}</td>
                     <td class="p-3 text-slate-300">${emp.department || '-'}</td>
-                    <td class="p-3 text-slate-300">${emp.section || '-'}</td>
-                    <td class="p-3 text-center flex justify-center gap-2">
-                        <button onclick="editEmployeeItem('${emp.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteEmployeeItem('${emp.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                    <td class="p-3 text-[10px] text-slate-400">
+                        ${emp.startDate ? `<span class="block text-emerald-400">Start: ${emp.startDate}</span>` : ''}
+                        ${emp.endDate ? `<span class="block text-red-400">Left: ${emp.endDate}</span>` : ''}
+                        ${!emp.startDate && !emp.endDate ? '-' : ''}
+                    </td>
+                    <td class="p-3 text-center">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="editEmployeeItem('${emp.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteEmployeeItem('${emp.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1413,6 +1455,9 @@
             document.getElementById('emp-position').value = item.position || '';
             document.getElementById('emp-department').value = item.department || '';
             document.getElementById('emp-section').value = item.section || '';
+            document.getElementById('emp-status').value = item.status || 'Active';
+            document.getElementById('emp-start-date').value = item.startDate || '';
+            document.getElementById('emp-end-date').value = item.endDate || '';
             document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Edit Employee`;
         }
 
@@ -1423,6 +1468,9 @@
             document.getElementById('emp-position').value = '';
             document.getElementById('emp-department').value = '';
             document.getElementById('emp-section').value = '';
+            document.getElementById('emp-status').value = 'Active';
+            document.getElementById('emp-start-date').value = '';
+            document.getElementById('emp-end-date').value = '';
             document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Register / Edit Employee`;
         }
 
@@ -1431,15 +1479,24 @@
             database.ref('it_employees_directory/' + id).remove().then(() => showToast("Employee Deleted"));
         }
 
+        /* WAREHOUSE LOGIC WITH SEARCH & EDIT */
+        
         function populateWarehouseEmployeeDropdown() {
             const select = document.getElementById('w-emp-select'); if(!select) return;
+            const searchInput = document.getElementById('w-emp-search');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
+            
             const currentVal = select.value;
             select.innerHTML = `<option value="">-- Choose Employee (Auto-fill) --</option>`;
+            
             employeesDb.forEach(emp => {
-                const opt = document.createElement('option');
-                opt.value = emp.id;
-                opt.textContent = `${emp.fullName} (${emp.department || 'General'})`;
-                select.appendChild(opt);
+                const text = `${emp.fullName} (${emp.department || 'General'})`;
+                if (text.toLowerCase().includes(searchTerm)) {
+                    const opt = document.createElement('option');
+                    opt.value = emp.id;
+                    opt.textContent = text;
+                    select.appendChild(opt);
+                }
             });
             select.value = currentVal;
         }
@@ -1466,108 +1523,21 @@
             }
         }
 
-        /* WORK SCHEDULE LOGIC */
-        function addPlannedTaskToList() {
-            const taskDate = document.getElementById('plan-task-date').value;
-            const type = document.getElementById('plan-task-type').value;
-            const priority = document.getElementById('plan-task-priority').value;
-            const details = document.getElementById('plan-task-details').value.trim();
-
-            if(!taskDate || !details) { alert("Please enter Date and Task Details!"); return; }
-
-            plannedTasks.push({ id: "PTK-" + Date.now(), taskDate, type, priority, details });
-            plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
-            document.getElementById('plan-task-details').value = "";
-            renderPlannedTasksTable();
-            showToast("Planned Task Added!");
-        }
-
-        function renderPlannedTasksTable() {
-            const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
-            tbody.innerHTML = "";
-            if(plannedTasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`;
-                return;
+        function toggleIpField() {
+            const cat = document.getElementById('w-category').value;
+            const ipContainer = document.getElementById('w-ip-container');
+            if(cat === 'IP camera' || cat === 'NVR' || cat === 'Switch' || cat === 'Access point' || cat === 'PC') {
+                ipContainer.classList.remove('hidden');
+            } else {
+                ipContainer.classList.add('hidden');
             }
-            plannedTasks.forEach((t, idx) => {
-                let badgeBg = "bg-slate-800 text-slate-300";
-                if(t.priority === "High") badgeBg = "bg-red-500/20 text-red-400 font-bold border border-red-500/30";
-                else if(t.priority === "Medium") badgeBg = "bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30";
-
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-                    <td class="p-3 font-semibold text-red-400">${t.type}</td>
-                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
-                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority}</span></td>
-                    <td class="p-3 text-center no-print">
-                        <button onclick="removePlannedTask(${idx})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
-        function removePlannedTask(index) {
-            plannedTasks.splice(index, 1);
-            renderPlannedTasksTable();
-        }
-
-        function addDailyTaskToList() {
-            const taskDate = document.getElementById('daily-task-date').value;
-            const details = document.getElementById('daily-task-details').value.trim();
-
-            if(!taskDate || !details) { alert("Please enter Date and Daily Task Description!"); return; }
-
-            dailyTasks.push({ id: "DTK-" + Date.now(), taskDate, details });
-            dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
-            document.getElementById('daily-task-details').value = "";
-            renderDailyTasksTable();
-            showToast("Daily Log Added!");
-        }
-
-        function renderDailyTasksTable() {
-            const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
-            tbody.innerHTML = "";
-            if(dailyTasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`;
-                return;
-            }
-            dailyTasks.forEach((t, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
-                    <td class="p-3 text-center no-print">
-                        <button onclick="removeDailyTask(${idx})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function removeDailyTask(index) {
-            dailyTasks.splice(index, 1);
-            renderDailyTasksTable();
-        }
-
-        function saveWeeklyReport() {
-            const date = document.getElementById('wr-date').value;
-            const author = document.getElementById('wr-author').value.trim();
-
-            if(!author) { alert("Please specify author name!"); return; }
-
-            const payload = { date, author, plannedTasks, dailyTasks, updated: new Date().toLocaleString() };
-            database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Saved Successfully!"));
-        }
-
-        /* WAREHOUSE LOGIC WITH SEARCH & EDIT */
         function logItemToWarehouse() {
             const editId = document.getElementById('w-edit-id').value;
             const assetTag = document.getElementById('w-asset-tag').value.trim();
             const category = document.getElementById('w-category').value;
+            const ipAddress = document.getElementById('w-ip-address').value.trim();
             const desc = document.getElementById('w-desc').value.trim();
             const serial = document.getElementById('w-serial').value.trim();
             const empName = document.getElementById('w-emp-name').value.trim();
@@ -1582,7 +1552,7 @@
             if(!assetTag || !desc) { alert("Please fill Tag and Description!"); return; }
 
             const key = editId ? editId : "W-" + Date.now();
-            const payload = { id: key, assetTag, category, desc, serial, empName, empId, empPosition, empDepartment, location, handoverDate, returnDate, status, updated: new Date().toLocaleDateString('en-GB') };
+            const payload = { id: key, assetTag, category, ipAddress, desc, serial, empName, empId, empPosition, empDepartment, location, handoverDate, returnDate, status, updated: new Date().toLocaleDateString('en-GB') };
 
             database.ref('it_warehouse_inventory/' + key).set(payload).then(() => {
                 clearWarehouseForm();
@@ -1605,8 +1575,9 @@
                 const serial = (item.serial || "").toLowerCase();
                 const loc = (item.location || "").toLowerCase();
                 const dept = (item.empDepartment || "").toLowerCase();
+                const ip = (item.ipAddress || "").toLowerCase();
                 
-                return tag.includes(searchTerm) || emp.includes(searchTerm) || desc.includes(searchTerm) || cat.includes(searchTerm) || serial.includes(searchTerm) || loc.includes(searchTerm) || dept.includes(searchTerm);
+                return tag.includes(searchTerm) || emp.includes(searchTerm) || desc.includes(searchTerm) || cat.includes(searchTerm) || serial.includes(searchTerm) || loc.includes(searchTerm) || dept.includes(searchTerm) || ip.includes(searchTerm);
             });
 
             document.getElementById('stock-count').innerText = `${filtered.length} of ${wDb.length} Items`;
@@ -1626,9 +1597,15 @@
                 else if(item.status === "Under Maintenance") badgeClass = "bg-amber-500/20 text-amber-400 border-amber-500/30";
                 else if(item.status === "Damaged") badgeClass = "bg-red-500/20 text-red-400 border-red-500/30";
 
+                const ipText = item.ipAddress ? `<span class="text-blue-400 text-[10px] block font-mono">IP: ${item.ipAddress}</span>` : '';
+
                 tr.innerHTML = `
                     <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
-                    <td class="p-3"><span class="font-bold text-white block">${item.category}</span><span class="text-slate-400 text-[10px] block">${item.desc} (S/N: ${item.serial || 'N/A'})</span></td>
+                    <td class="p-3">
+                        <span class="font-bold text-white block">${item.category}</span>
+                        <span class="text-slate-400 text-[10px] block">${item.desc} (S/N: ${item.serial || 'N/A'})</span>
+                        ${ipText}
+                    </td>
                     <td class="p-3">
                         <span class="font-bold text-white block"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${item.empName || 'Unassigned'}</span>
                         <span class="text-slate-400 text-[10px]"><i class="fa-solid fa-building mr-1"></i> ${item.empDepartment || '-'} | ${item.location || 'Warehouse'}</span>
@@ -1653,6 +1630,7 @@
             document.getElementById('w-edit-id').value = item.id;
             document.getElementById('w-asset-tag').value = item.assetTag || '';
             document.getElementById('w-category').value = item.category || 'Laptop';
+            document.getElementById('w-ip-address').value = item.ipAddress || '';
             document.getElementById('w-desc').value = item.desc || '';
             document.getElementById('w-serial').value = item.serial || '';
             document.getElementById('w-emp-name').value = item.empName || '';
@@ -1662,13 +1640,15 @@
             document.getElementById('w-location').value = item.location || '';
             document.getElementById('w-handover-date').value = item.handoverDate || '';
             document.getElementById('w-return-date').value = item.returnDate || '';
-            document.getElementById('w-status').value = item.status || 'In Stock (Available)';
+            document.getElementById('w-status').value = item.status || 'In Stock';
             document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-pen text-lg"></i> Edit Stock Item`;
+            toggleIpField();
         }
 
         function clearWarehouseForm() {
             document.getElementById('w-edit-id').value = '';
             document.getElementById('w-asset-tag').value = '';
+            document.getElementById('w-ip-address').value = '';
             document.getElementById('w-desc').value = '';
             document.getElementById('w-serial').value = '';
             document.getElementById('w-emp-name').value = '';
@@ -1678,14 +1658,153 @@
             document.getElementById('w-location').value = '';
             document.getElementById('w-handover-date').value = '';
             document.getElementById('w-return-date').value = '';
-            document.getElementById('w-status').value = 'In Stock (Available)';
+            document.getElementById('w-status').value = 'In Stock';
+            document.getElementById('w-emp-search').value = '';
             document.getElementById('w-emp-select').value = '';
             document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
+            toggleIpField();
         }
 
         function deleteWarehouseItem(id) {
             if(!confirmDelete("Delete this warehouse item?")) return;
             database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
+        }
+
+        /* WORK SCHEDULE LOGIC WITH EDIT */
+        function addPlannedTaskToList() {
+            const taskDate = document.getElementById('plan-task-date').value;
+            const type = document.getElementById('plan-task-type').value;
+            const priority = document.getElementById('plan-task-priority').value;
+            const details = document.getElementById('plan-task-details').value.trim();
+
+            if(!taskDate || !details) { alert("Please enter Date and Task Details!"); return; }
+
+            if (currentEditPlannedIdx > -1) {
+                plannedTasks[currentEditPlannedIdx].taskDate = taskDate;
+                plannedTasks[currentEditPlannedIdx].type = type;
+                plannedTasks[currentEditPlannedIdx].priority = priority;
+                plannedTasks[currentEditPlannedIdx].details = details;
+                currentEditPlannedIdx = -1;
+                showToast("Planned Task Updated!");
+            } else {
+                plannedTasks.push({ id: "PTK-" + Date.now(), taskDate, type, priority, details });
+                showToast("Planned Task Added!");
+            }
+
+            plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            document.getElementById('plan-task-details').value = "";
+            renderPlannedTasksTable();
+        }
+
+        function editPlannedTask(index) {
+            currentEditPlannedIdx = index;
+            const t = plannedTasks[index];
+            document.getElementById('plan-task-date').value = t.taskDate;
+            document.getElementById('plan-task-type').value = t.type;
+            document.getElementById('plan-task-priority').value = t.priority;
+            document.getElementById('plan-task-details').value = t.details;
+        }
+
+        function renderPlannedTasksTable() {
+            const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
+            tbody.innerHTML = "";
+            if(plannedTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`;
+                return;
+            }
+            plannedTasks.forEach((t, idx) => {
+                let badgeBg = "bg-slate-800 text-slate-300";
+                if(t.priority === "High") badgeBg = "bg-red-500/20 text-red-400 font-bold border border-red-500/30";
+                else if(t.priority === "Medium") badgeBg = "bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30";
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
+                    <td class="p-3 font-semibold text-red-400">${t.type}</td>
+                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
+                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority}</span></td>
+                    <td class="p-3 text-center no-print">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="editPlannedTask(${idx})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="removePlannedTask(${idx})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function removePlannedTask(index) {
+            plannedTasks.splice(index, 1);
+            renderPlannedTasksTable();
+        }
+
+        function addDailyTaskToList() {
+            const taskDate = document.getElementById('daily-task-date').value;
+            const details = document.getElementById('daily-task-details').value.trim();
+
+            if(!taskDate || !details) { alert("Please enter Date and Daily Task Description!"); return; }
+
+            if (currentEditDailyIdx > -1) {
+                dailyTasks[currentEditDailyIdx].taskDate = taskDate;
+                dailyTasks[currentEditDailyIdx].details = details;
+                currentEditDailyIdx = -1;
+                showToast("Daily Log Updated!");
+            } else {
+                dailyTasks.push({ id: "DTK-" + Date.now(), taskDate, details });
+                showToast("Daily Log Added!");
+            }
+            
+            dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            document.getElementById('daily-task-details').value = "";
+            renderDailyTasksTable();
+        }
+
+        function editDailyTask(index) {
+            currentEditDailyIdx = index;
+            const t = dailyTasks[index];
+            document.getElementById('daily-task-date').value = t.taskDate;
+            document.getElementById('daily-task-details').value = t.details;
+        }
+
+        function renderDailyTasksTable() {
+            const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
+            tbody.innerHTML = "";
+            if(dailyTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`;
+                return;
+            }
+            dailyTasks.forEach((t, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
+                    <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
+                    <td class="p-3 text-center no-print">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="editDailyTask(${idx})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="removeDailyTask(${idx})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function removeDailyTask(index) {
+            dailyTasks.splice(index, 1);
+            renderDailyTasksTable();
+        }
+
+        function saveWeeklyReport() {
+            const date = document.getElementById('wr-date').value;
+            const author = document.getElementById('wr-author').value.trim();
+
+            if(!author) { alert("Please specify author name!"); return; }
+
+            const payload = { date, author, plannedTasks, dailyTasks, updated: new Date().toLocaleString() };
+            database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Saved Successfully!"));
         }
 
         /* IT KNOWLEDGE BASE & NOTES LOGIC */
@@ -1893,11 +2012,11 @@
             };
 
             addSheet(employeesDb.map(e => ({
-                "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section
+                "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section, "Status": e.status, "Start Date": e.startDate, "End Date": e.endDate
             })), "Employees Directory");
 
             addSheet(wDb.map(i => ({
-                "Asset Tag": i.assetTag, "Category": i.category, "Description": i.desc, "Serial": i.serial,
+                "Asset Tag": i.assetTag, "Category": i.category, "IP Address": i.ipAddress, "Description": i.desc, "Serial": i.serial,
                 "Employee Name": i.empName, "Emp ID": i.empId, "Position": i.empPosition, "Department": i.empDepartment,
                 "Location": i.location, "Handover Date": i.handoverDate, "Return Date": i.returnDate, "Status": i.status
             })), "Warehouse");
