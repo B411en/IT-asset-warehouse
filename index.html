@@ -342,7 +342,7 @@
                 </div>
             </div>
 
-            <!-- Custom Dashboard Banner with Your Exact Uploaded Image & Text -->
+            <!-- Custom Dashboard Banner -->
             <div class="card-3d relative overflow-hidden p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
                 <div class="absolute inset-0 z-0">
                     <img src="https://github.com/B411en/IT-asset-warehouse/blob/main/Gemini_Generated_Image_.png?raw=true" class="w-full h-full object-cover opacity-20 filter brightness-50" alt="Background">
@@ -412,6 +412,12 @@
                             <input type="text" id="emp-section" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Main Office">
                         </div>
                         
+                        <!-- ADDED PHONE NUMBER -->
+                        <div>
+                            <label class="block font-bold text-slate-300 mb-1">Phone Number </label>
+                            <input type="tel" id="emp-phone" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. 0770 123 4567">
+                        </div>
+                        
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Status</label>
@@ -457,11 +463,12 @@
                                     <th class="p-3">Employee Name & Status</th>
                                     <th class="p-3">Position</th>
                                     <th class="p-3">Department</th>
+                                    <th class="p-3">Phone</th> <!-- ADDED PHONE COLUMN -->
                                     <th class="p-3">Dates</th>
                                     <th class="p-3 text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="employees-list-body"><tr><td colspan="7" class="text-center p-6 text-slate-500">No employees recorded.</td></tr></tbody>
+                            <tbody id="employees-list-body"><tr><td colspan="8" class="text-center p-6 text-slate-500">No employees recorded.</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -476,7 +483,12 @@
                     <h2 class="text-sm font-black text-white">Warehouse Inventory Log</h2>
                     <p class="text-xs text-slate-400">Manage stock, hardware handovers, and returned items</p>
                 </div>
+                <!-- ADDED BULK UPLOAD BUTTON -->
                 <div class="flex flex-wrap gap-2">
+                    <label class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-lg border border-emerald-500 transition-all flex items-center gap-1">
+                        <i class="fa-solid fa-file-csv"></i> Import CSV (Bulk Upload)
+                        <input type="file" id="warehouse-csv-upload" class="hidden" accept=".csv" onchange="importWarehouseCSV(event)">
+                    </label>
                     <button onclick="clearWarehouseForm()" class="px-3.5 py-2 bg-slate-800 text-white text-xs font-bold rounded-xl border border-slate-700 transition-all">
                         <i class="fa-solid fa-plus mr-1"></i> New Entry Form
                     </button>
@@ -511,8 +523,6 @@
                                 <option value="Hard">Hard</option>
                                 <option value="Ram">Ram</option>
                                 <option value="Other">Other</option>
-
-
                             </select>
                         </div>
 
@@ -526,9 +536,17 @@
                             <label class="block font-bold text-slate-300 mb-1">Model / Specs</label>
                             <input type="text" id="w-desc" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. ThinkPad T14 / Camera 4MP">
                         </div>
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Serial Number (S/N)</label>
-                            <input type="text" id="w-serial" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono text-white focus:outline-none focus:border-red-500" placeholder="S/N Code">
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-300 mb-1">Serial Number (S/N)</label>
+                                <input type="text" id="w-serial" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono text-white focus:outline-none focus:border-red-500" placeholder="S/N Code">
+                            </div>
+                            <!-- ADDED QUANTITY -->
+                            <div>
+                                <label class="block font-bold text-slate-300 mb-1">Quantity (بڕ)</label>
+                                <input type="number" id="w-quantity" min="1" value="1" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-none focus:border-red-500" placeholder="1">
+                            </div>
                         </div>
                         
                         <div>
@@ -1317,11 +1335,11 @@
         }
 
         function updateDashboardCharts() {
-            const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "hard":0, "Ram":0, "Access point": 0, "Other": 0 };
+            const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Other": 0 };
             let inUseCount = 0;
             wDb.forEach(item => { 
-                if(wCounts[item.category] !== undefined) wCounts[item.category]++; else wCounts["Other"]++; 
-                if(item.status === 'In Use') inUseCount++;
+                if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1); 
+                if(item.status === 'In Use') inUseCount += parseInt(item.quantity || 1);
             });
 
             document.getElementById('dash-total-inuse').innerText = inUseCount;
@@ -1346,7 +1364,7 @@
 
             const statusCounts = { "In Stock": 0, "In Use": 0, "Under Maintenance": 0, "Damaged": 0 };
             wDb.forEach(doc => {
-                if(statusCounts[doc.status] !== undefined) statusCounts[doc.status]++;
+                if(statusCounts[doc.status] !== undefined) statusCounts[doc.status] += parseInt(doc.quantity || 1);
             });
 
             const ctxS = document.getElementById('dashStatusChart')?.getContext('2d');
@@ -1384,6 +1402,7 @@
             const position = document.getElementById('emp-position').value.trim();
             const department = document.getElementById('emp-department').value.trim();
             const section = document.getElementById('emp-section').value.trim();
+            const phone = document.getElementById('emp-phone').value.trim(); // ADDED
             const status = document.getElementById('emp-status').value;
             const startDate = document.getElementById('emp-start-date').value;
             const endDate = document.getElementById('emp-end-date').value;
@@ -1391,7 +1410,7 @@
             if(!empId || !fullName) { alert("Please enter Employee ID and Full Name!"); return; }
 
             const key = editId ? editId : "EMP-" + Date.now();
-            const payload = { id: key, empId, fullName, position, department, section, status, startDate, endDate, updated: new Date().toLocaleDateString('en-GB') };
+            const payload = { id: key, empId, fullName, position, department, section, phone, status, startDate, endDate, updated: new Date().toLocaleDateString('en-GB') };
 
             database.ref('it_employees_directory/' + key).set(payload).then(() => {
                 clearEmployeeForm();
@@ -1412,14 +1431,15 @@
                 const pos = (emp.position || "").toLowerCase();
                 const dept = (emp.department || "").toLowerCase();
                 const sec = (emp.section || "").toLowerCase();
+                const ph = (emp.phone || "").toLowerCase();
                 
-                return id.includes(searchTerm) || name.includes(searchTerm) || pos.includes(searchTerm) || dept.includes(searchTerm) || sec.includes(searchTerm);
+                return id.includes(searchTerm) || name.includes(searchTerm) || pos.includes(searchTerm) || dept.includes(searchTerm) || sec.includes(searchTerm) || ph.includes(searchTerm);
             });
 
             document.getElementById('employee-count').innerText = `${filtered.length} of ${employeesDb.length} Employees`;
 
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-6 text-slate-500">No matching employees found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-slate-500">No matching employees found.</td></tr>`;
                 return;
             }
 
@@ -1435,6 +1455,7 @@
                     <td class="p-3 font-bold text-white flex items-center">${emp.fullName} ${statBadge}</td>
                     <td class="p-3 text-slate-300">${emp.position || '-'}</td>
                     <td class="p-3 text-slate-300">${emp.department || '-'}</td>
+                    <td class="p-3 font-mono text-amber-400">${emp.phone || '-'}</td> <!-- ADDED -->
                     <td class="p-3 text-[10px] text-slate-400">
                         ${emp.startDate ? `<span class="block text-emerald-400">Start: ${emp.startDate}</span>` : ''}
                         ${emp.endDate ? `<span class="block text-red-400">Left: ${emp.endDate}</span>` : ''}
@@ -1459,6 +1480,7 @@
             document.getElementById('emp-position').value = item.position || '';
             document.getElementById('emp-department').value = item.department || '';
             document.getElementById('emp-section').value = item.section || '';
+            document.getElementById('emp-phone').value = item.phone || ''; // ADDED
             document.getElementById('emp-status').value = item.status || 'Active';
             document.getElementById('emp-start-date').value = item.startDate || '';
             document.getElementById('emp-end-date').value = item.endDate || '';
@@ -1472,6 +1494,7 @@
             document.getElementById('emp-position').value = '';
             document.getElementById('emp-department').value = '';
             document.getElementById('emp-section').value = '';
+            document.getElementById('emp-phone').value = ''; // ADDED
             document.getElementById('emp-status').value = 'Active';
             document.getElementById('emp-start-date').value = '';
             document.getElementById('emp-end-date').value = '';
@@ -1544,6 +1567,7 @@
             const ipAddress = document.getElementById('w-ip-address').value.trim();
             const desc = document.getElementById('w-desc').value.trim();
             const serial = document.getElementById('w-serial').value.trim();
+            const quantity = document.getElementById('w-quantity').value || "1"; // ADDED
             const empName = document.getElementById('w-emp-name').value.trim();
             const empId = document.getElementById('w-emp-id').value.trim();
             const empPosition = document.getElementById('w-emp-position').value.trim();
@@ -1556,7 +1580,7 @@
             if(!assetTag || !desc) { alert("Please fill Tag and Description!"); return; }
 
             const key = editId ? editId : "W-" + Date.now();
-            const payload = { id: key, assetTag, category, ipAddress, desc, serial, empName, empId, empPosition, empDepartment, location, handoverDate, returnDate, status, updated: new Date().toLocaleDateString('en-GB') };
+            const payload = { id: key, assetTag, category, ipAddress, desc, serial, quantity, empName, empId, empPosition, empDepartment, location, handoverDate, returnDate, status, updated: new Date().toLocaleDateString('en-GB') };
 
             database.ref('it_warehouse_inventory/' + key).set(payload).then(() => {
                 clearWarehouseForm();
@@ -1584,7 +1608,7 @@
                 return tag.includes(searchTerm) || emp.includes(searchTerm) || desc.includes(searchTerm) || cat.includes(searchTerm) || serial.includes(searchTerm) || loc.includes(searchTerm) || dept.includes(searchTerm) || ip.includes(searchTerm);
             });
 
-            document.getElementById('stock-count').innerText = `${filtered.length} of ${wDb.length} Items`;
+            document.getElementById('stock-count').innerText = `${filtered.length} of ${wDb.length} Logs (Total Items: ${filtered.reduce((acc, curr) => acc + parseInt(curr.quantity || 1), 0)})`;
 
             if(filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No matching items found.</td></tr>`;
@@ -1606,7 +1630,7 @@
                 tr.innerHTML = `
                     <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
                     <td class="p-3">
-                        <span class="font-bold text-white block">${item.category}</span>
+                        <span class="font-bold text-white block">${item.category} <span class="text-xs bg-slate-700 px-1.5 py-0.5 rounded text-amber-400 ml-1">Qty: ${item.quantity || 1}</span></span>
                         <span class="text-slate-400 text-[10px] block">${item.desc} (S/N: ${item.serial || 'N/A'})</span>
                         ${ipText}
                     </td>
@@ -1637,6 +1661,7 @@
             document.getElementById('w-ip-address').value = item.ipAddress || '';
             document.getElementById('w-desc').value = item.desc || '';
             document.getElementById('w-serial').value = item.serial || '';
+            document.getElementById('w-quantity').value = item.quantity || '1'; // ADDED
             document.getElementById('w-emp-name').value = item.empName || '';
             document.getElementById('w-emp-id').value = item.empId || '';
             document.getElementById('w-emp-position').value = item.empPosition || '';
@@ -1655,6 +1680,7 @@
             document.getElementById('w-ip-address').value = '';
             document.getElementById('w-desc').value = '';
             document.getElementById('w-serial').value = '';
+            document.getElementById('w-quantity').value = '1'; // ADDED
             document.getElementById('w-emp-name').value = '';
             document.getElementById('w-emp-id').value = '';
             document.getElementById('w-emp-position').value = '';
@@ -1672,6 +1698,83 @@
         function deleteWarehouseItem(id) {
             if(!confirmDelete("Delete this warehouse item?")) return;
             database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
+        }
+
+        /* ================= CSV BULK UPLOAD FOR WAREHOUSE ================= */
+        function importWarehouseCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                alert("Please upload a valid .csv file.");
+                event.target.value = ""; 
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const rows = text.split(/\r?\n/);
+                
+                if (rows.length < 2) {
+                    alert("The CSV file appears to be empty or missing data rows.");
+                    return;
+                }
+
+                let addedCount = 0;
+                const updates = {}; 
+
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i].trim();
+                    if (!row) continue; 
+                    
+                    const cols = row.split(',');
+                    
+                    // Columns: Index(0), Device Model(1), IP Address(2), Port(3), Firmware Version(4), Serial No.(5)
+                    if (cols.length >= 6) {
+                        const modelStr = cols[1].trim();
+                        const ipStr = cols[2].trim();
+                        const serialStr = cols[5].trim();
+                        
+                        let cat = "Other";
+                        const mLower = modelStr.toLowerCase();
+                        if(mLower.includes('camera') || mLower.includes('cd')) cat = "IP camera";
+                        else if (mLower.includes('nvr') || mLower.includes('ni')) cat = "NVR";
+                        else if (mLower.includes('switch')) cat = "Switch";
+                        
+                        const key = "W-CSV-" + Date.now() + "-" + i;
+                        const payload = { 
+                            id: key, 
+                            assetTag: "AA-" + Date.now().toString().slice(-4) + "-" + i,
+                            category: cat, 
+                            ipAddress: ipStr, 
+                            desc: modelStr + " (Firmware: " + (cols[4] || '') + ")", 
+                            serial: serialStr, 
+                            quantity: "1",
+                            empName: "", empId: "", empPosition: "", empDepartment: "", 
+                            location: "Main Warehouse", 
+                            handoverDate: "", returnDate: "", 
+                            status: "In Stock", 
+                            updated: new Date().toLocaleDateString('en-GB') 
+                        };
+                        
+                        updates['it_warehouse_inventory/' + key] = payload;
+                        addedCount++;
+                    }
+                }
+
+                if(addedCount > 0) {
+                    database.ref().update(updates).then(() => {
+                        showToast(`Successfully imported ${addedCount} items from CSV!`);
+                        event.target.value = ""; 
+                    }).catch(err => {
+                        alert("Failed to upload items: " + err.message);
+                    });
+                } else {
+                    alert("No valid rows found to import. Check the CSV format.");
+                }
+            };
+            reader.readAsText(file);
         }
 
         /* WORK SCHEDULE LOGIC WITH EDIT */
@@ -2016,11 +2119,11 @@
             };
 
             addSheet(employeesDb.map(e => ({
-                "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section, "Status": e.status, "Start Date": e.startDate, "End Date": e.endDate
+                "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section, "Phone": e.phone, "Status": e.status, "Start Date": e.startDate, "End Date": e.endDate
             })), "Employees Directory");
 
             addSheet(wDb.map(i => ({
-                "Asset Tag": i.assetTag, "Category": i.category, "IP Address": i.ipAddress, "Description": i.desc, "Serial": i.serial,
+                "Asset Tag": i.assetTag, "Category": i.category, "IP Address": i.ipAddress, "Description": i.desc, "Serial": i.serial, "Quantity": i.quantity || 1,
                 "Employee Name": i.empName, "Emp ID": i.empId, "Position": i.empPosition, "Department": i.empDepartment,
                 "Location": i.location, "Handover Date": i.handoverDate, "Return Date": i.returnDate, "Status": i.status
             })), "Warehouse");
