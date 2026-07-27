@@ -165,7 +165,7 @@
 
     <div id="app-root" class="hidden min-h-screen flex-col pb-12">
 
-    <!-- Setup Warning: shown until an access passcode has been set -->
+    <!-- Setup Warning -->
     <div id="setup-warning-banner" class="no-print hidden bg-amber-500/15 border-b border-amber-500/30 text-amber-300 text-xs sm:text-sm px-4 py-2.5 flex flex-wrap items-center justify-center gap-2 text-center">
         <span><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> No access passcode is set &mdash; anyone with this link can view and edit this system.</span>
         <button onclick="openChangePasscodeModal()" class="px-3 py-1 bg-amber-500 text-slate-900 font-black text-[11px] uppercase tracking-wider rounded-lg hover:bg-amber-400 transition-all">
@@ -412,9 +412,8 @@
                             <input type="text" id="emp-section" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. Main Office">
                         </div>
                         
-                        <!-- ADDED PHONE NUMBER -->
                         <div>
-                            <label class="block font-bold text-slate-300 mb-1">Phone Number </label>
+                            <label class="block font-bold text-slate-300 mb-1">Phone Number (ژمارەی مۆبایل)</label>
                             <input type="tel" id="emp-phone" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-red-500" placeholder="e.g. 0770 123 4567">
                         </div>
                         
@@ -463,7 +462,7 @@
                                     <th class="p-3">Employee Name & Status</th>
                                     <th class="p-3">Position</th>
                                     <th class="p-3">Department</th>
-                                    <th class="p-3">Phone</th> <!-- ADDED PHONE COLUMN -->
+                                    <th class="p-3">Phone</th>
                                     <th class="p-3">Dates</th>
                                     <th class="p-3 text-center">Action</th>
                                 </tr>
@@ -475,7 +474,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 2: WAREHOUSE WITH AUTO-FILL EMPLOYEE ================= -->
+        <!-- ================= TAB 2: WAREHOUSE ================= -->
         <div id="warehouse-tab" class="tab-content hidden">
             <div class="card-3d p-5 mb-6 flex flex-wrap gap-3 justify-between items-center">
                 <i class="fa-solid fa-boxes-packing card-3d-bg-icon"></i>
@@ -483,7 +482,6 @@
                     <h2 class="text-sm font-black text-white">Warehouse Inventory Log</h2>
                     <p class="text-xs text-slate-400">Manage stock, hardware handovers, and returned items</p>
                 </div>
-                <!-- ADDED BULK UPLOAD BUTTON -->
                 <div class="flex flex-wrap gap-2">
                     <label class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-lg border border-emerald-500 transition-all flex items-center gap-1">
                         <i class="fa-solid fa-file-csv"></i> Import CSV (Bulk Upload)
@@ -526,7 +524,7 @@
                             </select>
                         </div>
 
-                        <!-- IP Address Field (Shown dynamically) -->
+                        <!-- IP Address Field -->
                         <div id="w-ip-container" class="hidden">
                             <label class="block font-bold text-slate-300 mb-1">IP Address (For Camera/NVR/Network)</label>
                             <input type="text" id="w-ip-address" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono text-white focus:outline-none focus:border-red-500" placeholder="e.g. 192.168.1.100">
@@ -542,7 +540,6 @@
                                 <label class="block font-bold text-slate-300 mb-1">Serial Number (S/N)</label>
                                 <input type="text" id="w-serial" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-mono text-white focus:outline-none focus:border-red-500" placeholder="S/N Code">
                             </div>
-                            <!-- ADDED QUANTITY -->
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Quantity (بڕ)</label>
                                 <input type="number" id="w-quantity" min="1" value="1" class="form-input-field w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-none focus:border-red-500" placeholder="1">
@@ -639,7 +636,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 3: RUSTDESK REMOTE ================= -->
+        <!-- ================= TAB 3: RUSTDESK ================= -->
         <div id="rustdesk-tab" class="tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="card-3d p-6 h-fit">
@@ -836,7 +833,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 5: IT KNOWLEDGE BASE & NOTES ================= -->
+        <!-- ================= TAB 5: IT KNOWLEDGE BASE ================= -->
         <div id="notes-tab" class="tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="card-3d p-6 h-fit">
@@ -1018,7 +1015,6 @@
                     accessState = 'unconfigured';
                 }
             } catch (e) {
-                console.warn('Could not reach Firebase to check the access passcode.', e);
                 accessState = 'unknown';
             }
         }
@@ -1085,21 +1081,24 @@
         function attachDataListeners() {
             database.ref('it_employees_directory').on('value', (s) => {
                 employeesDb = s.val() ? Object.values(s.val()) : [];
-                document.getElementById('dash-total-employees').innerText = employeesDb.length;
+                const el = document.getElementById('dash-total-employees');
+                if(el) el.innerText = employeesDb.length;
                 renderEmployeesList();
                 populateWarehouseEmployeeDropdown();
             });
 
             database.ref('it_warehouse_inventory').on('value', (s) => {
                 wDb = s.val() ? Object.values(s.val()) : [];
-                document.getElementById('dash-total-warehouse').innerText = wDb.length;
+                const el = document.getElementById('dash-total-warehouse');
+                if(el) el.innerText = wDb.length;
                 renderWarehouseList();
                 updateDashboardCharts();
             });
 
             database.ref('it_rustdesk_devices').on('value', (s) => {
                 rustdeskDb = s.val() ? Object.values(s.val()) : [];
-                document.getElementById('dash-total-rustdesk').innerText = rustdeskDb.length;
+                const el = document.getElementById('dash-total-rustdesk');
+                if(el) el.innerText = rustdeskDb.length;
                 renderRustDeskList();
             });
 
@@ -1110,10 +1109,11 @@
                     plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
                     dailyTasks = data.dailyTasks || [];
                     dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
-                    if(data.date) document.getElementById('wr-date').value = data.date;
-                    if(data.author) document.getElementById('wr-author').value = data.author;
+                    if(document.getElementById('wr-date') && data.date) document.getElementById('wr-date').value = data.date;
+                    if(document.getElementById('wr-author') && data.author) document.getElementById('wr-author').value = data.author;
                 }
-                document.getElementById('dash-total-reports').innerText = plannedTasks.length + dailyTasks.length;
+                const el = document.getElementById('dash-total-reports');
+                if(el) el.innerText = plannedTasks.length + dailyTasks.length;
                 renderPlannedTasksTable();
                 renderDailyTasksTable();
             });
@@ -1128,8 +1128,10 @@
             const lockScreen = document.getElementById('lock-screen');
             const appRoot = document.getElementById('app-root');
             if(lockScreen) lockScreen.remove();
-            appRoot.classList.remove('hidden');
-            appRoot.classList.add('flex');
+            if(appRoot) {
+                appRoot.classList.remove('hidden');
+                appRoot.classList.add('flex');
+            }
             initDefaultDates();
             attachDataListeners();
             updateAccessUIState();
@@ -1148,16 +1150,20 @@
                 navBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
                 navBtn.classList.add('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
                 navBtnText.innerText = 'Set Passcode';
-                navBtnMobile.classList.remove('text-slate-300');
-                navBtnMobile.classList.add('text-amber-400');
+                if(navBtnMobile) {
+                    navBtnMobile.classList.remove('text-slate-300');
+                    navBtnMobile.classList.add('text-amber-400');
+                }
             } else {
                 banner.classList.add('hidden');
                 banner.classList.remove('flex');
                 navBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
                 navBtn.classList.remove('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
                 navBtnText.innerText = 'Passcode';
-                navBtnMobile.classList.add('text-slate-300');
-                navBtnMobile.classList.remove('text-amber-400');
+                if(navBtnMobile) {
+                    navBtnMobile.classList.add('text-slate-300');
+                    navBtnMobile.classList.remove('text-amber-400');
+                }
             }
         }
 
@@ -1197,6 +1203,7 @@
 
         async function initApp() {
             const lockForm = document.getElementById('lock-form');
+            if(!lockForm) return;
             const submitBtn = lockForm.querySelector('button[type="submit"]');
             const pinInput = document.getElementById('lock-pin-input');
             const errorMsg = document.getElementById('lock-error');
@@ -1210,8 +1217,10 @@
                 }
             });
 
-            submitBtn.setAttribute('disabled', 'true');
-            submitBtn.classList.add('opacity-40', 'cursor-not-allowed');
+            if(submitBtn) {
+                submitBtn.setAttribute('disabled', 'true');
+                submitBtn.classList.add('opacity-40', 'cursor-not-allowed');
+            }
             await loadAccessSettings();
 
             if(accessState === 'unconfigured') {
@@ -1221,9 +1230,11 @@
             }
 
             if(accessState === 'unknown') {
-                errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Can't reach the server to verify the passcode. Check your connection and reload.`;
-                errorMsg.classList.remove('hidden');
-                pinInput.setAttribute('disabled', 'true');
+                if(errorMsg) {
+                    errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Can't reach the server to verify the passcode. Check your connection and reload.`;
+                    errorMsg.classList.remove('hidden');
+                }
+                if(pinInput) pinInput.setAttribute('disabled', 'true');
                 return;
             }
 
@@ -1231,50 +1242,59 @@
             try { alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1'; } catch(e) {}
             if(alreadyUnlocked) { unlockApp(); return; }
 
-            submitBtn.removeAttribute('disabled');
-            submitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+            if(submitBtn) {
+                submitBtn.removeAttribute('disabled');
+                submitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+            }
 
             lockForm.addEventListener('submit', handleUnlockSubmit);
-            pinInput.focus();
+            if(pinInput) pinInput.focus();
             resumeLockoutIfActive();
         }
 
         /* ================= CHANGE / SET PASSCODE ================= */
         function openChangePasscodeModal() {
             const isSetMode = accessState === 'unconfigured';
-            document.getElementById('cp-current').value = '';
-            document.getElementById('cp-new').value = '';
-            document.getElementById('cp-confirm').value = '';
-            document.getElementById('cp-error').classList.add('hidden');
+            if(document.getElementById('cp-current')) document.getElementById('cp-current').value = '';
+            if(document.getElementById('cp-new')) document.getElementById('cp-new').value = '';
+            if(document.getElementById('cp-confirm')) document.getElementById('cp-confirm').value = '';
+            if(document.getElementById('cp-error')) document.getElementById('cp-error').classList.add('hidden');
 
-            document.getElementById('cp-modal-title').innerHTML = isSetMode
-                ? `<i class="fa-solid fa-key text-amber-500"></i> Set Access Passcode`
-                : `<i class="fa-solid fa-key text-red-500"></i> Change Access Passcode`;
-            document.getElementById('cp-modal-subtitle').classList.toggle('hidden', !isSetMode);
-            document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
-            document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
+            if(document.getElementById('cp-modal-title')) {
+                document.getElementById('cp-modal-title').innerHTML = isSetMode
+                    ? `<i class="fa-solid fa-key text-amber-500"></i> Set Access Passcode`
+                    : `<i class="fa-solid fa-key text-red-500"></i> Change Access Passcode`;
+            }
+            if(document.getElementById('cp-modal-subtitle')) document.getElementById('cp-modal-subtitle').classList.toggle('hidden', !isSetMode);
+            if(document.getElementById('cp-current-wrap')) document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
+            if(document.getElementById('cp-submit-text')) document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
 
             const modal = document.getElementById('change-pin-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById(isSetMode ? 'cp-new' : 'cp-current').focus();
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            const focusInput = document.getElementById(isSetMode ? 'cp-new' : 'cp-current');
+            if(focusInput) focusInput.focus();
         }
 
         function closeChangePasscodeModal() {
             const modal = document.getElementById('change-pin-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
         async function handleChangePasscodeSubmit(evt) {
             evt.preventDefault();
             const isSetMode = accessState === 'unconfigured';
-            const current = document.getElementById('cp-current').value;
-            const next = document.getElementById('cp-new').value;
-            const confirmVal = document.getElementById('cp-confirm').value;
+            const current = document.getElementById('cp-current')?.value || '';
+            const next = document.getElementById('cp-new')?.value || '';
+            const confirmVal = document.getElementById('cp-confirm')?.value || '';
             const errorMsg = document.getElementById('cp-error');
-            const showErr = (msg) => { errorMsg.innerText = msg; errorMsg.classList.remove('hidden'); };
-            errorMsg.classList.add('hidden');
+            const showErr = (msg) => { if(errorMsg) { errorMsg.innerText = msg; errorMsg.classList.remove('hidden'); } };
+            if(errorMsg) errorMsg.classList.add('hidden');
 
             if(!isSetMode && !current) { showErr("Please enter your current passcode."); return false; }
             if(!next || !confirmVal) { showErr("Please fill in all fields."); return false; }
@@ -1309,17 +1329,20 @@
             return false;
         }
 
-        document.getElementById('change-pin-form').addEventListener('submit', handleChangePasscodeSubmit);
+        const cpForm = document.getElementById('change-pin-form');
+        if(cpForm) cpForm.addEventListener('submit', handleChangePasscodeSubmit);
 
         document.addEventListener('DOMContentLoaded', initApp);
 
         function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+            const menu = document.getElementById('mobile-menu');
+            if(menu) menu.classList.toggle('hidden');
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
+            const target = document.getElementById(tabId);
+            if(target) target.classList.remove('hidden');
             
             document.querySelectorAll('.tab-btn').forEach(btn => { 
                 btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30'); 
@@ -1342,7 +1365,8 @@
                 if(item.status === 'In Use') inUseCount += parseInt(item.quantity || 1);
             });
 
-            document.getElementById('dash-total-inuse').innerText = inUseCount;
+            const inUseEl = document.getElementById('dash-total-inuse');
+            if(inUseEl) inUseEl.innerText = inUseCount;
 
             const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569'];
 
@@ -1396,16 +1420,16 @@
 
         /* ================= EMPLOYEES DIRECTORY LOGIC ================= */
         function saveEmployeeEntry() {
-            const editId = document.getElementById('emp-edit-id').value;
-            const empId = document.getElementById('emp-code-id').value.trim();
-            const fullName = document.getElementById('emp-fullname').value.trim();
-            const position = document.getElementById('emp-position').value.trim();
-            const department = document.getElementById('emp-department').value.trim();
-            const section = document.getElementById('emp-section').value.trim();
-            const phone = document.getElementById('emp-phone').value.trim(); // ADDED
-            const status = document.getElementById('emp-status').value;
-            const startDate = document.getElementById('emp-start-date').value;
-            const endDate = document.getElementById('emp-end-date').value;
+            const editId = document.getElementById('emp-edit-id')?.value || '';
+            const empId = document.getElementById('emp-code-id')?.value.trim() || '';
+            const fullName = document.getElementById('emp-fullname')?.value.trim() || '';
+            const position = document.getElementById('emp-position')?.value.trim() || '';
+            const department = document.getElementById('emp-department')?.value.trim() || '';
+            const section = document.getElementById('emp-section')?.value.trim() || '';
+            const phone = document.getElementById('emp-phone')?.value.trim() || '';
+            const status = document.getElementById('emp-status')?.value || 'Active';
+            const startDate = document.getElementById('emp-start-date')?.value || '';
+            const endDate = document.getElementById('emp-end-date')?.value || '';
 
             if(!empId || !fullName) { alert("Please enter Employee ID and Full Name!"); return; }
 
@@ -1436,7 +1460,8 @@
                 return id.includes(searchTerm) || name.includes(searchTerm) || pos.includes(searchTerm) || dept.includes(searchTerm) || sec.includes(searchTerm) || ph.includes(searchTerm);
             });
 
-            document.getElementById('employee-count').innerText = `${filtered.length} of ${employeesDb.length} Employees`;
+            const countEl = document.getElementById('employee-count');
+            if(countEl) countEl.innerText = `${filtered.length} of ${employeesDb.length} Employees`;
 
             if(filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-slate-500">No matching employees found.</td></tr>`;
@@ -1455,7 +1480,7 @@
                     <td class="p-3 font-bold text-white flex items-center">${emp.fullName} ${statBadge}</td>
                     <td class="p-3 text-slate-300">${emp.position || '-'}</td>
                     <td class="p-3 text-slate-300">${emp.department || '-'}</td>
-                    <td class="p-3 font-mono text-amber-400">${emp.phone || '-'}</td> <!-- ADDED -->
+                    <td class="p-3 font-mono text-amber-400">${emp.phone || '-'}</td>
                     <td class="p-3 text-[10px] text-slate-400">
                         ${emp.startDate ? `<span class="block text-emerald-400">Start: ${emp.startDate}</span>` : ''}
                         ${emp.endDate ? `<span class="block text-red-400">Left: ${emp.endDate}</span>` : ''}
@@ -1474,31 +1499,31 @@
 
         function editEmployeeItem(id) {
             const item = employeesDb.find(e => e.id === id); if(!item) return;
-            document.getElementById('emp-edit-id').value = item.id;
-            document.getElementById('emp-code-id').value = item.empId || '';
-            document.getElementById('emp-fullname').value = item.fullName || '';
-            document.getElementById('emp-position').value = item.position || '';
-            document.getElementById('emp-department').value = item.department || '';
-            document.getElementById('emp-section').value = item.section || '';
-            document.getElementById('emp-phone').value = item.phone || ''; // ADDED
-            document.getElementById('emp-status').value = item.status || 'Active';
-            document.getElementById('emp-start-date').value = item.startDate || '';
-            document.getElementById('emp-end-date').value = item.endDate || '';
-            document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Edit Employee`;
+            if(document.getElementById('emp-edit-id')) document.getElementById('emp-edit-id').value = item.id;
+            if(document.getElementById('emp-code-id')) document.getElementById('emp-code-id').value = item.empId || '';
+            if(document.getElementById('emp-fullname')) document.getElementById('emp-fullname').value = item.fullName || '';
+            if(document.getElementById('emp-position')) document.getElementById('emp-position').value = item.position || '';
+            if(document.getElementById('emp-department')) document.getElementById('emp-department').value = item.department || '';
+            if(document.getElementById('emp-section')) document.getElementById('emp-section').value = item.section || '';
+            if(document.getElementById('emp-phone')) document.getElementById('emp-phone').value = item.phone || '';
+            if(document.getElementById('emp-status')) document.getElementById('emp-status').value = item.status || 'Active';
+            if(document.getElementById('emp-start-date')) document.getElementById('emp-start-date').value = item.startDate || '';
+            if(document.getElementById('emp-end-date')) document.getElementById('emp-end-date').value = item.endDate || '';
+            if(document.getElementById('emp-form-title')) document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Edit Employee`;
         }
 
         function clearEmployeeForm() {
-            document.getElementById('emp-edit-id').value = '';
-            document.getElementById('emp-code-id').value = '';
-            document.getElementById('emp-fullname').value = '';
-            document.getElementById('emp-position').value = '';
-            document.getElementById('emp-department').value = '';
-            document.getElementById('emp-section').value = '';
-            document.getElementById('emp-phone').value = ''; // ADDED
-            document.getElementById('emp-status').value = 'Active';
-            document.getElementById('emp-start-date').value = '';
-            document.getElementById('emp-end-date').value = '';
-            document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Register / Edit Employee`;
+            if(document.getElementById('emp-edit-id')) document.getElementById('emp-edit-id').value = '';
+            if(document.getElementById('emp-code-id')) document.getElementById('emp-code-id').value = '';
+            if(document.getElementById('emp-fullname')) document.getElementById('emp-fullname').value = '';
+            if(document.getElementById('emp-position')) document.getElementById('emp-position').value = '';
+            if(document.getElementById('emp-department')) document.getElementById('emp-department').value = '';
+            if(document.getElementById('emp-section')) document.getElementById('emp-section').value = '';
+            if(document.getElementById('emp-phone')) document.getElementById('emp-phone').value = '';
+            if(document.getElementById('emp-status')) document.getElementById('emp-status').value = 'Active';
+            if(document.getElementById('emp-start-date')) document.getElementById('emp-start-date').value = '';
+            if(document.getElementById('emp-end-date')) document.getElementById('emp-end-date').value = '';
+            if(document.getElementById('emp-form-title')) document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Register / Edit Employee`;
         }
 
         function deleteEmployeeItem(id) {
@@ -1506,8 +1531,7 @@
             database.ref('it_employees_directory/' + id).remove().then(() => showToast("Employee Deleted"));
         }
 
-        /* WAREHOUSE LOGIC WITH SEARCH & EDIT */
-        
+        /* ================= WAREHOUSE LOGIC ================= */
         function populateWarehouseEmployeeDropdown() {
             const select = document.getElementById('w-emp-select'); if(!select) return;
             const searchInput = document.getElementById('w-emp-search');
@@ -1530,29 +1554,31 @@
 
         function onWarehouseEmployeeSelected() {
             const select = document.getElementById('w-emp-select');
+            if(!select) return;
             const empIdVal = select.value;
             if(!empIdVal) {
-                document.getElementById('w-emp-name').value = '';
-                document.getElementById('w-emp-id').value = '';
-                document.getElementById('w-emp-position').value = '';
-                document.getElementById('w-emp-department').value = '';
+                if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = '';
+                if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = '';
+                if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = '';
+                if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = '';
                 return;
             }
             const emp = employeesDb.find(e => e.id === empIdVal);
             if(emp) {
-                document.getElementById('w-emp-name').value = emp.fullName || '';
-                document.getElementById('w-emp-id').value = emp.empId || '';
-                document.getElementById('w-emp-position').value = emp.position || '';
-                document.getElementById('w-emp-department').value = emp.department || '';
-                if(emp.section) {
+                if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = emp.fullName || '';
+                if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = emp.empId || '';
+                if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = emp.position || '';
+                if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = emp.department || '';
+                if(emp.section && document.getElementById('w-location')) {
                     document.getElementById('w-location').value = emp.section;
                 }
             }
         }
 
         function toggleIpField() {
-            const cat = document.getElementById('w-category').value;
+            const cat = document.getElementById('w-category')?.value || '';
             const ipContainer = document.getElementById('w-ip-container');
+            if(!ipContainer) return;
             if(cat === 'IP camera' || cat === 'NVR' || cat === 'Switch' || cat === 'Access point' || cat === 'PC') {
                 ipContainer.classList.remove('hidden');
             } else {
@@ -1561,21 +1587,21 @@
         }
 
         function logItemToWarehouse() {
-            const editId = document.getElementById('w-edit-id').value;
-            const assetTag = document.getElementById('w-asset-tag').value.trim();
-            const category = document.getElementById('w-category').value;
-            const ipAddress = document.getElementById('w-ip-address').value.trim();
-            const desc = document.getElementById('w-desc').value.trim();
-            const serial = document.getElementById('w-serial').value.trim();
-            const quantity = document.getElementById('w-quantity').value || "1"; // ADDED
-            const empName = document.getElementById('w-emp-name').value.trim();
-            const empId = document.getElementById('w-emp-id').value.trim();
-            const empPosition = document.getElementById('w-emp-position').value.trim();
-            const empDepartment = document.getElementById('w-emp-department').value.trim();
-            const location = document.getElementById('w-location').value.trim();
-            const handoverDate = document.getElementById('w-handover-date').value;
-            const returnDate = document.getElementById('w-return-date').value;
-            const status = document.getElementById('w-status').value;
+            const editId = document.getElementById('w-edit-id')?.value || '';
+            const assetTag = document.getElementById('w-asset-tag')?.value.trim() || '';
+            const category = document.getElementById('w-category')?.value || 'Laptop';
+            const ipAddress = document.getElementById('w-ip-address')?.value.trim() || '';
+            const desc = document.getElementById('w-desc')?.value.trim() || '';
+            const serial = document.getElementById('w-serial')?.value.trim() || '';
+            const quantity = document.getElementById('w-quantity')?.value || "1";
+            const empName = document.getElementById('w-emp-name')?.value.trim() || '';
+            const empId = document.getElementById('w-emp-id')?.value.trim() || '';
+            const empPosition = document.getElementById('w-emp-position')?.value.trim() || '';
+            const empDepartment = document.getElementById('w-emp-department')?.value.trim() || '';
+            const location = document.getElementById('w-location')?.value.trim() || '';
+            const handoverDate = document.getElementById('w-handover-date')?.value || '';
+            const returnDate = document.getElementById('w-return-date')?.value || '';
+            const status = document.getElementById('w-status')?.value || 'In Stock';
 
             if(!assetTag || !desc) { alert("Please fill Tag and Description!"); return; }
 
@@ -1608,7 +1634,8 @@
                 return tag.includes(searchTerm) || emp.includes(searchTerm) || desc.includes(searchTerm) || cat.includes(searchTerm) || serial.includes(searchTerm) || loc.includes(searchTerm) || dept.includes(searchTerm) || ip.includes(searchTerm);
             });
 
-            document.getElementById('stock-count').innerText = `${filtered.length} of ${wDb.length} Logs (Total Items: ${filtered.reduce((acc, curr) => acc + parseInt(curr.quantity || 1), 0)})`;
+            const stockCountEl = document.getElementById('stock-count');
+            if(stockCountEl) stockCountEl.innerText = `${filtered.length} of ${wDb.length} Logs`;
 
             if(filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No matching items found.</td></tr>`;
@@ -1655,43 +1682,43 @@
 
         function editWarehouseItem(id) {
             const item = wDb.find(i => i.id === id); if(!item) return;
-            document.getElementById('w-edit-id').value = item.id;
-            document.getElementById('w-asset-tag').value = item.assetTag || '';
-            document.getElementById('w-category').value = item.category || 'Laptop';
-            document.getElementById('w-ip-address').value = item.ipAddress || '';
-            document.getElementById('w-desc').value = item.desc || '';
-            document.getElementById('w-serial').value = item.serial || '';
-            document.getElementById('w-quantity').value = item.quantity || '1'; // ADDED
-            document.getElementById('w-emp-name').value = item.empName || '';
-            document.getElementById('w-emp-id').value = item.empId || '';
-            document.getElementById('w-emp-position').value = item.empPosition || '';
-            document.getElementById('w-emp-department').value = item.empDepartment || '';
-            document.getElementById('w-location').value = item.location || '';
-            document.getElementById('w-handover-date').value = item.handoverDate || '';
-            document.getElementById('w-return-date').value = item.returnDate || '';
-            document.getElementById('w-status').value = item.status || 'In Stock';
-            document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-pen text-lg"></i> Edit Stock Item`;
+            if(document.getElementById('w-edit-id')) document.getElementById('w-edit-id').value = item.id;
+            if(document.getElementById('w-asset-tag')) document.getElementById('w-asset-tag').value = item.assetTag || '';
+            if(document.getElementById('w-category')) document.getElementById('w-category').value = item.category || 'Laptop';
+            if(document.getElementById('w-ip-address')) document.getElementById('w-ip-address').value = item.ipAddress || '';
+            if(document.getElementById('w-desc')) document.getElementById('w-desc').value = item.desc || '';
+            if(document.getElementById('w-serial')) document.getElementById('w-serial').value = item.serial || '';
+            if(document.getElementById('w-quantity')) document.getElementById('w-quantity').value = item.quantity || '1';
+            if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = item.empName || '';
+            if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = item.empId || '';
+            if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = item.empPosition || '';
+            if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = item.empDepartment || '';
+            if(document.getElementById('w-location')) document.getElementById('w-location').value = item.location || '';
+            if(document.getElementById('w-handover-date')) document.getElementById('w-handover-date').value = item.handoverDate || '';
+            if(document.getElementById('w-return-date')) document.getElementById('w-return-date').value = item.returnDate || '';
+            if(document.getElementById('w-status')) document.getElementById('w-status').value = item.status || 'In Stock';
+            if(document.getElementById('w-form-title')) document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-pen text-lg"></i> Edit Stock Item`;
             toggleIpField();
         }
 
         function clearWarehouseForm() {
-            document.getElementById('w-edit-id').value = '';
-            document.getElementById('w-asset-tag').value = '';
-            document.getElementById('w-ip-address').value = '';
-            document.getElementById('w-desc').value = '';
-            document.getElementById('w-serial').value = '';
-            document.getElementById('w-quantity').value = '1'; // ADDED
-            document.getElementById('w-emp-name').value = '';
-            document.getElementById('w-emp-id').value = '';
-            document.getElementById('w-emp-position').value = '';
-            document.getElementById('w-emp-department').value = '';
-            document.getElementById('w-location').value = '';
-            document.getElementById('w-handover-date').value = '';
-            document.getElementById('w-return-date').value = '';
-            document.getElementById('w-status').value = 'In Stock';
-            document.getElementById('w-emp-search').value = '';
-            document.getElementById('w-emp-select').value = '';
-            document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
+            if(document.getElementById('w-edit-id')) document.getElementById('w-edit-id').value = '';
+            if(document.getElementById('w-asset-tag')) document.getElementById('w-asset-tag').value = '';
+            if(document.getElementById('w-ip-address')) document.getElementById('w-ip-address').value = '';
+            if(document.getElementById('w-desc')) document.getElementById('w-desc').value = '';
+            if(document.getElementById('w-serial')) document.getElementById('w-serial').value = '';
+            if(document.getElementById('w-quantity')) document.getElementById('w-quantity').value = '1';
+            if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = '';
+            if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = '';
+            if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = '';
+            if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = '';
+            if(document.getElementById('w-location')) document.getElementById('w-location').value = '';
+            if(document.getElementById('w-handover-date')) document.getElementById('w-handover-date').value = '';
+            if(document.getElementById('w-return-date')) document.getElementById('w-return-date').value = '';
+            if(document.getElementById('w-status')) document.getElementById('w-status').value = 'In Stock';
+            if(document.getElementById('w-emp-search')) document.getElementById('w-emp-search').value = '';
+            if(document.getElementById('w-emp-select')) document.getElementById('w-emp-select').value = '';
+            if(document.getElementById('w-form-title')) document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
             toggleIpField();
         }
 
@@ -1700,7 +1727,7 @@
             database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
         }
 
-        /* ================= CSV BULK UPLOAD FOR WAREHOUSE ================= */
+        /* ================= CSV BULK UPLOAD ================= */
         function importWarehouseCSV(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1730,7 +1757,6 @@
                     
                     const cols = row.split(',');
                     
-                    // Columns: Index(0), Device Model(1), IP Address(2), Port(3), Firmware Version(4), Serial No.(5)
                     if (cols.length >= 6) {
                         const modelStr = cols[1].trim();
                         const ipStr = cols[2].trim();
@@ -1777,12 +1803,12 @@
             reader.readAsText(file);
         }
 
-        /* WORK SCHEDULE LOGIC WITH EDIT */
+        /* WORK SCHEDULE & OTHER LOGIC */
         function addPlannedTaskToList() {
-            const taskDate = document.getElementById('plan-task-date').value;
-            const type = document.getElementById('plan-task-type').value;
-            const priority = document.getElementById('plan-task-priority').value;
-            const details = document.getElementById('plan-task-details').value.trim();
+            const taskDate = document.getElementById('plan-task-date')?.value || '';
+            const type = document.getElementById('plan-task-type')?.value || '';
+            const priority = document.getElementById('plan-task-priority')?.value || 'Medium';
+            const details = document.getElementById('plan-task-details')?.value.trim() || '';
 
             if(!taskDate || !details) { alert("Please enter Date and Task Details!"); return; }
 
@@ -1799,17 +1825,17 @@
             }
 
             plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
-            document.getElementById('plan-task-details').value = "";
+            if(document.getElementById('plan-task-details')) document.getElementById('plan-task-details').value = "";
             renderPlannedTasksTable();
         }
 
         function editPlannedTask(index) {
             currentEditPlannedIdx = index;
             const t = plannedTasks[index];
-            document.getElementById('plan-task-date').value = t.taskDate;
-            document.getElementById('plan-task-type').value = t.type;
-            document.getElementById('plan-task-priority').value = t.priority;
-            document.getElementById('plan-task-details').value = t.details;
+            if(document.getElementById('plan-task-date')) document.getElementById('plan-task-date').value = t.taskDate;
+            if(document.getElementById('plan-task-type')) document.getElementById('plan-task-type').value = t.type;
+            if(document.getElementById('plan-task-priority')) document.getElementById('plan-task-priority').value = t.priority;
+            if(document.getElementById('plan-task-details')) document.getElementById('plan-task-details').value = t.details;
         }
 
         function renderPlannedTasksTable() {
@@ -1848,8 +1874,8 @@
         }
 
         function addDailyTaskToList() {
-            const taskDate = document.getElementById('daily-task-date').value;
-            const details = document.getElementById('daily-task-details').value.trim();
+            const taskDate = document.getElementById('daily-task-date')?.value || '';
+            const details = document.getElementById('daily-task-details')?.value.trim() || '';
 
             if(!taskDate || !details) { alert("Please enter Date and Daily Task Description!"); return; }
 
@@ -1864,15 +1890,15 @@
             }
             
             dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
-            document.getElementById('daily-task-details').value = "";
+            if(document.getElementById('daily-task-details')) document.getElementById('daily-task-details').value = "";
             renderDailyTasksTable();
         }
 
         function editDailyTask(index) {
             currentEditDailyIdx = index;
             const t = dailyTasks[index];
-            document.getElementById('daily-task-date').value = t.taskDate;
-            document.getElementById('daily-task-details').value = t.details;
+            if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').value = t.taskDate;
+            if(document.getElementById('daily-task-details')) document.getElementById('daily-task-details').value = t.details;
         }
 
         function renderDailyTasksTable() {
@@ -1905,8 +1931,8 @@
         }
 
         function saveWeeklyReport() {
-            const date = document.getElementById('wr-date').value;
-            const author = document.getElementById('wr-author').value.trim();
+            const date = document.getElementById('wr-date')?.value || '';
+            const author = document.getElementById('wr-author')?.value.trim() || '';
 
             if(!author) { alert("Please specify author name!"); return; }
 
@@ -1914,13 +1940,13 @@
             database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Saved Successfully!"));
         }
 
-        /* IT KNOWLEDGE BASE & NOTES LOGIC */
+        /* IT KNOWLEDGE BASE */
         function saveNoteEntry() {
-            const editId = document.getElementById('note-edit-id').value;
-            const title = document.getElementById('note-title').value.trim();
-            const category = document.getElementById('note-category').value;
-            const problem = document.getElementById('note-problem').value.trim();
-            const solution = document.getElementById('note-solution').value.trim();
+            const editId = document.getElementById('note-edit-id')?.value || '';
+            const title = document.getElementById('note-title')?.value.trim() || '';
+            const category = document.getElementById('note-category')?.value || 'General Note';
+            const problem = document.getElementById('note-problem')?.value.trim() || '';
+            const solution = document.getElementById('note-solution')?.value.trim() || '';
 
             if(!title || !solution) { alert("Please enter Issue Title and Solution details!"); return; }
 
@@ -1935,10 +1961,10 @@
 
         function renderNotesList() {
             const container = document.getElementById('notes-container'); if(!container) return;
-            const search = document.getElementById('note-search').value.toLowerCase();
+            const search = document.getElementById('note-search')?.value.toLowerCase() || '';
             container.innerHTML = "";
 
-            const filtered = notesDb.filter(n => n.title.toLowerCase().includes(search) || n.problem.toLowerCase().includes(search) || n.solution.toLowerCase().includes(search) || n.category.toLowerCase().includes(search));
+            const filtered = notesDb.filter(n => (n.title || '').toLowerCase().includes(search) || (n.problem || '').toLowerCase().includes(search) || (n.solution || '').toLowerCase().includes(search) || (n.category || '').toLowerCase().includes(search));
             
             if(filtered.length === 0) {
                 container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">No troubleshooting notes found.</p>`;
@@ -1972,18 +1998,18 @@
 
         function editNoteItem(id) {
             const item = notesDb.find(n => n.id === id); if(!item) return;
-            document.getElementById('note-edit-id').value = item.id;
-            document.getElementById('note-title').value = item.title || '';
-            document.getElementById('note-category').value = item.category || 'General Note';
-            document.getElementById('note-problem').value = item.problem || '';
-            document.getElementById('note-solution').value = item.solution || '';
+            if(document.getElementById('note-edit-id')) document.getElementById('note-edit-id').value = item.id;
+            if(document.getElementById('note-title')) document.getElementById('note-title').value = item.title || '';
+            if(document.getElementById('note-category')) document.getElementById('note-category').value = item.category || 'General Note';
+            if(document.getElementById('note-problem')) document.getElementById('note-problem').value = item.problem || '';
+            if(document.getElementById('note-solution')) document.getElementById('note-solution').value = item.solution || '';
         }
 
         function clearNoteForm() {
-            document.getElementById('note-edit-id').value = '';
-            document.getElementById('note-title').value = '';
-            document.getElementById('note-problem').value = '';
-            document.getElementById('note-solution').value = '';
+            if(document.getElementById('note-edit-id')) document.getElementById('note-edit-id').value = '';
+            if(document.getElementById('note-title')) document.getElementById('note-title').value = '';
+            if(document.getElementById('note-problem')) document.getElementById('note-problem').value = '';
+            if(document.getElementById('note-solution')) document.getElementById('note-solution').value = '';
         }
 
         function deleteNoteItem(id) {
@@ -1991,15 +2017,15 @@
             database.ref('it_knowledge_notes/' + id).remove().then(() => showToast("Note Deleted"));
         }
 
-        /* RUSTDESK LOGIC */
+        /* RUSTDESK */
         function saveRustDeskEntry() {
-            const empName = document.getElementById('rd-emp-name').value.trim();
-            const rdId = document.getElementById('rd-id').value.trim();
-            const password = document.getElementById('rd-password').value.trim();
-            const dept = document.getElementById('rd-dept').value.trim();
-            const device = document.getElementById('rd-device').value.trim();
-            const notes = document.getElementById('rd-notes').value.trim();
-            const editId = document.getElementById('rd-edit-id').value;
+            const empName = document.getElementById('rd-emp-name')?.value.trim() || '';
+            const rdId = document.getElementById('rd-id')?.value.trim() || '';
+            const password = document.getElementById('rd-password')?.value.trim() || '';
+            const dept = document.getElementById('rd-dept')?.value.trim() || '';
+            const device = document.getElementById('rd-device')?.value.trim() || '';
+            const notes = document.getElementById('rd-notes')?.value.trim() || '';
+            const editId = document.getElementById('rd-edit-id')?.value || '';
 
             if(!empName || !rdId) { alert("Please enter Employee Name and RustDesk ID!"); return; }
 
@@ -2014,10 +2040,10 @@
 
         function renderRustDeskList() {
             const tbody = document.getElementById('rd-list-body'); if(!tbody) return;
-            const s = document.getElementById('rd-search').value.toLowerCase();
+            const s = document.getElementById('rd-search')?.value.toLowerCase() || '';
             tbody.innerHTML = "";
 
-            const filtered = rustdeskDb.filter(d => d.empName.toLowerCase().includes(s) || d.rdId.toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
+            const filtered = rustdeskDb.filter(d => (d.empName || '').toLowerCase().includes(s) || (d.rdId || '').toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
             if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
 
             filtered.forEach(item => {
@@ -2028,7 +2054,7 @@
                     <td class="p-3 font-mono text-slate-300">${item.password || '••••'}</td>
                     <td class="p-3"><span class="font-semibold text-slate-200 block">${item.device || '-'}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
                     <td class="p-3 text-center">
-                        <a href="rustdesk://${item.rdId.replace(/\s+/g, '')}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-md inline-flex items-center gap-1">
+                        <a href="rustdesk://${(item.rdId || '').replace(/\s+/g, '')}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-md inline-flex items-center gap-1">
                             <i class="fa-solid fa-plug"></i> Connect
                         </a>
                     </td>
@@ -2043,20 +2069,23 @@
 
         function editRustDeskItem(id) {
             const item = rustdeskDb.find(i => i.id === id); if(!item) return;
-            document.getElementById('rd-edit-id').value = item.id;
-            document.getElementById('rd-emp-name').value = item.empName || '';
-            document.getElementById('rd-dept').value = item.dept || '';
-            document.getElementById('rd-id').value = item.rdId || '';
-            document.getElementById('rd-password').value = item.password || '';
-            document.getElementById('rd-device').value = item.device || '';
-            document.getElementById('rd-notes').value = item.notes || '';
+            if(document.getElementById('rd-edit-id')) document.getElementById('rd-edit-id').value = item.id;
+            if(document.getElementById('rd-emp-name')) document.getElementById('rd-emp-name').value = item.empName || '';
+            if(document.getElementById('rd-dept')) document.getElementById('rd-dept').value = item.dept || '';
+            if(document.getElementById('rd-id')) document.getElementById('rd-id').value = item.rdId || '';
+            if(document.getElementById('rd-password')) document.getElementById('rd-password').value = item.password || '';
+            if(document.getElementById('rd-device')) document.getElementById('rd-device').value = item.device || '';
+            if(document.getElementById('rd-notes')) document.getElementById('rd-notes').value = item.notes || '';
         }
 
         function clearRustDeskForm() {
-            document.getElementById('rd-edit-id').value = ''; document.getElementById('rd-emp-name').value = '';
-            document.getElementById('rd-dept').value = ''; document.getElementById('rd-id').value = '';
-            document.getElementById('rd-password').value = ''; document.getElementById('rd-device').value = '';
-            document.getElementById('rd-notes').value = '';
+            if(document.getElementById('rd-edit-id')) document.getElementById('rd-edit-id').value = '';
+            if(document.getElementById('rd-emp-name')) document.getElementById('rd-emp-name').value = '';
+            if(document.getElementById('rd-dept')) document.getElementById('rd-dept').value = '';
+            if(document.getElementById('rd-id')) document.getElementById('rd-id').value = '';
+            if(document.getElementById('rd-password')) document.getElementById('rd-password').value = '';
+            if(document.getElementById('rd-device')) document.getElementById('rd-device').value = '';
+            if(document.getElementById('rd-notes')) document.getElementById('rd-notes').value = '';
         }
 
         function deleteRustDeskItem(id) {
@@ -2070,12 +2099,14 @@
 
         function showToast(m) {
             const t = document.getElementById('toast'); 
-            document.getElementById('toast-msg').innerText = m;
+            const msgEl = document.getElementById('toast-msg');
+            if(!t || !msgEl) return;
+            msgEl.innerText = m;
             t.classList.remove('translate-y-28'); 
             setTimeout(() => { t.classList.add('translate-y-28'); }, 3000);
         }
 
-        /* ================= BACKUP: EXPORT / IMPORT ================= */
+        /* BACKUP EXPORT / IMPORT */
         function buildBackupPayload() {
             return {
                 source: "Asia Aluminium IT Management System",
@@ -2111,7 +2142,7 @@
         }
 
         function exportToExcel() {
-            if (typeof XLSX === 'undefined') { alert("Excel export library failed to load. Check your internet connection and try again."); return; }
+            if (typeof XLSX === 'undefined') { alert("Excel export library failed to load."); return; }
             const wb = XLSX.utils.book_new();
 
             const addSheet = (rows, name) => {
@@ -2162,7 +2193,7 @@
             const file = event.target.files[0];
             if (!file) return;
             if (!file.name.toLowerCase().endsWith('.json')) {
-                alert("Please select a valid .json backup file (created with Export JSON).");
+                alert("Please select a valid .json backup file.");
                 event.target.value = ""; return;
             }
 
@@ -2179,7 +2210,7 @@
                     event.target.value = ""; return;
                 }
 
-                if (!confirm("Importing will OVERWRITE current live data with the contents of this backup file. This cannot be undone. Continue?")) {
+                if (!confirm("Importing will OVERWRITE current live data with this backup. Continue?")) {
                     event.target.value = ""; return;
                 }
 
