@@ -19,10 +19,8 @@ const ACCESS_ITERATIONS = 150000;
 let currentAccessSalt = null;
 let currentAccessHash = null;
 let currentAccessIterations = ACCESS_ITERATIONS;
-
 let managerAccessSalt = null;
 let managerAccessHash = null;
-
 let accessState = 'unknown';
 let currentUserRole = 'admin'; // 'admin' or 'manager'
 
@@ -31,14 +29,12 @@ const database = firebase.database();
 
 let dashWarehouseChartInstance = null;
 let dashStatusChartInstance = null;
-
 let employeesDb = [];
 let wDb = [];
 let rustdeskDb = [];
 let plannedTasks = [];
 let dailyTasks = [];
 let notesDb = [];
-
 let currentEditPlannedIdx = -1;
 let currentEditDailyIdx = -1;
 
@@ -128,7 +124,6 @@ async function loadAccessSettings() {
         } else {
             accessState = 'unconfigured';
         }
-
         const mSnap = await database.ref(MANAGER_ACCESS_PATH).once('value');
         const mVal = mSnap.val();
         if(mVal && mVal.hash && mVal.salt) {
@@ -210,7 +205,6 @@ function attachDataListeners() {
         renderEmployeesList();
         populateWarehouseEmployeeDropdown();
     });
-
     database.ref('it_warehouse_inventory').on('value', (s) => {
         wDb = s.val() ? Object.values(s.val()) : [];
         const el = document.getElementById('dash-total-warehouse');
@@ -218,14 +212,12 @@ function attachDataListeners() {
         renderWarehouseList();
         updateDashboardCharts();
     });
-
     database.ref('it_rustdesk_devices').on('value', (s) => {
         rustdeskDb = s.val() ? Object.values(s.val()) : [];
         const el = document.getElementById('dash-total-rustdesk');
         if(el) el.innerText = rustdeskDb.length;
         renderRustDeskList();
     });
-
     database.ref('it_weekly_plans').on('value', (s) => {
         const data = s.val();
         if(data) {
@@ -241,7 +233,6 @@ function attachDataListeners() {
         renderPlannedTasksTable();
         renderDailyTasksTable();
     });
-
     database.ref('it_knowledge_notes').on('value', (s) => {
         notesDb = s.val() ? Object.values(s.val()) : [];
         renderNotesList();
@@ -251,7 +242,7 @@ function attachDataListeners() {
 function unlockApp(role = 'admin') {
     currentUserRole = role;
     try { sessionStorage.setItem(USER_ROLE_KEY, role); } catch(e) {}
-    
+     
     const lockScreen = document.getElementById('lock-screen');
     const appRoot = document.getElementById('app-root');
     if(lockScreen) lockScreen.remove();
@@ -271,25 +262,19 @@ function applyRolePermissions() {
         if(notesBtn) notesBtn.style.display = 'none';
         const notesTab = document.getElementById('notes-tab');
         if(notesTab) notesTab.remove();
-
         const addEmpBtn = document.querySelector('button[onclick="openEmpModal()"]');
         if(addEmpBtn) addEmpBtn.style.display = 'none';
-
         const addWhBtn = document.querySelector('button[onclick="openWarehouseModal()"]');
         if(addWhBtn) addWhBtn.style.display = 'none';
-
         const csvInputWrap = document.getElementById('csv-upload-container');
         if(csvInputWrap) csvInputWrap.style.display = 'none';
-
         const addRdBtn = document.querySelector('button[onclick="openRustDeskModal()"]');
         if(addRdBtn) addRdBtn.style.display = 'none';
-
         const wrAuthor = document.getElementById('wr-author');
         if(wrAuthor) wrAuthor.setAttribute('readonly', 'true');
-        
+         
         const saveReportBtn = document.querySelector('button[onclick="saveWeeklyReport()"]');
         if(saveReportBtn) saveReportBtn.style.display = 'none';
-
         const brandSub = document.querySelector('header span.text-slate-400');
         if(brandSub) brandSub.innerText = "Manager Monitoring Mode (Ranj)";
     }
@@ -314,7 +299,6 @@ function updateAccessUIState() {
     const navBtnText = document.getElementById('passcode-nav-btn-text');
     const navBtnMobile = document.getElementById('passcode-nav-btn-mobile');
     if(!banner || !navBtn) return;
-
     if(accessState === 'unconfigured') {
         banner.classList.remove('hidden');
         banner.classList.add('flex');
@@ -348,12 +332,10 @@ async function handleUnlockSubmit(evt) {
     let lockedOut = false;
     try { lockedOut = Date.now() < parseInt(sessionStorage.getItem(LOCKOUT_UNTIL_KEY) || '0', 10); } catch(e) {}
     if(lockedOut) return false;
-
     const input = document.getElementById('lock-pin-input');
     const errorMsg = document.getElementById('lock-error');
     const val = input.value.trim();
     if(!val) return false;
-
     const enteredHash = await pbkdf2Hash(val, currentAccessSalt, currentAccessIterations);
     if(enteredHash === currentAccessHash) {
         clearFailedAttempts();
@@ -378,23 +360,19 @@ async function initApp() {
     const submitBtn = lockForm.querySelector('button[type="submit"]');
     const pinInput = document.getElementById('lock-pin-input');
     const errorMsg = document.getElementById('lock-error');
-
     await loadAccessSettings();
-
     if(accessState === 'unconfigured') {
         unlockApp('admin');
         return;
     }
-
     let alreadyUnlocked = false;
     let savedRole = 'admin';
     try { 
-        alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1'; 
-        savedRole = sessionStorage.getItem(USER_ROLE_KEY) || 'admin';
+         alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1';
+         savedRole = sessionStorage.getItem(USER_ROLE_KEY) || 'admin';
     } catch(e) {}
-    
+     
     if(alreadyUnlocked) { unlockApp(savedRole); return; }
-
     if(submitBtn) {
         submitBtn.removeAttribute('disabled');
         submitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
@@ -403,7 +381,6 @@ async function initApp() {
         pinInput.removeAttribute('disabled');
         pinInput.focus();
     }
-
     lockForm.addEventListener('submit', handleUnlockSubmit);
     resumeLockoutIfActive();
 }
@@ -416,7 +393,6 @@ function openChangePasscodeModal() {
     if(document.getElementById('cp-new')) document.getElementById('cp-new').value = '';
     if(document.getElementById('cp-confirm')) document.getElementById('cp-confirm').value = '';
     if(document.getElementById('cp-error')) document.getElementById('cp-error').classList.add('hidden');
-
     if(document.getElementById('cp-modal-title')) {
         document.getElementById('cp-modal-title').innerHTML = isSetMode
             ? `<i class="fa-solid fa-key text-amber-500"></i> Set Access Passcode`
@@ -425,7 +401,6 @@ function openChangePasscodeModal() {
     if(document.getElementById('cp-modal-subtitle')) document.getElementById('cp-modal-subtitle').classList.toggle('hidden', !isSetMode);
     if(document.getElementById('cp-current-wrap')) document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
     if(document.getElementById('cp-submit-text')) document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
-
     const modal = document.getElementById('change-pin-modal');
     if(modal) {
         modal.classList.remove('hidden');
@@ -452,22 +427,18 @@ async function handleChangePasscodeSubmit(evt) {
     const errorMsg = document.getElementById('cp-error');
     const showErr = (msg) => { if(errorMsg) { errorMsg.innerText = msg; errorMsg.classList.remove('hidden'); } };
     if(errorMsg) errorMsg.classList.add('hidden');
-
     if(!isSetMode && !current) { showErr("Please enter your current passcode."); return false; }
     if(!next || !confirmVal) { showErr("Please fill in all fields."); return false; }
     if(next.length < 6) { showErr("New passcode must be at least 6 characters."); return false; }
     if(next !== confirmVal) { showErr("New passcode and confirmation do not match."); return false; }
-
     if(!isSetMode) {
         if(current === next) { showErr("New passcode must be different from the current one."); return false; }
         const currentHash = await pbkdf2Hash(current, currentAccessSalt, currentAccessIterations);
         if(currentHash !== currentAccessHash) { showErr("Current passcode is incorrect."); return false; }
     }
-
     const newSalt = randomSaltHex(16);
     const newIterations = ACCESS_ITERATIONS;
     const newHash = await pbkdf2Hash(next, newSalt, newIterations);
-
     try {
         await database.ref(ACCESS_SETTINGS_PATH).set({
             salt: newSalt, hash: newHash, iterations: newIterations, updatedAt: new Date().toISOString()
@@ -488,7 +459,6 @@ async function handleChangePasscodeSubmit(evt) {
 
 const cpForm = document.getElementById('change-pin-form');
 if(cpForm) cpForm.addEventListener('submit', handleChangePasscodeSubmit);
-
 document.addEventListener('DOMContentLoaded', initApp);
 
 function toggleMobileMenu() {
@@ -501,16 +471,16 @@ function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     const target = document.getElementById(tabId);
     if(target) target.classList.remove('hidden');
-    
+     
     document.querySelectorAll('.tab-btn').forEach(btn => { 
-        btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30'); 
-        btn.classList.add('text-slate-300', 'hover:bg-slate-800'); 
+         btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
+         btn.classList.add('text-slate-300', 'hover:bg-slate-800'); 
     });
-    
-    const ab = document.getElementById('btn-' + tabId); 
-    if (ab) { 
-        ab.classList.remove('text-slate-300', 'hover:bg-slate-800'); 
-        ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30'); 
+     
+    const ab = document.getElementById('btn-' + tabId);
+    if (ab) {
+         ab.classList.remove('text-slate-300', 'hover:bg-slate-800');
+         ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
     }
     if (tabId === 'dashboard-tab') updateDashboardCharts();
 }
@@ -519,15 +489,12 @@ function updateDashboardCharts() {
     const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
     let inUseCount = 0;
     wDb.forEach(item => { 
-        if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1); 
-        if(item.status === 'In Use') inUseCount += parseInt(item.quantity || 1);
+         if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1);
+         if(item.status === 'In Use') inUseCount += parseInt(item.quantity || 1);
     });
-
     const inUseEl = document.getElementById('dash-total-inuse');
     if(inUseEl) inUseEl.innerText = inUseCount;
-
     const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
-
     const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
     if(ctxW) {
         if (dashWarehouseChartInstance) dashWarehouseChartInstance.destroy();
@@ -543,12 +510,10 @@ function updateDashboardCharts() {
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
         });
     }
-
     const statusCounts = { "In Stock": 0, "In Use": 0, "Under Maintenance": 0, "Damaged": 0 };
     wDb.forEach(doc => {
         if(statusCounts[doc.status] !== undefined) statusCounts[doc.status] += parseInt(doc.quantity || 1);
     });
-
     const ctxS = document.getElementById('dashStatusChart')?.getContext('2d');
     if(ctxS) {
         if (dashStatusChartInstance) dashStatusChartInstance.destroy();
@@ -564,10 +529,10 @@ function updateDashboardCharts() {
                 }]
             },
             options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                scales: { 
-                    y: { beginAtZero: true, ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                 responsive: true, 
+                 maintainAspectRatio: false,
+                 scales: { 
+                     y: { beginAtZero: true, ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } },
                     x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
                 },
                 plugins: { legend: { labels: { color: '#94a3b8' } } }
@@ -589,13 +554,12 @@ function generateAutoAssetTag() {
         const catSelect = document.getElementById('w-category');
         const tagInput = document.getElementById('w-asset-tag');
         if(!catSelect || !tagInput) return;
-        
+         
         const editId = document.getElementById('w-edit-id')?.value;
         if(editId) return;
-
         const cat = catSelect.value;
         const prefix = categoryPrefixes[cat] || "OTH";
-        
+         
         let maxNum = 0;
         if (typeof wDb !== 'undefined' && Array.isArray(wDb)) {
             wDb.forEach(item => {
@@ -606,7 +570,7 @@ function generateAutoAssetTag() {
                 }
             });
         }
-        
+         
         const nextNum = String(maxNum + 1).padStart(3, '0');
         tagInput.value = `AA-${prefix}-${nextNum}`;
     } catch(err) {
@@ -627,12 +591,9 @@ function saveEmployeeEntry() {
     const status = document.getElementById('emp-status')?.value || 'Active';
     const startDate = document.getElementById('emp-start-date')?.value || '';
     const endDate = document.getElementById('emp-end-date')?.value || '';
-
     if(!empId || !fullName) { alert("Please enter Employee ID and Full Name!"); return; }
-
     const key = editId ? editId : "EMP-" + Date.now();
     const payload = { id: key, empId, fullName, position, department, section, phone, status, startDate, endDate, updated: new Date().toLocaleDateString('en-GB') };
-
     database.ref('it_employees_directory/' + key).set(payload).then(() => {
         closeEmpModal();
         showToast(editId ? "Employee Updated Successfully!" : "Employee Registered Successfully!");
@@ -643,9 +604,8 @@ function renderEmployeesList() {
     const tbody = document.getElementById('employees-list-body'); if(!tbody) return;
     const searchInput = document.getElementById('employee-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    
+     
     tbody.innerHTML = "";
-
     const filtered = employeesDb.filter(emp => {
         const id = (emp.empId || "").toLowerCase();
         const name = (emp.fullName || "").toLowerCase();
@@ -653,24 +613,21 @@ function renderEmployeesList() {
         const dept = (emp.department || "").toLowerCase();
         const sec = (emp.section || "").toLowerCase();
         const ph = (emp.phone || "").toLowerCase();
-        
+         
         return id.includes(searchTerm) || name.includes(searchTerm) || pos.includes(searchTerm) || dept.includes(searchTerm) || sec.includes(searchTerm) || ph.includes(searchTerm);
     });
-
     const countEl = document.getElementById('employee-count');
     if(countEl) countEl.innerText = `${filtered.length} of ${employeesDb.length} Employees`;
-
     if(filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-slate-500">No matching employees found.</td></tr>`;
         return;
     }
-
     filtered.forEach((emp, idx) => {
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-        
+         
         const statBadge = emp.status === 'Left' ? `<span class="text-[10px] text-red-400 font-bold bg-red-500/20 px-2 py-0.5 rounded ml-2">Left</span>` : `<span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/20 px-2 py-0.5 rounded ml-2">Active</span>`;
-        
+         
         let actionButtons = `
             <div class="flex justify-center gap-2">
                 <button onclick="editEmployeeItem('${emp.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -678,7 +635,6 @@ function renderEmployeesList() {
             </div>
         `;
         if(currentUserRole === 'manager') actionButtons = `<span class="text-slate-600">-</span>`;
-
         tr.innerHTML = `
             <td class="p-3 font-mono text-slate-400">${idx + 1}</td>
             <td class="p-3 font-mono font-bold text-red-400">${emp.empId}</td>
@@ -739,10 +695,10 @@ function populateWarehouseEmployeeDropdown() {
     const select = document.getElementById('w-emp-select'); if(!select) return;
     const searchInput = document.getElementById('w-emp-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    
+     
     const currentVal = select.value;
     select.innerHTML = `<option value="">-- Choose Employee (Auto-fill) --</option>`;
-    
+     
     employeesDb.forEach(emp => {
         const text = `${emp.fullName} (${emp.department || 'General'})`;
         if (text.toLowerCase().includes(searchTerm)) {
@@ -808,12 +764,9 @@ function logItemToWarehouse() {
     const handoverDate = document.getElementById('w-handover-date')?.value || '';
     const returnDate = document.getElementById('w-return-date')?.value || '';
     const status = document.getElementById('w-status')?.value || 'In Stock';
-
     if(!assetTag || !desc) { alert("Please fill Tag and Description!"); return; }
-
     const key = editId ? editId : "W-" + Date.now();
     const payload = { id: key, assetTag, category, ipAddress, desc, details, serial, quantity, empName, empId, empPosition, empDepartment, location, handoverDate, returnDate, status, updated: new Date().toLocaleDateString('en-GB') };
-
     database.ref('it_warehouse_inventory/' + key).set(payload).then(() => {
         closeWarehouseModal();
         showToast(editId ? "Warehouse Item Updated!" : "Asset Added to Warehouse!");
@@ -824,9 +777,8 @@ function renderWarehouseList() {
     const tbody = document.getElementById('warehouse-list-body'); if(!tbody) return;
     const searchInput = document.getElementById('warehouse-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    
+     
     tbody.innerHTML = "";
-
     const filtered = wDb.filter(item => {
         const tag = (item.assetTag || "").toLowerCase();
         const emp = (item.empName || "").toLowerCase();
@@ -837,31 +789,26 @@ function renderWarehouseList() {
         const dept = (item.empDepartment || "").toLowerCase();
         const ip = (item.ipAddress || "").toLowerCase();
         const detailsStr = (item.details || "").toLowerCase();
-        
+         
         return tag.includes(searchTerm) || emp.includes(searchTerm) || desc.includes(searchTerm) || cat.includes(searchTerm) || serial.includes(searchTerm) || loc.includes(searchTerm) || dept.includes(searchTerm) || ip.includes(searchTerm) || detailsStr.includes(searchTerm);
     });
-
     const stockCountEl = document.getElementById('stock-count');
     if(stockCountEl) stockCountEl.innerText = `${filtered.length} of ${wDb.length} Logs`;
-
     if(filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No matching items found.</td></tr>`;
         return;
     }
-
     filtered.forEach(item => {
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-        
+         
         let badgeClass = "bg-slate-500/20 text-slate-400 border-slate-500/30";
         if(item.status === "In Stock") badgeClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
         else if(item.status === "In Use") badgeClass = "bg-blue-500/20 text-blue-400 border-blue-500/30";
         else if(item.status === "Under Maintenance") badgeClass = "bg-amber-500/20 text-amber-400 border-amber-500/30";
         else if(item.status === "Damaged") badgeClass = "bg-red-500/20 text-red-400 border-red-500/30";
-
         const ipText = item.ipAddress ? `<span class="text-blue-400 text-[10px] block font-mono mt-1"><i class="fa-solid fa-network-wired"></i> IP: ${item.ipAddress}</span>` : '';
         const detailsText = item.details ? `<span class="text-amber-400/90 text-[10px] block mt-1 leading-relaxed"><i class="fa-solid fa-circle-info"></i> ${item.details}</span>` : '';
-
         let actionButtons = `
             <div class="flex justify-center gap-2">
                 <button onclick="editWarehouseItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -869,7 +816,6 @@ function renderWarehouseList() {
             </div>
         `;
         if(currentUserRole === 'manager') actionButtons = `<span class="text-slate-600">-</span>`;
-
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
             <td class="p-3">
@@ -952,68 +898,62 @@ function importWarehouseCSV(event) {
     if(currentUserRole === 'manager') return;
     const file = event.target.files[0];
     if (!file) return;
-    
+     
     if (!file.name.toLowerCase().endsWith('.csv')) {
         alert("Please upload a valid .csv file.");
         event.target.value = ""; 
         return;
     }
-
     const reader = new FileReader();
     reader.onload = function(e) {
         const text = e.target.result;
-        const rows = text.split(/
-?
-/);
-        
+        const rows = text.split(/\r?\n/);
+         
         if (rows.length < 2) {
             alert("The CSV file appears to be empty or missing data rows.");
             return;
         }
-
         let addedCount = 0;
         const updates = {}; 
-
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i].trim();
-            if (!row) continue; 
-            
+            if (!row) continue;
+               
             const cols = row.split(',');
-            
+             
             if (cols.length >= 6) {
                 const modelStr = cols[1].trim();
                 const ipStr = cols[2].trim();
                 const serialStr = cols[5].trim();
-                
+                 
                 let cat = "Other";
                 const mLower = modelStr.toLowerCase();
                 if(mLower.includes('camera') || mLower.includes('cd')) cat = "IP camera";
                 else if (mLower.includes('nvr') || mLower.includes('ni')) cat = "NVR";
                 else if (mLower.includes('switch')) cat = "Switch";
                 else if (mLower.includes('cartridge') || mLower.includes('catridge')) cat = "Printer cartridge";
-                
+                 
                 const key = "W-CSV-" + Date.now() + "-" + i;
                 const payload = { 
-                    id: key, 
-                    assetTag: "AA-" + Date.now().toString().slice(-4) + "-" + i,
-                    category: cat, 
-                    ipAddress: ipStr, 
-                    desc: modelStr + " (Firmware: " + (cols[4] || '') + ")", 
-                    details: "",
-                    serial: serialStr, 
-                    quantity: "1",
-                    empName: "", empId: "", empPosition: "", empDepartment: "", 
-                    location: "Main Warehouse", 
-                    handoverDate: "", returnDate: "", 
-                    status: "In Stock", 
-                    updated: new Date().toLocaleDateString('en-GB') 
+                     id: key, 
+                     assetTag: "AA-" + Date.now().toString().slice(-4) + "-" + i,
+                     category: cat, 
+                     ipAddress: ipStr, 
+                     desc: modelStr + " (Firmware: " + (cols[4] || '') + ")", 
+                     details: "",
+                     serial: serialStr, 
+                     quantity: "1",
+                     empName: "", empId: "", empPosition: "", empDepartment: "", 
+                     location: "Main Warehouse", 
+                     handoverDate: "", returnDate: "", 
+                     status: "In Stock", 
+                     updated: new Date().toLocaleDateString('en-GB') 
                 };
-                
+                 
                 updates['it_warehouse_inventory/' + key] = payload;
                 addedCount++;
             }
         }
-
         if(addedCount > 0) {
             database.ref().update(updates).then(() => {
                 showToast(`Successfully imported ${addedCount} items from CSV!`);
@@ -1034,9 +974,7 @@ function addPlannedTaskToList() {
     const type = document.getElementById('plan-task-type')?.value || '';
     const priority = document.getElementById('plan-task-priority')?.value || 'Medium';
     const details = document.getElementById('plan-task-details')?.value.trim() || '';
-
     if(!taskDate || !details) { alert("Please enter Date and Task Details!"); return; }
-
     if (currentEditPlannedIdx > -1) {
         plannedTasks[currentEditPlannedIdx].taskDate = taskDate;
         plannedTasks[currentEditPlannedIdx].type = type;
@@ -1048,7 +986,6 @@ function addPlannedTaskToList() {
         plannedTasks.push({ id: "PTK-" + Date.now(), taskDate, type, priority, details });
         showToast("Planned Task Added!");
     }
-
     plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
     if(document.getElementById('plan-task-details')) document.getElementById('plan-task-details').value = "";
     renderPlannedTasksTable();
@@ -1075,7 +1012,6 @@ function renderPlannedTasksTable() {
         let badgeBg = "bg-slate-800 text-slate-300";
         if(t.priority === "High") badgeBg = "bg-red-500/20 text-red-400 font-bold border border-red-500/30";
         else if(t.priority === "Medium") badgeBg = "bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30";
-
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
@@ -1104,9 +1040,7 @@ function addDailyTaskToList() {
     if(currentUserRole === 'manager') return;
     const taskDate = document.getElementById('daily-task-date')?.value || '';
     const details = document.getElementById('daily-task-details')?.value.trim() || '';
-
     if(!taskDate || !details) { alert("Please enter Date and Daily Task Description!"); return; }
-
     if (currentEditDailyIdx > -1) {
         dailyTasks[currentEditDailyIdx].taskDate = taskDate;
         dailyTasks[currentEditDailyIdx].details = details;
@@ -1116,10 +1050,11 @@ function addDailyTaskToList() {
         dailyTasks.push({ id: "DTK-" + Date.now(), taskDate, details });
         showToast("Daily Log Added!");
     }
-    
+     
     dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
     if(document.getElementById('daily-task-details')) document.getElementById('daily-task-details').value = "";
     renderDailyTasksTable();
+    saveWeeklyReport();
 }
 
 function editDailyTask(index) {
@@ -1158,12 +1093,12 @@ function removeDailyTask(index) {
     if(currentUserRole === 'manager') return;
     dailyTasks.splice(index, 1);
     renderDailyTasksTable();
+    saveWeeklyReport();
 }
 
 function saveWeeklyReport() {
     const date = document.getElementById('wr-date')?.value || '';
     const author = document.getElementById('wr-author')?.value.trim() || 'IT Team';
-
     const payload = { date, author, plannedTasks, dailyTasks, updated: new Date().toLocaleString() };
     database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Synchronized!"));
 }
@@ -1185,12 +1120,9 @@ function saveRustDeskEntry() {
     const device = document.getElementById('rd-device')?.value.trim() || '';
     const notes = document.getElementById('rd-notes')?.value.trim() || '';
     const editId = document.getElementById('rd-edit-id')?.value || '';
-
     if(!empName || !rdId) { alert("Please enter Employee Name and RustDesk ID!"); return; }
-
     const key = editId ? editId : "RD-" + Date.now();
     const payload = { id: key, empName, rdId, password, dept, device, notes, updated: new Date().toLocaleDateString('en-GB') };
-
     database.ref('it_rustdesk_devices/' + key).set(payload).then(() => {
         closeRustDeskModal();
         showToast("RustDesk Device Saved!");
@@ -1201,10 +1133,8 @@ function renderRustDeskList() {
     const tbody = document.getElementById('rd-list-body'); if(!tbody) return;
     const s = document.getElementById('rd-search')?.value.toLowerCase() || '';
     tbody.innerHTML = "";
-
     const filtered = rustdeskDb.filter(d => (d.empName || '').toLowerCase().includes(s) || (d.rdId || '').toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
     if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
-
     filtered.forEach(item => {
         let actionButtons = `
             <td class="p-3 text-center flex justify-center gap-2">
@@ -1213,12 +1143,11 @@ function renderRustDeskList() {
             </td>
         `;
         if(currentUserRole === 'manager') actionButtons = `<td class="p-3 text-center"><span class="text-slate-600">-</span></td>`;
-
         const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3"><span class="font-bold text-white block">${item.empName}</span><span class="text-slate-400 text-[10px]">${item.dept || '-'}</span></td>
             <td class="p-3 font-mono font-black text-red-400">${item.rdId}</td>
-            <td class="p-3 font-mono text-slate-300">${item.password || '••••'}</td>
+            <td class="p-3 font-mono text-slate-300">${item.password || ' '}</td>
             <td class="p-3"><span class="font-semibold text-slate-200 block">${item.device || '-'}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
             <td class="p-3 text-center">
                 <a href="rustdesk://${(item.rdId || '').replace(/\s+/g, '')}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-md inline-flex items-center gap-1">
@@ -1311,32 +1240,25 @@ function exportData() {
 function exportToExcel() {
     if (typeof XLSX === 'undefined') { alert("Excel export library failed to load."); return; }
     const wb = XLSX.utils.book_new();
-
     const addSheet = (rows, name) => {
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.length ? rows : [{ Note: "No records" }]), name);
     };
-
     addSheet(employeesDb.map(e => ({
         "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section, "Phone": e.phone, "Status": e.status, "Start Date": e.startDate, "End Date": e.endDate
     })), "Employees Directory");
-
     addSheet(wDb.map(i => ({
         "Asset Tag": i.assetTag, "Category": i.category, "IP Address": i.ipAddress, "Description": i.desc, "Details/Notes": i.details || "", "Serial": i.serial, "Quantity": i.quantity || 1,
         "Employee Name": i.empName, "Emp ID": i.empId, "Position": i.empPosition, "Department": i.empDepartment,
         "Location": i.location, "Handover Date": i.handoverDate, "Return Date": i.returnDate, "Status": i.status
     })), "Warehouse");
-
     addSheet(rustdeskDb.map(i => ({
         "Employee": i.empName, "Department": i.dept, "RustDesk ID": i.rdId, "Password": i.password,
         "Device": i.device, "Notes": i.notes, "Updated": i.updated
     })), "RustDesk");
-
     addSheet(plannedTasks.map(t => ({
         "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
     })), "Planned Tasks");
-
     addSheet(dailyTasks.map(t => ({ "Date": t.taskDate, "Details": t.details })), "Daily Log");
-
     const stamp = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `asia-aluminium-report-${stamp}.xlsx`);
     showToast("Excel Report Exported!");
@@ -1360,33 +1282,28 @@ function importData(event) {
         alert("Please select a valid .json backup file.");
         event.target.value = ""; return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
         let parsed;
         try { parsed = JSON.parse(e.target.result); }
         catch (err) { alert("This file is not valid JSON."); event.target.value = ""; return; }
-
         const payload = parsed.data ? parsed.data : parsed;
         const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_weekly_plans', 'it_knowledge_notes'];
         if (!knownKeys.some(k => payload[k] !== undefined)) {
             alert("This file doesn't look like an Asia Aluminium backup.");
             event.target.value = ""; return;
         }
-
         if (!confirm("Importing will OVERWRITE current live data with this backup. Continue?")) {
             event.target.value = ""; return;
         }
-
         const updates = {};
-        updates['it_forms_archive'] = null; 
-        
+        updates['it_forms_archive'] = null;
+          
         if (payload.it_employees_directory) updates['it_employees_directory'] = arrayToKeyedObject(payload.it_employees_directory, 'id');
         if (payload.it_warehouse_inventory) updates['it_warehouse_inventory'] = arrayToKeyedObject(payload.it_warehouse_inventory, 'id');
         if (payload.it_rustdesk_devices) updates['it_rustdesk_devices'] = arrayToKeyedObject(payload.it_rustdesk_devices, 'id');
         if (payload.it_weekly_plans) updates['it_weekly_plans'] = payload.it_weekly_plans;
         if (payload.it_knowledge_notes) updates['it_knowledge_notes'] = arrayToKeyedObject(payload.it_knowledge_notes, 'id');
-
         database.ref().update(updates).then(() => {
             showToast("Backup Restored Successfully!");
             event.target.value = "";
