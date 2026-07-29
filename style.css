@@ -1,1 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
 
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #0f172a;
+    color: #f8fafc;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(220, 38, 38, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.15) 0px, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23dc2626' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M11 0l3 3-3 3-3-3 3-3zm28 0l3 3-3 3-3-3 3-3zm28 0l3 3-3 3-3-3 3-3zm-56 28l3 3-3 3-3-3 3-3zm28 0l3 3-3 3-3-3 3-3zm28 0l3 3-3 3-3-3 3-3zm-56 28l3 3-3 3-3-3 3-3zm28 0l3 3-3 3-3-3 3-3zm28 0l3 3-3 3-3-3 3-3z'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+}
+
+.card-3d {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    border-radius: 1.25rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-3d:hover {
+    border-color: rgba(220, 38, 38, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(220, 38, 38, 0.2);
+}
+
+.card-3d-bg-icon {
+    position: absolute;
+    right: -10px;
+    bottom: -15px;
+    font-size: 6rem;
+    opacity: 0.05;
+    color: #ef4444;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    transform: rotate(-12deg);
+}
+
+.card-3d:hover .card-3d-bg-icon {
+    opacity: 0.15;
+    transform: rotate(0deg) scale(1.15);
+    color: #ef4444;
+}
+
+.icon-3d-glow {
+    filter: drop-shadow(0 0 12px rgba(220, 38, 38, 0.5));
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+    background: #dc2626;
+    border-radius: 4px;
+}
+
+#lock-screen {
+    background-color: #020617;
+    background-image:
+        radial-gradient(at 0% 0%, rgba(220, 38, 38, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.18) 0px, transparent 50%);
+}
+
+@keyframes shake-x {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+.shake { animation: shake-x 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll table { min-width: 720px; }
+
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .no-print, header, nav, .tab-btn, .control-panel, .toast-notification,
+    .card-3d-bg-icon, .mobile-menu-btn {
+        display: none !important;
+    }
+
+    .card-3d {
+        background: white !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: black !important;
+    }
+
+    .print-container {
+        display: block !important;
+        width: 100% !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    input, select, textarea {
+        color: black !important;
+        border-bottom: 1px solid #000 !important;
+        background: transparent !important;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    th, td {
+        border: 1px solid #000 !important;
+        color: black !important;
+        padding: 6px !important;
+    }
+}
