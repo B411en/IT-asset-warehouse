@@ -203,71 +203,33 @@
                 </div>
 
                 <!-- IT QUICK COMMAND SNIPPETS VAULT -->
-<div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
-    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-        <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center border border-red-500/30">
-                <i class="fa-solid fa-terminal text-xs"></i>
-            </div>
-            <h4 class="text-sm font-bold text-white">IT Quick Command Snippets Vault</h4>
-        </div>
-        <span class="text-[10px] text-red-400 font-mono bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
-            <i class="fa-solid fa-bolt text-[8px] mr-1"></i> CLI Reference
-        </span>
-    </div>
-    
-    <!-- Search bar for snippets -->
-    <div class="mb-4">
-        <input type="text" id="snippet-search" oninput="renderCommandSnippets()" placeholder="Search commands (e.g. DNS, MikroTik, Windows)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
-    </div>
-
-    <!-- Snippets Grid -->
-    <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
-        <!-- Injected via JS -->
-    </div>
-</div>
-
-                    <!-- Custom IP Input Field -->
-                    <div class="mb-4 bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row items-center gap-3">
-                        <div class="flex-grow w-full">
-                            <label class="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Custom IP / Hostname Lookup</label>
-                            <input type="text" id="custom-ip-input" placeholder="e.g. 192.168.1.50 or 8.8.8.8" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-red-500">
-                        </div>
-                        <button onclick="pingCustomInputIP()" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-red-600/30 mt-auto">
-                            <i class="fa-solid fa-satellite-dish"></i> Test Custom Ping
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
-                            <div>
-                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">MikroTik Gateway</span>
-                                <span class="text-xs font-mono text-red-400 font-bold">192.168.1.1</span>
+                <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center border border-red-500/30">
+                                <i class="fa-solid fa-terminal text-xs"></i>
                             </div>
-                            <button onclick="pingTargetIP('192.168.1.1')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-satellite-dish text-blue-400"></i> Ping
-                            </button>
+                            <h4 class="text-sm font-bold text-white">IT Quick Command Snippets Vault</h4>
                         </div>
-                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
-                            <div>
-                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">Hikvision NVR</span>
-                                <span class="text-xs font-mono text-blue-400 font-bold">192.168.1.100</span>
-                            </div>
-                            <button onclick="pingTargetIP('192.168.1.100')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-video text-amber-400"></i> Ping
+                        <div class="flex items-center gap-2">
+                            <button onclick="openSnippetModal()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-lg shadow-red-600/30">
+                                <i class="fa-solid fa-plus text-[10px]"></i> Add Snippet
                             </button>
-                        </div>
-                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
-                            <div>
-                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">Core Switch / AP</span>
-                                <span class="text-xs font-mono text-emerald-400 font-bold">192.168.1.254</span>
-                            </div>
-                            <button onclick="pingTargetIP('192.168.1.254')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-server text-emerald-400"></i> Ping
-                            </button>
+                            <span class="text-[10px] text-red-400 font-mono bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 hidden sm:inline-block">
+                                <i class="fa-solid fa-bolt text-[8px] mr-1"></i> CLI Reference
+                            </span>
                         </div>
                     </div>
-                    <div id="ping-result-box" class="mt-3 hidden bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-slate-300"></div>
+                    
+                    <!-- Search bar for snippets -->
+                    <div class="mb-4">
+                        <input type="text" id="snippet-search" oninput="renderCommandSnippets()" placeholder="Search commands (e.g. DNS, MikroTik, Windows)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <!-- Snippets Grid -->
+                    <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
+                        <!-- Injected via JS -->
+                    </div>
                 </div>
 
                 <!-- IT INFRASTRUCTURE & PROFILE CARD -->
@@ -439,7 +401,7 @@
                 </div>
             </div>
 
-            <!-- HELPDESK TICKETS TAB (NEW) -->
+            <!-- HELPDESK TICKETS TAB -->
             <div id="helpdesk-tab" class="tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
                     <div class="relative w-full sm:w-80">
@@ -471,7 +433,7 @@
                 </div>
             </div>
 
-            <!-- IPAM SUBNET TABLE TAB (NEW) -->
+            <!-- IPAM SUBNET TABLE TAB -->
             <div id="ipam-tab" class="tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
                     <div class="relative w-full sm:w-80">
@@ -520,7 +482,7 @@
         </main>
     </div>
 
-    <!-- WORK SCHEDULE MODAL (3D Animated Popup - Fixed Centering) -->
+    <!-- WORK SCHEDULE MODAL -->
     <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden overflow-y-auto p-4 items-center justify-center transition-all duration-300">
         <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/90 rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto transform transition-all card-3d-effect">
             
@@ -652,7 +614,7 @@
         </div>
     </div>
 
-    <!-- MODALS (All Fixed for Centering & Scrolling) -->
+    <!-- MODALS -->
     <!-- EMPLOYEE MODAL -->
     <div id="emp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
@@ -882,7 +844,7 @@
         </div>
     </div>
 
-    <!-- HELPDESK TICKET MODAL (NEW) -->
+    <!-- HELPDESK TICKET MODAL -->
     <div id="helpdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-headset text-amber-400"></i> New IT Support Ticket</h3>
@@ -916,7 +878,7 @@
         </div>
     </div>
 
-    <!-- IPAM MODAL (NEW) -->
+    <!-- IPAM MODAL -->
     <div id="ipam-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Static IPAM Record</h3>
@@ -942,6 +904,36 @@
             <div class="flex justify-end gap-2">
                 <button onclick="closeIpamModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Cancel</button>
                 <button onclick="saveIpamEntry()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Save IP Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMMAND SNIPPET MODAL -->
+    <div id="snippet-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
+            <h3 id="snippet-form-title" class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-terminal text-red-500"></i> Add Command Snippet</h3>
+            <input type="hidden" id="snippet-edit-id">
+            <div class="space-y-3 mb-4">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Command Title *</label>
+                    <input type="text" id="snippet-title" placeholder="Flush DNS Cache" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Category *</label>
+                    <input type="text" id="snippet-category" placeholder="Windows CMD / MikroTik CLI" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Command Code / Script *</label>
+                    <input type="text" id="snippet-cmd" placeholder="ipconfig /flushdns" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono text-emerald-400 focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Description</label>
+                    <textarea id="snippet-desc" rows="2" placeholder="Brief description of what it does..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:border-red-500"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeSnippetModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Cancel</button>
+                <button onclick="saveSnippetEntry()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Snippet</button>
             </div>
         </div>
     </div>
