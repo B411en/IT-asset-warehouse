@@ -348,7 +348,70 @@ function unlockApp() {
         appRoot.classList.add('flex');
     }
     initDefaultDates();
-    attachDataListeners();
+    attachDataListeners(function attachDataListeners() {
+    database.ref('it_employees_directory').on('value', (s) => {
+        employeesDb = s.val() ? Object.values(s.val()) : [];
+        const el = document.getElementById('dash-total-employees');
+        if(el) el.innerText = employeesDb.length;
+        renderEmployeesList();
+        populateWarehouseEmployeeDropdown();
+    });
+    database.ref('it_warehouse_inventory').on('value', (s) => {
+        wDb = s.val() ? Object.values(s.val()) : [];
+        const el = document.getElementById('dash-total-warehouse');
+        if(el) el.innerText = wDb.length;
+        renderWarehouseList();
+        updateDashboardCharts();
+    });
+    database.ref('it_rustdesk_devices').on('value', (s) => {
+        rustdeskDb = s.val() ? Object.values(s.val()) : [];
+        const el = document.getElementById('dash-total-rustdesk');
+        if(el) el.innerText = rustdeskDb.length;
+        renderRustDeskList();
+    });
+    database.ref('it_isp_vault').on('value', (s) => {
+        ispDb = s.val() ? Object.values(s.val()) : [];
+        renderIspList();
+    });
+    database.ref('it_helpdesk_tickets').on('value', (s) => {
+        helpdeskDb = s.val() ? Object.values(s.val()) : [];
+        const openTickets = helpdeskDb.filter(t => t.status === 'Open' || t.status === 'In Progress').length;
+        const el = document.getElementById('dash-total-tickets');
+        if(el) el.innerText = openTickets;
+        renderHelpdeskList();
+    });
+    database.ref('it_ipam_subnets').on('value', (s) => {
+        ipamDb = s.val() ? Object.values(s.val()) : [];
+        renderIpamList();
+    });
+    database.ref('it_weekly_plans').on('value', (s) => {
+        const data = s.val();
+        if(data) {
+            plannedTasks = data.plannedTasks || [];
+            plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            dailyTasks = data.dailyTasks || [];
+            dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            if(document.getElementById('wr-date') && data.date) document.getElementById('wr-date').value = data.date;
+            if(document.getElementById('wr-author') && data.author) document.getElementById('wr-author').value = data.author;
+        }
+        renderPlannedTasksTable();
+        renderDailyTasksTable();
+    });
+    database.ref('it_knowledge_notes').on('value', (s) => {
+        notesDb = s.val() ? Object.values(s.val()) : [];
+        renderNotesList();
+    });
+    
+    // ئەمەش بەشی نوێیە بۆ فەرمانەکان کە دەیخەیتە کۆتایی ئەم فەنکشنە:
+    database.ref('it_command_snippets').on('value', (s) => {
+        snippetsDb = s.val() ? Object.values(s.val()) : [];
+        if (snippetsDb.length === 0) {
+            initDefaultSnippetsToFirebase();
+        } else {
+            renderCommandSnippets();
+        }
+    });
+});
     updateAccessUIState();
 }
 
