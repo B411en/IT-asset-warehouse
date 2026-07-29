@@ -43,31 +43,54 @@ let currentEditPlannedIdx = -1;
 let currentEditDailyIdx = -1;
 
 /* ================= MODAL LOGICS ================= */
-function openEmpModal() { 
+function openEmpModal() {
     if(currentUserRole === 'manager') { alert("Access Denied: Manager view is monitoring only."); return; }
-    document.getElementById('emp-modal').classList.remove('hidden'); document.getElementById('emp-modal').classList.add('flex'); 
+    document.getElementById('emp-modal').classList.remove('hidden');
+    document.getElementById('emp-modal').classList.add('flex');
 }
-function closeEmpModal() { document.getElementById('emp-modal').classList.add('hidden'); document.getElementById('emp-modal').classList.remove('flex'); clearEmployeeForm(); }
 
-function openWarehouseModal() { 
+function closeEmpModal() {
+    document.getElementById('emp-modal').classList.add('hidden');
+    document.getElementById('emp-modal').classList.remove('flex');
+    clearEmployeeForm();
+}
+
+function openWarehouseModal() {
     if(currentUserRole === 'manager') { alert("Access Denied: Manager view is monitoring only."); return; }
-    document.getElementById('warehouse-modal').classList.remove('hidden'); 
+    document.getElementById('warehouse-modal').classList.remove('hidden');
     document.getElementById('warehouse-modal').classList.add('flex');
     generateAutoAssetTag();
 }
-function closeWarehouseModal() { document.getElementById('warehouse-modal').classList.add('hidden'); document.getElementById('warehouse-modal').classList.remove('flex'); clearWarehouseForm(); }
 
-function openRustDeskModal() { 
+function closeWarehouseModal() {
+    document.getElementById('warehouse-modal').classList.add('hidden');
+    document.getElementById('warehouse-modal').classList.remove('flex');
+    clearWarehouseForm();
+}
+
+function openRustDeskModal() {
     if(currentUserRole === 'manager') { alert("Access Denied: Manager view is monitoring only."); return; }
-    document.getElementById('rustdesk-modal').classList.remove('hidden'); document.getElementById('rustdesk-modal').classList.add('flex'); 
+    document.getElementById('rustdesk-modal').classList.remove('hidden');
+    document.getElementById('rustdesk-modal').classList.add('flex');
 }
-function closeRustDeskModal() { document.getElementById('rustdesk-modal').classList.add('hidden'); document.getElementById('rustdesk-modal').classList.remove('flex'); clearRustDeskForm(); }
 
-function openNoteModal() { 
-    if(currentUserRole === 'manager') return;
-    document.getElementById('notes-modal').classList.remove('hidden'); document.getElementById('notes-modal').classList.add('flex'); 
+function closeRustDeskModal() {
+    document.getElementById('rustdesk-modal').classList.add('hidden');
+    document.getElementById('rustdesk-modal').classList.remove('flex');
+    clearRustDeskForm();
 }
-function closeNoteModal() { document.getElementById('notes-modal').classList.add('hidden'); document.getElementById('notes-modal').classList.remove('flex'); clearNoteForm(); }
+
+function openNoteModal() {
+    if(currentUserRole === 'manager') return;
+    document.getElementById('notes-modal').classList.remove('hidden');
+    document.getElementById('notes-modal').classList.add('flex');
+}
+
+function closeNoteModal() {
+    document.getElementById('notes-modal').classList.add('hidden');
+    document.getElementById('notes-modal').classList.remove('flex');
+    clearNoteForm();
+}
 
 /* ================= ACCESS LOCK SCREEN ================= */
 function bytesToHex(bytes) {
