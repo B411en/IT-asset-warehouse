@@ -30,13 +30,14 @@ let rustdeskDb = [];
 let ispDb = [];
 let helpdeskDb = [];
 let ipamDb = [];
+let snippetsDb = [];
 let plannedTasks = [];
 let dailyTasks = [];
 let notesDb = [];
 let currentEditPlannedIdx = -1;
 let currentEditDailyIdx = -1;
 
-/* ================= MODAL LOGICS (Fixed Centering) ================= */
+/* ================= MODAL LOGICS ================= */
 function openEmpModal() {
     const m = document.getElementById('emp-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
@@ -96,6 +97,16 @@ function closeIpamModal() {
     const m = document.getElementById('ipam-modal');
     m.classList.add('hidden'); m.classList.remove('flex');
     clearIpamForm();
+}
+
+function openSnippetModal() {
+    const m = document.getElementById('snippet-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeSnippetModal() {
+    const m = document.getElementById('snippet-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
+    clearSnippetForm();
 }
 
 function openNoteModal() {
@@ -212,133 +223,69 @@ function initDefaultDates() {
     if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').valueAsDate = today;
 }
 
-/* ================= IT QUICK COMMAND SNIPPETS VAULT ================= */
-let snippetsDb = [];
-const defaultSnippets = [
-    { id: 1, title: "Flush DNS Cache", category: "Windows CMD", cmd: "ipconfig /flushdns", desc: "Clears and resets the contents of the DNS resolver cache." },
-    { id: 2, title: "Reset Winsock Catalog", category: "Windows CMD", cmd: "netsh winsock reset", desc: "Resets Winsock catalog back to clean state (fixes network connection issues)." },
-    { id: 3, title: "Full IP Configuration", category: "Windows CMD", cmd: "ipconfig /all", desc: "Displays full detailed IP configuration for all adapters." },
-    { id: 4, title: "Restart Print Spooler", category: "Windows", cmd: "net stop spooler && net start spooler", desc: "Restarts the printing service to clear stuck print jobs." },
-    { id: 5, title: "View Active ARP Table", category: "Network", cmd: "arp -a", desc: "Displays current ARP entries to find IP-to-MAC mappings on local network." },
-    { id: 6, title: "MikroTik Print Interfaces", category: "MikroTik CLI", cmd: "/interface print", desc: "Lists all active physical and virtual router interfaces." },
-    { id: 7, title: "MikroTik Reboot Router", category: "MikroTik CLI", cmd: "/system reboot", desc: "Safely restarts the MikroTik router system." },
-    { id: 8, title: "Check Network Routes", category: "Windows CMD", cmd: "route print", desc: "Displays the routing table for local gateway pathways." }
-];
-
-function initDefaultSnippetsToFirebase() {
-    const updates = {};
-    defaultSnippets.forEach(item => {
-        const key = "SNIP-" + item.id;
-        updates[key] = { id: key, title: item.title, category: item.category, cmd: item.cmd, desc: item.desc };
+function attachDataListeners() {
+    database.ref('it_employees_directory').on('value', (s) => {
+        employeesDb = s.val() ? Object.values(s.val()) : [];
+        const el = document.getElementById('dash-total-employees');
+        if(el) el.innerText = employeesDb.length;
+        renderEmployeesList();
+        populateWarehouseEmployeeDropdown();
     });
-    database.ref('it_command_snippets').update(updates);
-}
-
-function openSnippetModal() {
-    const m = document.getElementById('snippet-modal');
-    if(!m) return;
-    m.classList.remove('hidden'); m.classList.add('flex');
-}
-
-function closeSnippetModal() {
-    const m = document.getElementById('snippet-modal');
-    if(!m) return;
-    m.classList.add('hidden'); m.classList.remove('flex');
-    clearSnippetForm();
-}
-
-function clearSnippetForm() {
-    if(document.getElementById('snippet-edit-id')) document.getElementById('snippet-edit-id').value = '';
-    if(document.getElementById('snippet-title')) document.getElementById('snippet-title').value = '';
-    if(document.getElementById('snippet-category')) document.getElementById('snippet-category').value = '';
-    if(document.getElementById('snippet-cmd')) document.getElementById('snippet-cmd').value = '';
-    if(document.getElementById('snippet-desc')) document.getElementById('snippet-desc').value = '';
-    if(document.getElementById('snippet-form-title')) document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Add Command Snippet`;
-}
-
-function saveSnippetEntry() {
-    const editId = document.getElementById('snippet-edit-id')?.value || '';
-    const title = document.getElementById('snippet-title')?.value.trim() || '';
-    const category = document.getElementById('snippet-category')?.value.trim() || '';
-    const cmd = document.getElementById('snippet-cmd')?.value.trim() || '';
-    const desc = document.getElementById('snippet-desc')?.value.trim() || '';
-    if(!title || !cmd || !category) { alert("Please fill Title, Category, and Command!"); return; }
-    const key = editId ? editId : "SNIP-" + Date.now();
-    const payload = { id: key, title, category, cmd, desc, updated: new Date().toLocaleDateString('en-GB') };
-    database.ref('it_command_snippets/' + key).set(payload).then(() => {
-        closeSnippetModal();
-        showToast(editId ? "Snippet Updated Successfully!" : "Command Snippet Saved!");
+    database.ref('it_warehouse_inventory').on('value', (s) => {
+        wDb = s.val() ? Object.values(s.val()) : [];
+        const el = document.getElementById('dash-total-warehouse');
+        if(el) el.innerText = wDb.length;
+        renderWarehouseList();
+        updateDashboardCharts();
     });
-}
-
-function renderCommandSnippets() {
-    const grid = document.getElementById('snippets-grid');
-    if (!grid) return;
-    const searchInput = document.getElementById('snippet-search');
-    const term = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    
-    grid.innerHTML = "";
-    const filtered = snippetsDb.filter(s => 
-        (s.title || '').toLowerCase().includes(term) || 
-        (s.category || '').toLowerCase().includes(term) || 
-        (s.cmd || '').toLowerCase().includes(term) ||
-        (s.desc || '').toLowerCase().includes(term)
-    );
-
-    if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-2 text-center p-4 text-slate-500 text-xs">No command snippets found.</div>`;
-        return;
-    }
-
-    filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col justify-between hover:border-slate-700 transition-all";
-        card.innerHTML = `
-            <div>
-                <div class="flex justify-between items-center mb-1.5">
-                    <span class="text-xs font-bold text-white">${item.title}</span>
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-[9px] font-mono bg-slate-900 text-red-400 px-2 py-0.5 rounded border border-slate-800">${item.category}</span>
-                        <button onclick="editSnippetItem('${item.id}')" class="text-blue-400 hover:text-blue-300 text-xs px-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteSnippetItem('${item.id}')" class="text-slate-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-                <p class="text-[10px] text-slate-400 mb-2">${item.desc || ''}</p>
-            </div>
-            <div class="flex items-center justify-between bg-slate-900 border border-slate-800/80 rounded-lg px-2.5 py-1.5 mt-auto">
-                <code class="text-[11px] font-mono text-emerald-400 select-all truncate mr-2">${item.cmd}</code>
-                <button onclick="copySnippetCommand('${(item.cmd || '').replace(/'/g, "\\'")}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded text-[10px] font-semibold transition-all flex items-center gap-1 flex-shrink-0">
-                    <i class="fa-solid fa-copy text-blue-400"></i> Copy
-                </button>
-            </div>
-        `;
-        grid.appendChild(card);
+    database.ref('it_rustdesk_devices').on('value', (s) => {
+        rustdeskDb = s.val() ? Object.values(s.val()) : [];
+        const el = document.getElementById('dash-total-rustdesk');
+        if(el) el.innerText = rustdeskDb.length;
+        renderRustDeskList();
+    });
+    database.ref('it_isp_vault').on('value', (s) => {
+        ispDb = s.val() ? Object.values(s.val()) : [];
+        renderIspList();
+    });
+    database.ref('it_helpdesk_tickets').on('value', (s) => {
+        helpdeskDb = s.val() ? Object.values(s.val()) : [];
+        const openTickets = helpdeskDb.filter(t => t.status === 'Open' || t.status === 'In Progress').length;
+        const el = document.getElementById('dash-total-tickets');
+        if(el) el.innerText = openTickets;
+        renderHelpdeskList();
+    });
+    database.ref('it_ipam_subnets').on('value', (s) => {
+        ipamDb = s.val() ? Object.values(s.val()) : [];
+        renderIpamList();
+    });
+    database.ref('it_weekly_plans').on('value', (s) => {
+        const data = s.val();
+        if(data) {
+            plannedTasks = data.plannedTasks || [];
+            plannedTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            dailyTasks = data.dailyTasks || [];
+            dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
+            if(document.getElementById('wr-date') && data.date) document.getElementById('wr-date').value = data.date;
+            if(document.getElementById('wr-author') && data.author) document.getElementById('wr-author').value = data.author;
+        }
+        renderPlannedTasksTable();
+        renderDailyTasksTable();
+    });
+    database.ref('it_knowledge_notes').on('value', (s) => {
+        notesDb = s.val() ? Object.values(s.val()) : [];
+        renderNotesList();
+    });
+    database.ref('it_command_snippets').on('value', (s) => {
+        snippetsDb = s.val() ? Object.values(s.val()) : [];
+        if (snippetsDb.length === 0) {
+            initDefaultSnippetsToFirebase();
+        } else {
+            renderCommandSnippets();
+        }
     });
 }
 
-function editSnippetItem(id) {
-    const item = snippetsDb.find(s => s.id === id); if(!item) return;
-    document.getElementById('snippet-edit-id').value = item.id;
-    document.getElementById('snippet-title').value = item.title || '';
-    document.getElementById('snippet-category').value = item.category || '';
-    document.getElementById('snippet-cmd').value = item.cmd || '';
-    document.getElementById('snippet-desc').value = item.desc || '';
-    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Edit Command Snippet`;
-    openSnippetModal();
-}
-
-function deleteSnippetItem(id) {
-    if(!confirmDelete("Delete this command snippet?")) return;
-    database.ref('it_command_snippets/' + id).remove().then(() => showToast("Snippet Deleted"));
-}
-
-function copySnippetCommand(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showToast("Command copied to clipboard!");
-    }).catch(err => {
-        alert("Failed to copy command: " + err.message);
-    });
-}
 function unlockApp() {
     const lockScreen = document.getElementById('lock-screen');
     const appRoot = document.getElementById('app-root');
@@ -566,27 +513,6 @@ function updateDashboardCharts() {
             }
         });
     }
-}
-
-/* ================= NETWORK PING UTILITIES ================= */
-function pingTargetIP(ip) {
-    const box = document.getElementById('ping-result-box');
-    if(!box) return;
-    box.classList.remove('hidden');
-    box.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1 text-amber-400"></i> Pinging ${ip} across local network...`;
-    
-    setTimeout(() => {
-        const latency = Math.floor(Math.random() * 12) + 2;
-        box.innerHTML = `<i class="fa-solid fa-check text-emerald-400 mr-1"></i> Response from ${ip}: bytes=32 time=${latency}ms TTL=64 (Status: Online & Stable)`;
-        showToast(`Ping successful for ${ip}`);
-    }, 800);
-}
-function pingCustomInputIP() {
-    const input = document.getElementById('custom-ip-input');
-    if(!input) return;
-    const ip = input.value.trim();
-    if(!ip) { alert("Please enter a valid IP address or hostname!"); return; }
-    pingTargetIP(ip);
 }
 
 /* ================= AUTO ASSET TAG GENERATOR ================= */
@@ -954,7 +880,7 @@ function importWarehouseCSV(event) {
     reader.readAsText(file);
 }
 
-/* ================= HELPDESK TICKETS LOGIC (NEW) ================= */
+/* ================= HELPDESK TICKETS LOGIC ================= */
 function saveHelpdeskEntry() {
     const editId = document.getElementById('helpdesk-edit-id')?.value || '';
     const emp = document.getElementById('hd-emp')?.value.trim() || '';
@@ -1015,7 +941,7 @@ function deleteHelpdeskItem(id) {
     database.ref('it_helpdesk_tickets/' + id).remove().then(() => showToast("Ticket Deleted"));
 }
 
-/* ================= IPAM SUBNET LOGIC (NEW) ================= */
+/* ================= IPAM SUBNET LOGIC ================= */
 function saveIpamEntry() {
     const editId = document.getElementById('ipam-edit-id')?.value || '';
     const ip = document.getElementById('ipam-ip')?.value.trim() || '';
@@ -1070,6 +996,120 @@ function clearIpamForm() {
 function deleteIpamItem(id) {
     if(!confirmDelete("Delete this IP entry?")) return;
     database.ref('it_ipam_subnets/' + id).remove().then(() => showToast("IP Entry Deleted"));
+}
+
+/* ================= QUICK COMMAND SNIPPETS VAULT ================= */
+const defaultSnippets = [
+    { id: 1, title: "Flush DNS Cache", category: "Windows CMD", cmd: "ipconfig /flushdns", desc: "Clears and resets the contents of the DNS resolver cache." },
+    { id: 2, title: "Reset Winsock Catalog", category: "Windows CMD", cmd: "netsh winsock reset", desc: "Resets Winsock catalog back to clean state (fixes network connection issues)." },
+    { id: 3, title: "Full IP Configuration", category: "Windows CMD", cmd: "ipconfig /all", desc: "Displays full detailed IP configuration for all adapters." },
+    { id: 4, title: "Restart Print Spooler", category: "Windows", cmd: "net stop spooler && net start spooler", desc: "Restarts the printing service to clear stuck print jobs." },
+    { id: 5, title: "View Active ARP Table", category: "Network", cmd: "arp -a", desc: "Displays current ARP entries to find IP-to-MAC mappings on local network." },
+    { id: 6, title: "MikroTik Print Interfaces", category: "MikroTik CLI", cmd: "/interface print", desc: "Lists all active physical and virtual router interfaces." },
+    { id: 7, title: "MikroTik Reboot Router", category: "MikroTik CLI", cmd: "/system reboot", desc: "Safely restarts the MikroTik router system." },
+    { id: 8, title: "Check Network Routes", category: "Windows CMD", cmd: "route print", desc: "Displays the routing table for local gateway pathways." }
+];
+
+function initDefaultSnippetsToFirebase() {
+    const updates = {};
+    defaultSnippets.forEach(item => {
+        const key = "SNIP-" + item.id;
+        updates[key] = { id: key, title: item.title, category: item.category, cmd: item.cmd, desc: item.desc };
+    });
+    database.ref('it_command_snippets').update(updates);
+}
+
+function clearSnippetForm() {
+    document.getElementById('snippet-edit-id').value = '';
+    document.getElementById('snippet-title').value = '';
+    document.getElementById('snippet-category').value = '';
+    document.getElementById('snippet-cmd').value = '';
+    document.getElementById('snippet-desc').value = '';
+    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Add Command Snippet`;
+}
+
+function saveSnippetEntry() {
+    const editId = document.getElementById('snippet-edit-id')?.value || '';
+    const title = document.getElementById('snippet-title')?.value.trim() || '';
+    const category = document.getElementById('snippet-category')?.value.trim() || '';
+    const cmd = document.getElementById('snippet-cmd')?.value.trim() || '';
+    const desc = document.getElementById('snippet-desc')?.value.trim() || '';
+    if(!title || !cmd || !category) { alert("Please fill Title, Category, and Command!"); return; }
+    const key = editId ? editId : "SNIP-" + Date.now();
+    const payload = { id: key, title, category, cmd, desc, updated: new Date().toLocaleDateString('en-GB') };
+    database.ref('it_command_snippets/' + key).set(payload).then(() => {
+        closeSnippetModal();
+        showToast(editId ? "Snippet Updated Successfully!" : "Command Snippet Saved!");
+    });
+}
+
+function renderCommandSnippets() {
+    const grid = document.getElementById('snippets-grid');
+    if (!grid) return;
+    const searchInput = document.getElementById('snippet-search');
+    const term = searchInput ? searchInput.value.toLowerCase().trim() : "";
+    
+    grid.innerHTML = "";
+    const filtered = snippetsDb.filter(s => 
+        (s.title || '').toLowerCase().includes(term) || 
+        (s.category || '').toLowerCase().includes(term) || 
+        (s.cmd || '').toLowerCase().includes(term) ||
+        (s.desc || '').toLowerCase().includes(term)
+    );
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-2 text-center p-4 text-slate-500 text-xs">No command snippets found.</div>`;
+        return;
+    }
+
+    filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col justify-between hover:border-slate-700 transition-all";
+        card.innerHTML = `
+            <div>
+                <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-xs font-bold text-white">${item.title}</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] font-mono bg-slate-900 text-red-400 px-2 py-0.5 rounded border border-slate-800">${item.category}</span>
+                        <button onclick="editSnippetItem('${item.id}')" class="text-blue-400 hover:text-blue-300 text-xs px-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteSnippetItem('${item.id}')" class="text-slate-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-400 mb-2">${item.desc || ''}</p>
+            </div>
+            <div class="flex items-center justify-between bg-slate-900 border border-slate-800/80 rounded-lg px-2.5 py-1.5 mt-auto">
+                <code class="text-[11px] font-mono text-emerald-400 select-all truncate mr-2">${item.cmd}</code>
+                <button onclick="copySnippetCommand('${(item.cmd || '').replace(/'/g, "\\'")}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded text-[10px] font-semibold transition-all flex items-center gap-1 flex-shrink-0">
+                    <i class="fa-solid fa-copy text-blue-400"></i> Copy
+                </button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function editSnippetItem(id) {
+    const item = snippetsDb.find(s => s.id === id); if(!item) return;
+    document.getElementById('snippet-edit-id').value = item.id;
+    document.getElementById('snippet-title').value = item.title || '';
+    document.getElementById('snippet-category').value = item.category || '';
+    document.getElementById('snippet-cmd').value = item.cmd || '';
+    document.getElementById('snippet-desc').value = item.desc || '';
+    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Edit Command Snippet`;
+    openSnippetModal();
+}
+
+function deleteSnippetItem(id) {
+    if(!confirmDelete("Delete this command snippet?")) return;
+    database.ref('it_command_snippets/' + id).remove().then(() => showToast("Snippet Deleted"));
+}
+
+function copySnippetCommand(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast("Command copied to clipboard!");
+    }).catch(err => {
+        alert("Failed to copy command: " + err.message);
+    });
 }
 
 /* WORK SCHEDULE / DIRECTIVES */
@@ -1407,6 +1447,7 @@ function buildBackupPayload() {
             it_isp_vault: ispDb,
             it_helpdesk_tickets: helpdeskDb,
             it_ipam_subnets: ipamDb,
+            it_command_snippets: snippetsDb,
             it_weekly_plans: {
                 plannedTasks, dailyTasks,
                 date: document.getElementById('wr-date')?.value || "",
@@ -1457,6 +1498,9 @@ function exportToExcel() {
     addSheet(ipamDb.map(i => ({
         "IP Address": i.ip, "Device Name": i.device, "Type": i.type, "Owner/Location": i.owner
     })), "IPAM Subnets");
+    addSheet(snippetsDb.map(s => ({
+        "Title": s.title, "Category": s.category, "Command": s.cmd, "Description": s.desc
+    })), "Command Snippets");
     addSheet(plannedTasks.map(t => ({
         "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
     })), "Planned Tasks");
@@ -1484,7 +1528,7 @@ function importData(event) {
         try { parsed = JSON.parse(e.target.result); }
         catch (err) { alert("This file is not valid JSON."); event.target.value = ""; return; }
         const payload = parsed.data ? parsed.data : parsed;
-        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_isp_vault', 'it_helpdesk_tickets', 'it_ipam_subnets', 'it_weekly_plans', 'it_knowledge_notes'];
+        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_isp_vault', 'it_helpdesk_tickets', 'it_ipam_subnets', 'it_command_snippets', 'it_weekly_plans', 'it_knowledge_notes'];
         if (!knownKeys.some(k => payload[k] !== undefined)) {
             alert("This file doesn't look like an Asia Aluminium backup.");
             event.target.value = ""; return;
@@ -1500,6 +1544,7 @@ function importData(event) {
         if (payload.it_isp_vault) updates['it_isp_vault'] = arrayToKeyedObject(payload.it_isp_vault, 'id');
         if (payload.it_helpdesk_tickets) updates['it_helpdesk_tickets'] = arrayToKeyedObject(payload.it_helpdesk_tickets, 'id');
         if (payload.it_ipam_subnets) updates['it_ipam_subnets'] = arrayToKeyedObject(payload.it_ipam_subnets, 'id');
+        if (payload.it_command_snippets) updates['it_command_snippets'] = arrayToKeyedObject(payload.it_command_snippets, 'id');
         if (payload.it_weekly_plans) updates['it_weekly_plans'] = payload.it_weekly_plans;
         if (payload.it_knowledge_notes) updates['it_knowledge_notes'] = arrayToKeyedObject(payload.it_knowledge_notes, 'id');
         database.ref().update(updates).then(() => {
