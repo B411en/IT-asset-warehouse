@@ -202,19 +202,30 @@
                     </div>
                 </div>
 
-                <!-- NETWORK QUICK TOOLS & CUSTOM PING UTILITY -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
-                                <i class="fa-solid fa-network-wired text-xs"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-white">Network Core Diagnostic & Custom Ping</h4>
-                        </div>
-                        <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                            <i class="fa-solid fa-circle text-[8px] mr-1 animate-pulse"></i> Gateway Active
-                        </span>
-                    </div>
+                <!-- IT QUICK COMMAND SNIPPETS VAULT -->
+<div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center border border-red-500/30">
+                <i class="fa-solid fa-terminal text-xs"></i>
+            </div>
+            <h4 class="text-sm font-bold text-white">IT Quick Command Snippets Vault</h4>
+        </div>
+        <span class="text-[10px] text-red-400 font-mono bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
+            <i class="fa-solid fa-bolt text-[8px] mr-1"></i> CLI Reference
+        </span>
+    </div>
+    
+    <!-- Search bar for snippets -->
+    <div class="mb-4">
+        <input type="text" id="snippet-search" oninput="renderCommandSnippets()" placeholder="Search commands (e.g. DNS, MikroTik, Windows)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+    </div>
+
+    <!-- Snippets Grid -->
+    <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
+        <!-- Injected via JS -->
+    </div>
+</div>
 
                     <!-- Custom IP Input Field -->
                     <div class="mb-4 bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row items-center gap-3">
