@@ -57,8 +57,8 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-red-500 selection:text-white">
 
     <!-- LOCK SCREEN -->
-    <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden card-3d-effect">
+    <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden card-3d-effect my-auto">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-red-600/15 rounded-full blur-3xl pointer-events-none"></div>
             <div class="text-center mb-6 relative z-10">
                 <div class="w-16 h-16 bg-red-600/20 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-500/30 text-2xl shadow-lg shadow-red-600/10 animate-pulse">
@@ -131,6 +131,12 @@
                     <button onclick="switchTab('isp-tab')" id="btn-isp-tab" class="tab-btn text-slate-300 hover:bg-slate-800/60 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-globe"></i> ISP & Network Vault
                     </button>
+                    <button onclick="switchTab('helpdesk-tab')" id="btn-helpdesk-tab" class="tab-btn text-slate-300 hover:bg-slate-800/60 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-headset text-amber-400"></i> Helpdesk Tickets
+                    </button>
+                    <button onclick="switchTab('ipam-tab')" id="btn-ipam-tab" class="tab-btn text-slate-300 hover:bg-slate-800/60 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-network-wired text-blue-400"></i> IPAM Subnet
+                    </button>
                     <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn text-slate-300 hover:bg-slate-800/60 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-book-medical"></i> IT Knowledge Notes
                     </button>
@@ -177,10 +183,10 @@
                     </div>
                     <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
                         <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">In Use</span>
-                            <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20"><i class="fa-solid fa-circle-check"></i></div>
+                            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Open Tickets</span>
+                            <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20"><i class="fa-solid fa-headset"></i></div>
                         </div>
-                        <h3 id="dash-total-inuse" class="text-2xl font-black text-white">0</h3>
+                        <h3 id="dash-total-tickets" class="text-2xl font-black text-white">0</h3>
                     </div>
                 </div>
 
@@ -196,19 +202,31 @@
                     </div>
                 </div>
 
-                <!-- NETWORK QUICK TOOLS & PING UTILITY -->
+                <!-- NETWORK QUICK TOOLS & CUSTOM PING UTILITY -->
                 <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
                                 <i class="fa-solid fa-network-wired text-xs"></i>
                             </div>
-                            <h4 class="text-sm font-bold text-white">Network Core Diagnostic & Ping Utility</h4>
+                            <h4 class="text-sm font-bold text-white">Network Core Diagnostic & Custom Ping</h4>
                         </div>
                         <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                             <i class="fa-solid fa-circle text-[8px] mr-1 animate-pulse"></i> Gateway Active
                         </span>
                     </div>
+
+                    <!-- Custom IP Input Field -->
+                    <div class="mb-4 bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row items-center gap-3">
+                        <div class="flex-grow w-full">
+                            <label class="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Custom IP / Hostname Lookup</label>
+                            <input type="text" id="custom-ip-input" placeholder="e.g. 192.168.1.50 or 8.8.8.8" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-red-500">
+                        </div>
+                        <button onclick="pingCustomInputIP()" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-red-600/30 mt-auto">
+                            <i class="fa-solid fa-satellite-dish"></i> Test Custom Ping
+                        </button>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
                             <div>
@@ -216,7 +234,7 @@
                                 <span class="text-xs font-mono text-red-400 font-bold">192.168.1.1</span>
                             </div>
                             <button onclick="pingTargetIP('192.168.1.1')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-satellite-dish text-blue-400"></i> Test Ping
+                                <i class="fa-solid fa-satellite-dish text-blue-400"></i> Ping
                             </button>
                         </div>
                         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
@@ -225,7 +243,7 @@
                                 <span class="text-xs font-mono text-blue-400 font-bold">192.168.1.100</span>
                             </div>
                             <button onclick="pingTargetIP('192.168.1.100')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-video text-amber-400"></i> Test Ping
+                                <i class="fa-solid fa-video text-amber-400"></i> Ping
                             </button>
                         </div>
                         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
@@ -234,7 +252,7 @@
                                 <span class="text-xs font-mono text-emerald-400 font-bold">192.168.1.254</span>
                             </div>
                             <button onclick="pingTargetIP('192.168.1.254')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-server text-emerald-400"></i> Test Ping
+                                <i class="fa-solid fa-server text-emerald-400"></i> Ping
                             </button>
                         </div>
                     </div>
@@ -410,6 +428,69 @@
                 </div>
             </div>
 
+            <!-- HELPDESK TICKETS TAB (NEW) -->
+            <div id="helpdesk-tab" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="helpdesk-search" oninput="renderHelpdeskList()" placeholder="Search tickets by employee, issue..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+                    </div>
+                    <button onclick="openHelpdeskModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-ticket"></i> New Support Ticket
+                    </button>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950/80 border-b border-slate-800 text-[11px] text-slate-400 uppercase tracking-wider">
+                                    <th class="p-3">Ticket ID</th>
+                                    <th class="p-3">Employee & Dept</th>
+                                    <th class="p-3">Issue Description</th>
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3 text-center">Status</th>
+                                    <th class="p-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="helpdesk-list-body">
+                                <tr><td colspan="6" class="text-center p-6 text-slate-500">Loading support tickets...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IPAM SUBNET TABLE TAB (NEW) -->
+            <div id="ipam-tab" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="ipam-search" oninput="renderIpamList()" placeholder="Search IP, device, location..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+                    </div>
+                    <button onclick="openIpamModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-network-wired"></i> Add Static IP Entry
+                    </button>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950/80 border-b border-slate-800 text-[11px] text-slate-400 uppercase tracking-wider">
+                                    <th class="p-3">IP Address</th>
+                                    <th class="p-3">Device Name</th>
+                                    <th class="p-3">Type / Subnet</th>
+                                    <th class="p-3">Location / Owner</th>
+                                    <th class="p-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ipam-list-body">
+                                <tr><td colspan="5" class="text-center p-6 text-slate-500">Loading IPAM records...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- IT KNOWLEDGE NOTES TAB -->
             <div id="notes-tab" class="tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
@@ -428,9 +509,9 @@
         </main>
     </div>
 
-    <!-- WORK SCHEDULE MODAL (3D Animated Popup) -->
-    <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300 scale-95 opacity-0">
-        <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/90 rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto transform transition-all card-3d-effect">
+    <!-- WORK SCHEDULE MODAL (3D Animated Popup - Fixed Centering) -->
+    <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden overflow-y-auto p-4 items-center justify-center transition-all duration-300">
+        <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/90 rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto transform transition-all card-3d-effect">
             
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -560,10 +641,10 @@
         </div>
     </div>
 
-    <!-- MODALS -->
+    <!-- MODALS (All Fixed for Centering & Scrolling) -->
     <!-- EMPLOYEE MODAL -->
-    <div id="emp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative card-3d-effect">
+    <div id="emp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 id="emp-form-title" class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-pen"></i> Register Employee</h3>
             <input type="hidden" id="emp-edit-id">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
@@ -615,8 +696,8 @@
     </div>
 
     <!-- WAREHOUSE MODAL -->
-    <div id="warehouse-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto card-3d-effect">
+    <div id="warehouse-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 id="w-form-title" class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-barcode"></i> Store / Edit Asset</h3>
             <input type="hidden" id="w-edit-id">
             
@@ -719,8 +800,8 @@
     </div>
 
     <!-- RUSTDESK MODAL -->
-    <div id="rustdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative card-3d-effect">
+    <div id="rustdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-desktop"></i> RustDesk Device Record</h3>
             <input type="hidden" id="rd-edit-id">
             <div class="space-y-3 mb-4">
@@ -757,8 +838,8 @@
     </div>
 
     <!-- ISP VAULT MODAL -->
-    <div id="isp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative card-3d-effect">
+    <div id="isp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-globe text-red-500"></i> ISP & Network Vault Record</h3>
             <input type="hidden" id="isp-edit-id">
             <div class="space-y-3 mb-4">
@@ -790,9 +871,73 @@
         </div>
     </div>
 
+    <!-- HELPDESK TICKET MODAL (NEW) -->
+    <div id="helpdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
+            <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-headset text-amber-400"></i> New IT Support Ticket</h3>
+            <input type="hidden" id="helpdesk-edit-id">
+            <div class="space-y-3 mb-4">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Employee Name & Dept *</label>
+                    <input type="text" id="hd-emp" placeholder="Aram (Sales)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Issue Title / Summary *</label>
+                    <input type="text" id="hd-title" placeholder="Printer not printing / No Internet" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Status</label>
+                    <select id="hd-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Details & Resolution Note</label>
+                    <textarea id="hd-details" rows="3" placeholder="Steps taken or notes..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:border-red-500"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeHelpdeskModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Cancel</button>
+                <button onclick="saveHelpdeskEntry()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Ticket</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IPAM MODAL (NEW) -->
+    <div id="ipam-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
+            <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Static IPAM Record</h3>
+            <input type="hidden" id="ipam-edit-id">
+            <div class="space-y-3 mb-4">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Static IP Address *</label>
+                    <input type="text" id="ipam-ip" placeholder="192.168.1.50" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Device Name *</label>
+                    <input type="text" id="ipam-device" placeholder="Manager PC / HP Printer" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Subnet / Type</label>
+                    <input type="text" id="ipam-type" placeholder="Servers / Printers / APs" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Location / Owner</label>
+                    <input type="text" id="ipam-owner" placeholder="Main Office 1st Floor" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-red-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeIpamModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Cancel</button>
+                <button onclick="saveIpamEntry()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Save IP Entry</button>
+            </div>
+        </div>
+    </div>
+
     <!-- NOTES MODAL -->
-    <div id="notes-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative card-3d-effect">
+    <div id="notes-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-book-medical"></i> IT Troubleshooting Note</h3>
             <input type="hidden" id="note-edit-id">
             <div class="space-y-3 mb-4">
@@ -827,8 +972,8 @@
     </div>
 
     <!-- CHANGE PASSCODE MODAL -->
-    <div id="change-pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl relative text-center card-3d-effect">
+    <div id="change-pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl relative text-center my-auto card-3d-effect">
             <div id="cp-modal-title" class="text-base font-black text-white mb-1"><i class="fa-solid fa-key text-red-500"></i> Change Passcode</div>
             <p id="cp-modal-subtitle" class="text-xs text-slate-400 mb-4 hidden">Set a secure 6+ character passcode for your system.</p>
             <form id="change-pin-form" class="space-y-3 text-left">
