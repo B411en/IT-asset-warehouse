@@ -1332,31 +1332,49 @@ const categoryPrefixes = {
     "Other": "OTH"
 };
 
-function generateAutoAssetTag() {
-    const catSelect = document.getElementById('w-category');
-    const tagInput = document.getElementById('w-asset-tag');
-    if(!catSelect || !tagInput) return;
-    
-    // ئەگەر لە حالەتی دەستکاریکردن (Edit) بوو، تاگەکە مەگۆڕە
-    const editId = document.getElementById('w-edit-id')?.value;
-    if(editId) return;
+/* ================= AUTO ASSET TAG GENERATOR (SECURE) ================= */
+const categoryPrefixes = {
+    "Laptop": "LAP",
+    "PC": "PC",
+    "Cable": "CBL",
+    "Printer": "PRN",
+    "Monitor": "MON",
+    "Switch": "SW",
+    "Hub": "HUB",
+    "IP camera": "CAM",
+    "NVR": "NVR",
+    "Access point": "AP",
+    "Hard": "HDD",
+    "Ram": "RAM",
+    "Other": "OTH"
+};
 
-    const cat = catSelect.value;
-    const prefix = categoryPrefixes[cat] || "OTH";
-    
-    let maxNum = 0;
-    wDb.forEach(item => {
-        if(item.assetTag && item.assetTag.startsWith(`AA-${prefix}-`)) {
-            const parts = item.assetTag.split('-');
-            const num = parseInt(parts[parts.length - 1], 10);
-            if(!isNaN(num) && num > maxNum) maxNum = num;
+function generateAutoAssetTag() {
+    try {
+        const catSelect = document.getElementById('w-category');
+        const tagInput = document.getElementById('w-asset-tag');
+        if(!catSelect || !tagInput) return;
+        
+        const editId = document.getElementById('w-edit-id')?.value;
+        if(editId) return;
+
+        const cat = catSelect.value;
+        const prefix = categoryPrefixes[cat] || "OTH";
+        
+        let maxNum = 0;
+        if (typeof wDb !== 'undefined' && Array.isArray(wDb)) {
+            wDb.forEach(item => {
+                if(item && item.assetTag && item.assetTag.startsWith(`AA-${prefix}-`)) {
+                    const parts = item.assetTag.split('-');
+                    const num = parseInt(parts[parts.length - 1], 10);
+                    if(!isNaN(num) && num > maxNum) maxNum = num;
+                }
+            });
         }
-    });
-    
-    const nextNum = String(maxNum + 1).padStart(3, '0');
-    tagInput.value = `AA-${prefix}-${nextNum}`;
+        
+        const nextNum = String(maxNum + 1).padStart(3, '0');
+        tagInput.value = `AA-${prefix}-${nextNum}`;
+    } catch(err) {
+        console.log("Tag generation notice:", err);
+    }
 }
-                });
-            };
-            reader.readAsText(file);
-        }
