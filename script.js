@@ -412,7 +412,7 @@ function switchTab(tabId) {
 }
 
 function updateDashboardCharts() {
-    const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Other": 0 };
+    const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
     let inUseCount = 0;
     wDb.forEach(item => { 
         if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1); 
@@ -422,7 +422,7 @@ function updateDashboardCharts() {
     const inUseEl = document.getElementById('dash-total-inuse');
     if(inUseEl) inUseEl.innerText = inUseCount;
 
-    const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569'];
+    const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
 
     const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
     if(ctxW) {
@@ -486,6 +486,7 @@ const categoryPrefixes = {
     "Access point": "AP",
     "Hard": "HDD",
     "Ram": "RAM",
+    "Printer cartridge": "CRT",
     "Other": "OTH"
 };
 
@@ -880,6 +881,7 @@ function importWarehouseCSV(event) {
                 if(mLower.includes('camera') || mLower.includes('cd')) cat = "IP camera";
                 else if (mLower.includes('nvr') || mLower.includes('ni')) cat = "NVR";
                 else if (mLower.includes('switch')) cat = "Switch";
+                else if (mLower.includes('cartridge') || mLower.includes('catridge')) cat = "Printer cartridge";
                 
                 const key = "W-CSV-" + Date.now() + "-" + i;
                 const payload = { 
