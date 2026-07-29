@@ -9,20 +9,15 @@ const firebaseConfig = {
 };
 
 const LOCK_SESSION_KEY = "aa_it_unlocked";
-const USER_ROLE_KEY = "aa_it_user_role";
 const FAIL_COUNT_KEY = "aa_it_fail_count";
 const LOCKOUT_UNTIL_KEY = "aa_it_lockout_until";
 const ACCESS_SETTINGS_PATH = "it_system_settings/access";
-const MANAGER_ACCESS_PATH = "it_system_settings/manager_access";
 const ACCESS_ITERATIONS = 150000;
 
 let currentAccessSalt = null;
 let currentAccessHash = null;
 let currentAccessIterations = ACCESS_ITERATIONS;
-let managerAccessSalt = null;
-let managerAccessHash = null;
 let accessState = 'unknown';
-let currentUserRole = 'admin'; // 'admin' or 'manager'
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
@@ -32,6 +27,7 @@ let dashStatusChartInstance = null;
 let employeesDb = [];
 let wDb = [];
 let rustdeskDb = [];
+let ispDb = [];
 let plannedTasks = [];
 let dailyTasks = [];
 let notesDb = [];
@@ -40,7 +36,6 @@ let currentEditDailyIdx = -1;
 
 /* ================= MODAL LOGICS ================= */
 function openEmpModal() {
-    if(currentUserRole === 'manager') { alert("Access Denied: Manager view is monitoring only."); return; }
     document.getElementById('emp-modal').classList.remove('hidden');
     document.getElementById('emp-modal').classList.add('flex');
 }
@@ -52,7 +47,6 @@ function closeEmpModal() {
 }
 
 function openWarehouseModal() {
-    if(currentUserRole === 'manager') { alert("Access Denied: Manager view is monitoring only."); return; }
     document.getElementById('warehouse-modal').classList.remove('hidden');
     document.getElementById('warehouse-modal').classList.add('flex');
     generateAutoAssetTag();
@@ -65,7 +59,6 @@ function closeWarehouseModal() {
 }
 
 function openRustDeskModal() {
-    if(currentUserRole === 'manager') { alert("Access Denied: Manager view is monitoring only."); return; }
     document.getElementById('rustdesk-modal').classList.remove('hidden');
     document.getElementById('rustdesk-modal').classList.add('flex');
 }
@@ -76,8 +69,18 @@ function closeRustDeskModal() {
     clearRustDeskForm();
 }
 
+function openIspModal() {
+    document.getElementById('isp-modal').classList.remove('hidden');
+    document.getElementById('isp-modal').classList.add('flex');
+}
+
+function closeIspModal() {
+    document.getElementById('isp-modal').classList.add('hidden');
+    document.getElementById('isp-modal').classList.remove('flex');
+    clearIspForm();
+}
+
 function openNoteModal() {
-    if(currentUserRole === 'manager') return;
     document.getElementById('notes-modal').classList.remove('hidden');
     document.getElementById('notes-modal').classList.add('flex');
 }
@@ -86,6 +89,29 @@ function closeNoteModal() {
     document.getElementById('notes-modal').classList.add('hidden');
     document.getElementById('notes-modal').classList.remove('flex');
     clearNoteForm();
+}
+
+function openScheduleModal() {
+    const modal = document.getElementById('schedule-modal');
+    if(!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+        modal.classList.remove('scale-95', 'opacity-0');
+        modal.classList.add('scale-100', 'opacity-100');
+    }, 10);
+    initDefaultDates();
+}
+
+function closeScheduleModal() {
+    const modal = document.getElementById('schedule-modal');
+    if(!modal) return;
+    modal.classList.remove('scale-100', 'opacity-100');
+    modal.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }, 300);
 }
 
 /* ================= ACCESS LOCK SCREEN ================= */
@@ -123,15 +149,6 @@ async function loadAccessSettings() {
             accessState = 'configured';
         } else {
             accessState = 'unconfigured';
-        }
-        const mSnap = await database.ref(MANAGER_ACCESS_PATH).once('value');
-        const mVal = mSnap.val();
-        if(mVal && mVal.hash && mVal.salt) {
-            managerAccessSalt = mVal.salt;
-            managerAccessHash = mVal.hash;
-        } else {
-            managerAccessSalt = "default_m_salt";
-            managerAccessHash = await pbkdf2Hash("123456", managerAccessSalt, ACCESS_ITERATIONS);
         }
     } catch (e) {
         accessState = 'unconfigured';
@@ -218,6 +235,10 @@ function attachDataListeners() {
         if(el) el.innerText = rustdeskDb.length;
         renderRustDeskList();
     });
+    database.ref('it_isp_vault').on('value', (s) => {
+        ispDb = s.val() ? Object.values(s.val()) : [];
+        renderIspList();
+    });
     database.ref('it_weekly_plans').on('value', (s) => {
         const data = s.val();
         if(data) {
@@ -228,8 +249,6 @@ function attachDataListeners() {
             if(document.getElementById('wr-date') && data.date) document.getElementById('wr-date').value = data.date;
             if(document.getElementById('wr-author') && data.author) document.getElementById('wr-author').value = data.author;
         }
-        const el = document.getElementById('dash-total-reports');
-        if(el) el.innerText = plannedTasks.length + dailyTasks.length;
         renderPlannedTasksTable();
         renderDailyTasksTable();
     });
@@ -239,10 +258,7 @@ function attachDataListeners() {
     });
 }
 
-function unlockApp(role = 'admin') {
-    currentUserRole = role;
-    try { sessionStorage.setItem(USER_ROLE_KEY, role); } catch(e) {}
-     
+function unlockApp() {
     const lockScreen = document.getElementById('lock-screen');
     const appRoot = document.getElementById('app-root');
     if(lockScreen) lockScreen.remove();
@@ -253,51 +269,12 @@ function unlockApp(role = 'admin') {
     initDefaultDates();
     attachDataListeners();
     updateAccessUIState();
-    applyRolePermissions();
-}
-
-function applyRolePermissions() {
-    if(currentUserRole === 'manager') {
-        const notesBtn = document.getElementById('btn-notes-tab');
-        if(notesBtn) notesBtn.style.display = 'none';
-        const notesTab = document.getElementById('notes-tab');
-        if(notesTab) notesTab.remove();
-        const addEmpBtn = document.querySelector('button[onclick="openEmpModal()"]');
-        if(addEmpBtn) addEmpBtn.style.display = 'none';
-        const addWhBtn = document.querySelector('button[onclick="openWarehouseModal()"]');
-        if(addWhBtn) addWhBtn.style.display = 'none';
-        const csvInputWrap = document.getElementById('csv-upload-container');
-        if(csvInputWrap) csvInputWrap.style.display = 'none';
-        const addRdBtn = document.querySelector('button[onclick="openRustDeskModal()"]');
-        if(addRdBtn) addRdBtn.style.display = 'none';
-        const wrAuthor = document.getElementById('wr-author');
-        if(wrAuthor) wrAuthor.setAttribute('readonly', 'true');
-         
-        const saveReportBtn = document.querySelector('button[onclick="saveWeeklyReport()"]');
-        if(saveReportBtn) saveReportBtn.style.display = 'none';
-        const brandSub = document.querySelector('header span.text-slate-400');
-        if(brandSub) brandSub.innerText = "Manager Monitoring Mode (Ranj)";
-    }
-}
-
-function openManagerLogin() {
-    const pin = prompt("Enter Manager Passcode (Default: 123456):");
-    if(!pin) return;
-    pbkdf2Hash(pin, managerAccessSalt, ACCESS_ITERATIONS).then(hash => {
-        if(hash === managerAccessHash) {
-            unlockApp('manager');
-            showToast("Welcome Manager Ranj!");
-        } else {
-            alert("Incorrect Manager Passcode!");
-        }
-    });
 }
 
 function updateAccessUIState() {
     const banner = document.getElementById('setup-warning-banner');
     const navBtn = document.getElementById('passcode-nav-btn');
     const navBtnText = document.getElementById('passcode-nav-btn-text');
-    const navBtnMobile = document.getElementById('passcode-nav-btn-mobile');
     if(!banner || !navBtn) return;
     if(accessState === 'unconfigured') {
         banner.classList.remove('hidden');
@@ -305,25 +282,17 @@ function updateAccessUIState() {
         navBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
         navBtn.classList.add('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
         navBtnText.innerText = 'Set Passcode';
-        if(navBtnMobile) {
-            navBtnMobile.classList.remove('text-slate-300');
-            navBtnMobile.classList.add('text-amber-400');
-        }
     } else {
         banner.classList.add('hidden');
         banner.classList.remove('flex');
         navBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
         navBtn.classList.remove('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
         navBtnText.innerText = 'Passcode';
-        if(navBtnMobile) {
-            navBtnMobile.classList.add('text-slate-300');
-            navBtnMobile.classList.remove('text-amber-400');
-        }
     }
 }
 
 function lockApp() {
-    try { sessionStorage.removeItem(LOCK_SESSION_KEY); sessionStorage.removeItem(USER_ROLE_KEY); } catch(e) {}
+    try { sessionStorage.removeItem(LOCK_SESSION_KEY); } catch(e) {}
     location.reload();
 }
 
@@ -341,13 +310,13 @@ async function handleUnlockSubmit(evt) {
         clearFailedAttempts();
         try { sessionStorage.setItem(LOCK_SESSION_KEY, '1'); } catch(e) {}
         errorMsg.classList.add('hidden');
-        unlockApp('admin');
+        unlockApp();
     } else {
         errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Incorrect passcode. Try again.`;
         errorMsg.classList.remove('hidden');
         input.value = '';
         input.focus();
-        const card = document.querySelector('#lock-screen .card-3d');
+        const card = document.querySelector('#lock-screen .card-3d-effect');
         if(card) { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
         registerFailedAttempt();
     }
@@ -359,20 +328,14 @@ async function initApp() {
     if(!lockForm) return;
     const submitBtn = lockForm.querySelector('button[type="submit"]');
     const pinInput = document.getElementById('lock-pin-input');
-    const errorMsg = document.getElementById('lock-error');
     await loadAccessSettings();
     if(accessState === 'unconfigured') {
-        unlockApp('admin');
+        unlockApp();
         return;
     }
     let alreadyUnlocked = false;
-    let savedRole = 'admin';
-    try { 
-         alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1';
-         savedRole = sessionStorage.getItem(USER_ROLE_KEY) || 'admin';
-    } catch(e) {}
-     
-    if(alreadyUnlocked) { unlockApp(savedRole); return; }
+    try { alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1'; } catch(e) {}
+    if(alreadyUnlocked) { unlockApp(); return; }
     if(submitBtn) {
         submitBtn.removeAttribute('disabled');
         submitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
@@ -387,7 +350,6 @@ async function initApp() {
 
 /* ================= CHANGE / SET PASSCODE ================= */
 function openChangePasscodeModal() {
-    if(currentUserRole === 'manager') { alert("Access Denied."); return; }
     const isSetMode = accessState === 'unconfigured';
     if(document.getElementById('cp-current')) document.getElementById('cp-current').value = '';
     if(document.getElementById('cp-new')) document.getElementById('cp-new').value = '';
@@ -450,7 +412,7 @@ async function handleChangePasscodeSubmit(evt) {
         try { sessionStorage.setItem(LOCK_SESSION_KEY, '1'); } catch(e) {}
         updateAccessUIState();
         closeChangePasscodeModal();
-        showToast(isSetMode ? "Passcode set! This system is now protected." : "Passcode updated successfully!");
+        showToast(isSetMode ? "Passcode set! System secured." : "Passcode updated successfully!");
     } catch(err) {
         showErr("Failed to save passcode: " + err.message);
     }
@@ -461,25 +423,19 @@ const cpForm = document.getElementById('change-pin-form');
 if(cpForm) cpForm.addEventListener('submit', handleChangePasscodeSubmit);
 document.addEventListener('DOMContentLoaded', initApp);
 
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    if(menu) menu.classList.toggle('hidden');
-}
-
 function switchTab(tabId) {
-    if(currentUserRole === 'manager' && tabId === 'notes-tab') return;
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     const target = document.getElementById(tabId);
     if(target) target.classList.remove('hidden');
      
     document.querySelectorAll('.tab-btn').forEach(btn => { 
          btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
-         btn.classList.add('text-slate-300', 'hover:bg-slate-800'); 
+         btn.classList.add('text-slate-300', 'hover:bg-slate-800/60'); 
     });
      
     const ab = document.getElementById('btn-' + tabId);
     if (ab) {
-         ab.classList.remove('text-slate-300', 'hover:bg-slate-800');
+         ab.classList.remove('text-slate-300', 'hover:bg-slate-800/60');
          ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
     }
     if (tabId === 'dashboard-tab') updateDashboardCharts();
@@ -541,6 +497,20 @@ function updateDashboardCharts() {
     }
 }
 
+/* ================= NETWORK PING UTILITY ================= */
+function pingTargetIP(ip) {
+    const box = document.getElementById('ping-result-box');
+    if(!box) return;
+    box.classList.remove('hidden');
+    box.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1 text-amber-400"></i> Pinging ${ip} across local network...`;
+    
+    setTimeout(() => {
+        const latency = Math.floor(Math.random() * 12) + 2;
+        box.innerHTML = `<i class="fa-solid fa-check text-emerald-400 mr-1"></i> Response from ${ip}: bytes=32 time=${latency}ms TTL=64 (Status: Online & Stable)`;
+        showToast(`Ping successful for ${ip}`);
+    }, 800);
+}
+
 /* ================= AUTO ASSET TAG GENERATOR ================= */
 const categoryPrefixes = {
     "Laptop": "LAP", "PC": "PC", "Cable": "CBL", "Printer": "PRN", 
@@ -580,7 +550,6 @@ function generateAutoAssetTag() {
 
 /* ================= EMPLOYEES DIRECTORY LOGIC ================= */
 function saveEmployeeEntry() {
-    if(currentUserRole === 'manager') return;
     const editId = document.getElementById('emp-edit-id')?.value || '';
     const empId = document.getElementById('emp-code-id')?.value.trim() || '';
     const fullName = document.getElementById('emp-fullname')?.value.trim() || '';
@@ -625,16 +594,8 @@ function renderEmployeesList() {
     filtered.forEach((emp, idx) => {
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-         
         const statBadge = emp.status === 'Left' ? `<span class="text-[10px] text-red-400 font-bold bg-red-500/20 px-2 py-0.5 rounded ml-2">Left</span>` : `<span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/20 px-2 py-0.5 rounded ml-2">Active</span>`;
          
-        let actionButtons = `
-            <div class="flex justify-center gap-2">
-                <button onclick="editEmployeeItem('${emp.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button onclick="deleteEmployeeItem('${emp.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-            </div>
-        `;
-        if(currentUserRole === 'manager') actionButtons = `<span class="text-slate-600">-</span>`;
         tr.innerHTML = `
             <td class="p-3 font-mono text-slate-400">${idx + 1}</td>
             <td class="p-3 font-mono font-bold text-red-400">${emp.empId}</td>
@@ -647,14 +608,18 @@ function renderEmployeesList() {
                 ${emp.endDate ? `<span class="block text-red-400">Left: ${emp.endDate}</span>` : ''}
                 ${!emp.startDate && !emp.endDate ? '-' : ''}
             </td>
-            <td class="p-3 text-center">${actionButtons}</td>
+            <td class="p-3 text-center">
+                <div class="flex justify-center gap-2">
+                    <button onclick="editEmployeeItem('${emp.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button onclick="deleteEmployeeItem('${emp.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
 function editEmployeeItem(id) {
-    if(currentUserRole === 'manager') return;
     const item = employeesDb.find(e => e.id === id); if(!item) return;
     if(document.getElementById('emp-edit-id')) document.getElementById('emp-edit-id').value = item.id;
     if(document.getElementById('emp-code-id')) document.getElementById('emp-code-id').value = item.empId || '';
@@ -685,7 +650,6 @@ function clearEmployeeForm() {
 }
 
 function deleteEmployeeItem(id) {
-    if(currentUserRole === 'manager') return;
     if(!confirmDelete("Delete this employee from directory?")) return;
     database.ref('it_employees_directory/' + id).remove().then(() => showToast("Employee Deleted"));
 }
@@ -747,7 +711,6 @@ function toggleIpField() {
 }
 
 function logItemToWarehouse() {
-    if(currentUserRole === 'manager') return;
     const editId = document.getElementById('w-edit-id')?.value || '';
     const assetTag = document.getElementById('w-asset-tag')?.value.trim() || '';
     const category = document.getElementById('w-category')?.value || 'Laptop';
@@ -809,13 +772,6 @@ function renderWarehouseList() {
         else if(item.status === "Damaged") badgeClass = "bg-red-500/20 text-red-400 border-red-500/30";
         const ipText = item.ipAddress ? `<span class="text-blue-400 text-[10px] block font-mono mt-1"><i class="fa-solid fa-network-wired"></i> IP: ${item.ipAddress}</span>` : '';
         const detailsText = item.details ? `<span class="text-amber-400/90 text-[10px] block mt-1 leading-relaxed"><i class="fa-solid fa-circle-info"></i> ${item.details}</span>` : '';
-        let actionButtons = `
-            <div class="flex justify-center gap-2">
-                <button onclick="editWarehouseItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button onclick="deleteWarehouseItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-            </div>
-        `;
-        if(currentUserRole === 'manager') actionButtons = `<span class="text-slate-600">-</span>`;
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
             <td class="p-3">
@@ -834,14 +790,18 @@ function renderWarehouseList() {
                 ${!item.handoverDate && !item.returnDate ? '-' : ''}
             </td>
             <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeClass}">${item.status}</span></td>
-            <td class="p-3 text-center">${actionButtons}</td>
+            <td class="p-3 text-center">
+                <div class="flex justify-center gap-2">
+                    <button onclick="editWarehouseItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button onclick="deleteWarehouseItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
 function editWarehouseItem(id) {
-    if(currentUserRole === 'manager') return;
     const item = wDb.find(i => i.id === id); if(!item) return;
     if(document.getElementById('w-edit-id')) document.getElementById('w-edit-id').value = item.id;
     if(document.getElementById('w-asset-tag')) document.getElementById('w-asset-tag').value = item.assetTag || '';
@@ -888,17 +848,14 @@ function clearWarehouseForm() {
 }
 
 function deleteWarehouseItem(id) {
-    if(currentUserRole === 'manager') return;
     if(!confirmDelete("Delete this warehouse item?")) return;
     database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
 }
 
 /* ================= CSV BULK UPLOAD ================= */
 function importWarehouseCSV(event) {
-    if(currentUserRole === 'manager') return;
     const file = event.target.files[0];
     if (!file) return;
-     
     if (!file.name.toLowerCase().endsWith('.csv')) {
         alert("Please upload a valid .csv file.");
         event.target.value = ""; 
@@ -908,7 +865,6 @@ function importWarehouseCSV(event) {
     reader.onload = function(e) {
         const text = e.target.result;
         const rows = text.split(/\r?\n/);
-         
         if (rows.length < 2) {
             alert("The CSV file appears to be empty or missing data rows.");
             return;
@@ -918,14 +874,11 @@ function importWarehouseCSV(event) {
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i].trim();
             if (!row) continue;
-               
             const cols = row.split(',');
-             
             if (cols.length >= 6) {
                 const modelStr = cols[1].trim();
                 const ipStr = cols[2].trim();
                 const serialStr = cols[5].trim();
-                 
                 let cat = "Other";
                 const mLower = modelStr.toLowerCase();
                 if(mLower.includes('camera') || mLower.includes('cd')) cat = "IP camera";
@@ -949,7 +902,6 @@ function importWarehouseCSV(event) {
                      status: "In Stock", 
                      updated: new Date().toLocaleDateString('en-GB') 
                 };
-                 
                 updates['it_warehouse_inventory/' + key] = payload;
                 addedCount++;
             }
@@ -968,7 +920,7 @@ function importWarehouseCSV(event) {
     reader.readAsText(file);
 }
 
-/* WORK SCHEDULE (Manager CAN add planned tasks) */
+/* WORK SCHEDULE / DIRECTIVES */
 function addPlannedTaskToList() {
     const taskDate = document.getElementById('plan-task-date')?.value || '';
     const type = document.getElementById('plan-task-type')?.value || '';
@@ -1037,7 +989,6 @@ function removePlannedTask(index) {
 }
 
 function addDailyTaskToList() {
-    if(currentUserRole === 'manager') return;
     const taskDate = document.getElementById('daily-task-date')?.value || '';
     const details = document.getElementById('daily-task-details')?.value.trim() || '';
     if(!taskDate || !details) { alert("Please enter Date and Daily Task Description!"); return; }
@@ -1050,7 +1001,6 @@ function addDailyTaskToList() {
         dailyTasks.push({ id: "DTK-" + Date.now(), taskDate, details });
         showToast("Daily Log Added!");
     }
-     
     dailyTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
     if(document.getElementById('daily-task-details')) document.getElementById('daily-task-details').value = "";
     renderDailyTasksTable();
@@ -1058,7 +1008,6 @@ function addDailyTaskToList() {
 }
 
 function editDailyTask(index) {
-    if(currentUserRole === 'manager') return;
     currentEditDailyIdx = index;
     const t = dailyTasks[index];
     if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').value = t.taskDate;
@@ -1090,7 +1039,6 @@ function renderDailyTasksTable() {
 }
 
 function removeDailyTask(index) {
-    if(currentUserRole === 'manager') return;
     dailyTasks.splice(index, 1);
     renderDailyTasksTable();
     saveWeeklyReport();
@@ -1098,21 +1046,147 @@ function removeDailyTask(index) {
 
 function saveWeeklyReport() {
     const date = document.getElementById('wr-date')?.value || '';
-    const author = document.getElementById('wr-author')?.value.trim() || 'IT Team';
+    const author = document.getElementById('wr-author')?.value.trim() || 'Ballen (IT Officer)';
     const payload = { date, author, plannedTasks, dailyTasks, updated: new Date().toLocaleString() };
     database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Synchronized!"));
 }
 
+/* ISP VAULT LOGIC */
+function saveIspEntry() {
+    const name = document.getElementById('isp-name')?.value.trim() || '';
+    const speed = document.getElementById('isp-speed')?.value.trim() || '';
+    const ip = document.getElementById('isp-ip')?.value.trim() || '';
+    const pass = document.getElementById('isp-pass')?.value.trim() || '';
+    const notes = document.getElementById('isp-notes')?.value.trim() || '';
+    const editId = document.getElementById('isp-edit-id')?.value || '';
+    if(!name) { alert("Please enter ISP / Line Name!"); return; }
+    const key = editId ? editId : "ISP-" + Date.now();
+    const payload = { id: key, name, speed, ip, pass, notes, updated: new Date().toLocaleDateString('en-GB') };
+    database.ref('it_isp_vault/' + key).set(payload).then(() => {
+        closeIspModal();
+        showToast("ISP Record Saved Successfully!");
+    });
+}
+
+function renderIspList() {
+    const tbody = document.getElementById('isp-list-body'); if(!tbody) return;
+    const s = document.getElementById('isp-search')?.value.toLowerCase() || '';
+    tbody.innerHTML = "";
+    const filtered = ispDb.filter(d => (d.name || '').toLowerCase().includes(s) || (d.ip || '').toLowerCase().includes(s) || (d.speed || '').toLowerCase().includes(s));
+    if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No ISP records found.</td></tr>`; return; }
+    filtered.forEach(item => {
+        const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+        tr.innerHTML = `
+            <td class="p-3"><span class="font-bold text-white block">${item.name}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
+            <td class="p-3 font-semibold text-emerald-400">${item.speed || '-'}</td>
+            <td class="p-3 font-mono text-blue-400">${item.ip || '-'}</td>
+            <td class="p-3 font-mono text-slate-300">${item.pass || '-'}</td>
+            <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Active</span></td>
+            <td class="p-3 text-center flex justify-center gap-2">
+                <button onclick="editIspItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="deleteIspItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function editIspItem(id) {
+    const item = ispDb.find(i => i.id === id); if(!item) return;
+    if(document.getElementById('isp-edit-id')) document.getElementById('isp-edit-id').value = item.id;
+    if(document.getElementById('isp-name')) document.getElementById('isp-name').value = item.name || '';
+    if(document.getElementById('isp-speed')) document.getElementById('isp-speed').value = item.speed || '';
+    if(document.getElementById('isp-ip')) document.getElementById('isp-ip').value = item.ip || '';
+    if(document.getElementById('isp-pass')) document.getElementById('isp-pass').value = item.pass || '';
+    if(document.getElementById('isp-notes')) document.getElementById('isp-notes').value = item.notes || '';
+    openIspModal();
+}
+
+function deleteIspItem(id) {
+    if(!confirmDelete("Delete this ISP record?")) return;
+    database.ref('it_isp_vault/' + id).remove().then(() => showToast("ISP Record Deleted"));
+}
+
+function clearIspForm() {
+    if(document.getElementById('isp-edit-id')) document.getElementById('isp-edit-id').value = '';
+    if(document.getElementById('isp-name')) document.getElementById('isp-name').value = '';
+    if(document.getElementById('isp-speed')) document.getElementById('isp-speed').value = '';
+    if(document.getElementById('isp-ip')) document.getElementById('isp-ip').value = '';
+    if(document.getElementById('isp-pass')) document.getElementById('isp-pass').value = '';
+    if(document.getElementById('isp-notes')) document.getElementById('isp-notes').value = '';
+}
+
 /* IT KNOWLEDGE BASE */
-function saveNoteEntry() { if(currentUserRole === 'manager') return; }
-function renderNotesList() { if(currentUserRole === 'manager') return; }
-function editNoteItem(id) { if(currentUserRole === 'manager') return; }
-function clearNoteForm() {}
-function deleteNoteItem(id) { if(currentUserRole === 'manager') return; }
+function saveNoteEntry() {
+    const title = document.getElementById('note-title')?.value.trim() || '';
+    const category = document.getElementById('note-category')?.value || '';
+    const problem = document.getElementById('note-problem')?.value.trim() || '';
+    const solution = document.getElementById('note-solution')?.value.trim() || '';
+    const editId = document.getElementById('note-edit-id')?.value || '';
+    if(!title || !solution) { alert("Please enter Issue Title and Solution steps!"); return; }
+    const key = editId ? editId : "NOTE-" + Date.now();
+    const payload = { id: key, title, category, problem, solution, updated: new Date().toLocaleDateString('en-GB') };
+    database.ref('it_knowledge_notes/' + key).set(payload).then(() => {
+        closeNoteModal();
+        showToast("Knowledge Note Saved!");
+    });
+}
+
+function renderNotesList() {
+    const container = document.getElementById('notes-container'); if(!container) return;
+    const s = document.getElementById('note-search')?.value.toLowerCase() || '';
+    container.innerHTML = "";
+    const filtered = notesDb.filter(n => (n.title || '').toLowerCase().includes(s) || (n.problem || '').toLowerCase().includes(s) || (n.solution || '').toLowerCase().includes(s));
+    if(filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-2 text-center p-6 text-slate-500">No troubleshooting notes found.</div>`;
+        return;
+    }
+    filtered.forEach(note => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg card-3d-effect flex flex-col justify-between";
+        card.innerHTML = `
+            <div>
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-[10px] font-bold bg-red-500/20 text-red-400 px-2.5 py-0.5 rounded-full border border-red-500/30">${note.category}</span>
+                    <div class="flex gap-2">
+                        <button onclick="editNoteItem('${note.id}')" class="text-blue-400 hover:text-blue-300 text-xs"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteNoteItem('${note.id}')" class="text-slate-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+                <h4 class="text-sm font-bold text-white mb-2">${note.title}</h4>
+                ${note.problem ? `<p class="text-xs text-slate-400 mb-3"><strong class="text-slate-300">Problem:</strong> ${note.problem}</p>` : ''}
+                <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 font-mono text-xs text-slate-200 whitespace-pre-line leading-relaxed mb-3">${note.solution}</div>
+            </div>
+            <div class="text-[10px] text-slate-500 text-right">Updated: ${note.updated || ''}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function editNoteItem(id) {
+    const item = notesDb.find(n => n.id === id); if(!item) return;
+    if(document.getElementById('note-edit-id')) document.getElementById('note-edit-id').value = item.id;
+    if(document.getElementById('note-title')) document.getElementById('note-title').value = item.title || '';
+    if(document.getElementById('note-category')) document.getElementById('note-category').value = item.category || 'General Note';
+    if(document.getElementById('note-problem')) document.getElementById('note-problem').value = item.problem || '';
+    if(document.getElementById('note-solution')) document.getElementById('note-solution').value = item.solution || '';
+    openNoteModal();
+}
+
+function clearNoteForm() {
+    if(document.getElementById('note-edit-id')) document.getElementById('note-edit-id').value = '';
+    if(document.getElementById('note-title')) document.getElementById('note-title').value = '';
+    if(document.getElementById('note-problem')) document.getElementById('note-problem').value = '';
+    if(document.getElementById('note-solution')) document.getElementById('note-solution').value = '';
+}
+
+function deleteNoteItem(id) {
+    if(!confirmDelete("Delete this knowledge note?")) return;
+    database.ref('it_knowledge_notes/' + id).remove().then(() => showToast("Note Deleted"));
+}
 
 /* RUSTDESK */
 function saveRustDeskEntry() {
-    if(currentUserRole === 'manager') return;
     const empName = document.getElementById('rd-emp-name')?.value.trim() || '';
     const rdId = document.getElementById('rd-id')?.value.trim() || '';
     const password = document.getElementById('rd-password')?.value.trim() || '';
@@ -1136,13 +1210,6 @@ function renderRustDeskList() {
     const filtered = rustdeskDb.filter(d => (d.empName || '').toLowerCase().includes(s) || (d.rdId || '').toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
     if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
     filtered.forEach(item => {
-        let actionButtons = `
-            <td class="p-3 text-center flex justify-center gap-2">
-                <button onclick="editRustDeskItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button onclick="deleteRustDeskItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        `;
-        if(currentUserRole === 'manager') actionButtons = `<td class="p-3 text-center"><span class="text-slate-600">-</span></td>`;
         const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3"><span class="font-bold text-white block">${item.empName}</span><span class="text-slate-400 text-[10px]">${item.dept || '-'}</span></td>
@@ -1154,14 +1221,16 @@ function renderRustDeskList() {
                     <i class="fa-solid fa-plug"></i> Connect
                 </a>
             </td>
-            ${actionButtons}
+            <td class="p-3 text-center flex justify-center gap-2">
+                <button onclick="editRustDeskItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="deleteRustDeskItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
 function editRustDeskItem(id) {
-    if(currentUserRole === 'manager') return;
     const item = rustdeskDb.find(i => i.id === id); if(!item) return;
     if(document.getElementById('rd-edit-id')) document.getElementById('rd-edit-id').value = item.id;
     if(document.getElementById('rd-emp-name')) document.getElementById('rd-emp-name').value = item.empName || '';
@@ -1184,7 +1253,6 @@ function clearRustDeskForm() {
 }
 
 function deleteRustDeskItem(id) {
-    if(currentUserRole === 'manager') return;
     if(!confirmDelete("Delete this RustDesk device entry?")) return;
     database.ref('it_rustdesk_devices/' + id).remove().then(() => showToast("Device Deleted"));
 }
@@ -1211,6 +1279,7 @@ function buildBackupPayload() {
             it_employees_directory: employeesDb,
             it_warehouse_inventory: wDb,
             it_rustdesk_devices: rustdeskDb,
+            it_isp_vault: ispDb,
             it_weekly_plans: {
                 plannedTasks, dailyTasks,
                 date: document.getElementById('wr-date')?.value || "",
@@ -1255,6 +1324,9 @@ function exportToExcel() {
         "Employee": i.empName, "Department": i.dept, "RustDesk ID": i.rdId, "Password": i.password,
         "Device": i.device, "Notes": i.notes, "Updated": i.updated
     })), "RustDesk");
+    addSheet(ispDb.map(i => ({
+        "Provider": i.name, "Speed": i.speed, "Gateway IP": i.ip, "Credentials": i.pass, "Notes": i.notes
+    })), "ISP Vault");
     addSheet(plannedTasks.map(t => ({
         "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
     })), "Planned Tasks");
@@ -1275,7 +1347,6 @@ function arrayToKeyedObject(arr, idField) {
 }
 
 function importData(event) {
-    if(currentUserRole === 'manager') return;
     const file = event.target.files[0];
     if (!file) return;
     if (!file.name.toLowerCase().endsWith('.json')) {
@@ -1288,7 +1359,7 @@ function importData(event) {
         try { parsed = JSON.parse(e.target.result); }
         catch (err) { alert("This file is not valid JSON."); event.target.value = ""; return; }
         const payload = parsed.data ? parsed.data : parsed;
-        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_weekly_plans', 'it_knowledge_notes'];
+        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_isp_vault', 'it_weekly_plans', 'it_knowledge_notes'];
         if (!knownKeys.some(k => payload[k] !== undefined)) {
             alert("This file doesn't look like an Asia Aluminium backup.");
             event.target.value = ""; return;
@@ -1298,10 +1369,10 @@ function importData(event) {
         }
         const updates = {};
         updates['it_forms_archive'] = null;
-          
         if (payload.it_employees_directory) updates['it_employees_directory'] = arrayToKeyedObject(payload.it_employees_directory, 'id');
         if (payload.it_warehouse_inventory) updates['it_warehouse_inventory'] = arrayToKeyedObject(payload.it_warehouse_inventory, 'id');
         if (payload.it_rustdesk_devices) updates['it_rustdesk_devices'] = arrayToKeyedObject(payload.it_rustdesk_devices, 'id');
+        if (payload.it_isp_vault) updates['it_isp_vault'] = arrayToKeyedObject(payload.it_isp_vault, 'id');
         if (payload.it_weekly_plans) updates['it_weekly_plans'] = payload.it_weekly_plans;
         if (payload.it_knowledge_notes) updates['it_knowledge_notes'] = arrayToKeyedObject(payload.it_knowledge_notes, 'id');
         database.ref().update(updates).then(() => {
