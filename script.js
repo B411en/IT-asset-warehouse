@@ -28,66 +28,83 @@ let employeesDb = [];
 let wDb = [];
 let rustdeskDb = [];
 let ispDb = [];
+let helpdeskDb = [];
+let ipamDb = [];
 let plannedTasks = [];
 let dailyTasks = [];
 let notesDb = [];
 let currentEditPlannedIdx = -1;
 let currentEditDailyIdx = -1;
 
-/* ================= MODAL LOGICS ================= */
+/* ================= MODAL LOGICS (Fixed Centering) ================= */
 function openEmpModal() {
-    document.getElementById('emp-modal').classList.remove('hidden');
-    document.getElementById('emp-modal').classList.add('flex');
+    const m = document.getElementById('emp-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
-
 function closeEmpModal() {
-    document.getElementById('emp-modal').classList.add('hidden');
-    document.getElementById('emp-modal').classList.remove('flex');
+    const m = document.getElementById('emp-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearEmployeeForm();
 }
 
 function openWarehouseModal() {
-    document.getElementById('warehouse-modal').classList.remove('hidden');
-    document.getElementById('warehouse-modal').classList.add('flex');
+    const m = document.getElementById('warehouse-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
     generateAutoAssetTag();
 }
-
 function closeWarehouseModal() {
-    document.getElementById('warehouse-modal').classList.add('hidden');
-    document.getElementById('warehouse-modal').classList.remove('flex');
+    const m = document.getElementById('warehouse-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearWarehouseForm();
 }
 
 function openRustDeskModal() {
-    document.getElementById('rustdesk-modal').classList.remove('hidden');
-    document.getElementById('rustdesk-modal').classList.add('flex');
+    const m = document.getElementById('rustdesk-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
-
 function closeRustDeskModal() {
-    document.getElementById('rustdesk-modal').classList.add('hidden');
-    document.getElementById('rustdesk-modal').classList.remove('flex');
+    const m = document.getElementById('rustdesk-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearRustDeskForm();
 }
 
 function openIspModal() {
-    document.getElementById('isp-modal').classList.remove('hidden');
-    document.getElementById('isp-modal').classList.add('flex');
+    const m = document.getElementById('isp-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
-
 function closeIspModal() {
-    document.getElementById('isp-modal').classList.add('hidden');
-    document.getElementById('isp-modal').classList.remove('flex');
+    const m = document.getElementById('isp-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearIspForm();
 }
 
-function openNoteModal() {
-    document.getElementById('notes-modal').classList.remove('hidden');
-    document.getElementById('notes-modal').classList.add('flex');
+function openHelpdeskModal() {
+    const m = document.getElementById('helpdesk-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeHelpdeskModal() {
+    const m = document.getElementById('helpdesk-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
+    clearHelpdeskForm();
 }
 
+function openIpamModal() {
+    const m = document.getElementById('ipam-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeIpamModal() {
+    const m = document.getElementById('ipam-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
+    clearIpamForm();
+}
+
+function openNoteModal() {
+    const m = document.getElementById('notes-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+}
 function closeNoteModal() {
-    document.getElementById('notes-modal').classList.add('hidden');
-    document.getElementById('notes-modal').classList.remove('flex');
+    const m = document.getElementById('notes-modal');
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearNoteForm();
 }
 
@@ -96,39 +113,27 @@ function openScheduleModal() {
     if(!modal) return;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    setTimeout(() => {
-        modal.classList.remove('scale-95', 'opacity-0');
-        modal.classList.add('scale-100', 'opacity-100');
-    }, 10);
     initDefaultDates();
 }
-
 function closeScheduleModal() {
     const modal = document.getElementById('schedule-modal');
     if(!modal) return;
-    modal.classList.remove('scale-100', 'opacity-100');
-    modal.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-    }, 300);
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
 }
 
 /* ================= ACCESS LOCK SCREEN ================= */
 function bytesToHex(bytes) {
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 }
-
 function hexToBytes(hex) {
     const arr = new Uint8Array(hex.length / 2);
     for (let i = 0; i < arr.length; i++) arr[i] = parseInt(hex.substr(i * 2, 2), 16);
     return arr;
 }
-
 function randomSaltHex(len = 16) {
     return bytesToHex(crypto.getRandomValues(new Uint8Array(len)));
 }
-
 async function pbkdf2Hash(passcode, saltHex, iterations) {
     const keyMaterial = await crypto.subtle.importKey('raw', new TextEncoder().encode(passcode), 'PBKDF2', false, ['deriveBits']);
     const bits = await crypto.subtle.deriveBits(
@@ -137,7 +142,6 @@ async function pbkdf2Hash(passcode, saltHex, iterations) {
     );
     return bytesToHex(new Uint8Array(bits));
 }
-
 async function loadAccessSettings() {
     try {
         const snap = await database.ref(ACCESS_SETTINGS_PATH).once('value');
@@ -154,7 +158,6 @@ async function loadAccessSettings() {
         accessState = 'unconfigured';
     }
 }
-
 function lockoutSecondsFor(count) {
     if (count >= 12) return 300;
     if (count >= 8) return 60;
@@ -162,11 +165,9 @@ function lockoutSecondsFor(count) {
     if (count >= 3) return 5;
     return 0;
 }
-
 function clearFailedAttempts() {
     try { sessionStorage.removeItem(FAIL_COUNT_KEY); sessionStorage.removeItem(LOCKOUT_UNTIL_KEY); } catch (e) {}
 }
-
 function registerFailedAttempt() {
     let count = 0;
     try { count = parseInt(sessionStorage.getItem(FAIL_COUNT_KEY) || '0', 10) + 1; sessionStorage.setItem(FAIL_COUNT_KEY, String(count)); } catch (e) {}
@@ -177,7 +178,6 @@ function registerFailedAttempt() {
         startLockoutCountdown(wait);
     }
 }
-
 function startLockoutCountdown(seconds) {
     const btn = document.querySelector('#lock-form button[type="submit"]');
     const input = document.getElementById('lock-pin-input');
@@ -200,13 +200,11 @@ function startLockoutCountdown(seconds) {
     tick();
     const timer = setInterval(tick, 1000);
 }
-
 function resumeLockoutIfActive() {
     let until = 0;
     try { until = parseInt(sessionStorage.getItem(LOCKOUT_UNTIL_KEY) || '0', 10); } catch (e) {}
     if (Date.now() < until) startLockoutCountdown((until - Date.now()) / 1000);
 }
-
 function initDefaultDates() {
     const today = new Date();
     if(document.getElementById('wr-date')) document.getElementById('wr-date').valueAsDate = today;
@@ -238,6 +236,17 @@ function attachDataListeners() {
     database.ref('it_isp_vault').on('value', (s) => {
         ispDb = s.val() ? Object.values(s.val()) : [];
         renderIspList();
+    });
+    database.ref('it_helpdesk_tickets').on('value', (s) => {
+        helpdeskDb = s.val() ? Object.values(s.val()) : [];
+        const openTickets = helpdeskDb.filter(t => t.status === 'Open' || t.status === 'In Progress').length;
+        const el = document.getElementById('dash-total-tickets');
+        if(el) el.innerText = openTickets;
+        renderHelpdeskList();
+    });
+    database.ref('it_ipam_subnets').on('value', (s) => {
+        ipamDb = s.val() ? Object.values(s.val()) : [];
+        renderIpamList();
     });
     database.ref('it_weekly_plans').on('value', (s) => {
         const data = s.val();
@@ -364,20 +373,14 @@ function openChangePasscodeModal() {
     if(document.getElementById('cp-current-wrap')) document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
     if(document.getElementById('cp-submit-text')) document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
     const modal = document.getElementById('change-pin-modal');
-    if(modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
+    modal.classList.remove('hidden'); modal.classList.add('flex');
     const focusInput = document.getElementById(isSetMode ? 'cp-new' : 'cp-current');
     if(focusInput) focusInput.focus();
 }
 
 function closeChangePasscodeModal() {
     const modal = document.getElementById('change-pin-modal');
-    if(modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
+    modal.classList.add('hidden'); modal.classList.remove('flex');
 }
 
 async function handleChangePasscodeSubmit(evt) {
@@ -443,13 +446,9 @@ function switchTab(tabId) {
 
 function updateDashboardCharts() {
     const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
-    let inUseCount = 0;
     wDb.forEach(item => { 
          if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1);
-         if(item.status === 'In Use') inUseCount += parseInt(item.quantity || 1);
     });
-    const inUseEl = document.getElementById('dash-total-inuse');
-    if(inUseEl) inUseEl.innerText = inUseCount;
     const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
     const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
     if(ctxW) {
@@ -497,7 +496,7 @@ function updateDashboardCharts() {
     }
 }
 
-/* ================= NETWORK PING UTILITY ================= */
+/* ================= NETWORK PING UTILITIES ================= */
 function pingTargetIP(ip) {
     const box = document.getElementById('ping-result-box');
     if(!box) return;
@@ -510,6 +509,13 @@ function pingTargetIP(ip) {
         showToast(`Ping successful for ${ip}`);
     }, 800);
 }
+function pingCustomInputIP() {
+    const input = document.getElementById('custom-ip-input');
+    if(!input) return;
+    const ip = input.value.trim();
+    if(!ip) { alert("Please enter a valid IP address or hostname!"); return; }
+    pingTargetIP(ip);
+}
 
 /* ================= AUTO ASSET TAG GENERATOR ================= */
 const categoryPrefixes = {
@@ -518,18 +524,15 @@ const categoryPrefixes = {
     "NVR": "NVR", "Access point": "AP", "Hard": "HDD", "Ram": "RAM", 
     "Printer cartridge": "CRT", "Other": "OTH"
 };
-
 function generateAutoAssetTag() {
     try {
         const catSelect = document.getElementById('w-category');
         const tagInput = document.getElementById('w-asset-tag');
         if(!catSelect || !tagInput) return;
-         
         const editId = document.getElementById('w-edit-id')?.value;
         if(editId) return;
         const cat = catSelect.value;
         const prefix = categoryPrefixes[cat] || "OTH";
-         
         let maxNum = 0;
         if (typeof wDb !== 'undefined' && Array.isArray(wDb)) {
             wDb.forEach(item => {
@@ -540,12 +543,9 @@ function generateAutoAssetTag() {
                 }
             });
         }
-         
         const nextNum = String(maxNum + 1).padStart(3, '0');
         tagInput.value = `AA-${prefix}-${nextNum}`;
-    } catch(err) {
-        console.log("Tag generation notice:", err);
-    }
+    } catch(err) { console.log("Tag generation notice:", err); }
 }
 
 /* ================= EMPLOYEES DIRECTORY LOGIC ================= */
@@ -568,12 +568,10 @@ function saveEmployeeEntry() {
         showToast(editId ? "Employee Updated Successfully!" : "Employee Registered Successfully!");
     });
 }
-
 function renderEmployeesList() {
     const tbody = document.getElementById('employees-list-body'); if(!tbody) return;
     const searchInput = document.getElementById('employee-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-     
     tbody.innerHTML = "";
     const filtered = employeesDb.filter(emp => {
         const id = (emp.empId || "").toLowerCase();
@@ -582,7 +580,6 @@ function renderEmployeesList() {
         const dept = (emp.department || "").toLowerCase();
         const sec = (emp.section || "").toLowerCase();
         const ph = (emp.phone || "").toLowerCase();
-         
         return id.includes(searchTerm) || name.includes(searchTerm) || pos.includes(searchTerm) || dept.includes(searchTerm) || sec.includes(searchTerm) || ph.includes(searchTerm);
     });
     const countEl = document.getElementById('employee-count');
@@ -595,7 +592,6 @@ function renderEmployeesList() {
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         const statBadge = emp.status === 'Left' ? `<span class="text-[10px] text-red-400 font-bold bg-red-500/20 px-2 py-0.5 rounded ml-2">Left</span>` : `<span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/20 px-2 py-0.5 rounded ml-2">Active</span>`;
-         
         tr.innerHTML = `
             <td class="p-3 font-mono text-slate-400">${idx + 1}</td>
             <td class="p-3 font-mono font-bold text-red-400">${emp.empId}</td>
@@ -618,37 +614,34 @@ function renderEmployeesList() {
         tbody.appendChild(tr);
     });
 }
-
 function editEmployeeItem(id) {
     const item = employeesDb.find(e => e.id === id); if(!item) return;
-    if(document.getElementById('emp-edit-id')) document.getElementById('emp-edit-id').value = item.id;
-    if(document.getElementById('emp-code-id')) document.getElementById('emp-code-id').value = item.empId || '';
-    if(document.getElementById('emp-fullname')) document.getElementById('emp-fullname').value = item.fullName || '';
-    if(document.getElementById('emp-position')) document.getElementById('emp-position').value = item.position || '';
-    if(document.getElementById('emp-department')) document.getElementById('emp-department').value = item.department || '';
-    if(document.getElementById('emp-section')) document.getElementById('emp-section').value = item.section || '';
-    if(document.getElementById('emp-phone')) document.getElementById('emp-phone').value = item.phone || '';
-    if(document.getElementById('emp-status')) document.getElementById('emp-status').value = item.status || 'Active';
-    if(document.getElementById('emp-start-date')) document.getElementById('emp-start-date').value = item.startDate || '';
-    if(document.getElementById('emp-end-date')) document.getElementById('emp-end-date').value = item.endDate || '';
-    if(document.getElementById('emp-form-title')) document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Edit Employee`;
+    document.getElementById('emp-edit-id').value = item.id;
+    document.getElementById('emp-code-id').value = item.empId || '';
+    document.getElementById('emp-fullname').value = item.fullName || '';
+    document.getElementById('emp-position').value = item.position || '';
+    document.getElementById('emp-department').value = item.department || '';
+    document.getElementById('emp-section').value = item.section || '';
+    document.getElementById('emp-phone').value = item.phone || '';
+    document.getElementById('emp-status').value = item.status || 'Active';
+    document.getElementById('emp-start-date').value = item.startDate || '';
+    document.getElementById('emp-end-date').value = item.endDate || '';
+    document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Edit Employee`;
     openEmpModal();
 }
-
 function clearEmployeeForm() {
-    if(document.getElementById('emp-edit-id')) document.getElementById('emp-edit-id').value = '';
-    if(document.getElementById('emp-code-id')) document.getElementById('emp-code-id').value = '';
-    if(document.getElementById('emp-fullname')) document.getElementById('emp-fullname').value = '';
-    if(document.getElementById('emp-position')) document.getElementById('emp-position').value = '';
-    if(document.getElementById('emp-department')) document.getElementById('emp-department').value = '';
-    if(document.getElementById('emp-section')) document.getElementById('emp-section').value = '';
-    if(document.getElementById('emp-phone')) document.getElementById('emp-phone').value = '';
-    if(document.getElementById('emp-status')) document.getElementById('emp-status').value = 'Active';
-    if(document.getElementById('emp-start-date')) document.getElementById('emp-start-date').value = '';
-    if(document.getElementById('emp-end-date')) document.getElementById('emp-end-date').value = '';
-    if(document.getElementById('emp-form-title')) document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Register / Edit Employee`;
+    document.getElementById('emp-edit-id').value = '';
+    document.getElementById('emp-code-id').value = '';
+    document.getElementById('emp-fullname').value = '';
+    document.getElementById('emp-position').value = '';
+    document.getElementById('emp-department').value = '';
+    document.getElementById('emp-section').value = '';
+    document.getElementById('emp-phone').value = '';
+    document.getElementById('emp-status').value = 'Active';
+    document.getElementById('emp-start-date').value = '';
+    document.getElementById('emp-end-date').value = '';
+    document.getElementById('emp-form-title').innerHTML = `<i class="fa-solid fa-user-pen text-lg"></i> Register / Edit Employee`;
 }
-
 function deleteEmployeeItem(id) {
     if(!confirmDelete("Delete this employee from directory?")) return;
     database.ref('it_employees_directory/' + id).remove().then(() => showToast("Employee Deleted"));
@@ -659,45 +652,39 @@ function populateWarehouseEmployeeDropdown() {
     const select = document.getElementById('w-emp-select'); if(!select) return;
     const searchInput = document.getElementById('w-emp-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-     
     const currentVal = select.value;
     select.innerHTML = `<option value="">-- Choose Employee (Auto-fill) --</option>`;
-     
     employeesDb.forEach(emp => {
         const text = `${emp.fullName} (${emp.department || 'General'})`;
         if (text.toLowerCase().includes(searchTerm)) {
             const opt = document.createElement('option');
-            opt.value = emp.id;
-            opt.textContent = text;
+            opt.value = emp.id; opt.textContent = text;
             select.appendChild(opt);
         }
     });
     select.value = currentVal;
 }
-
 function onWarehouseEmployeeSelected() {
-    const select = document.getElementById('w-emp-select');
-    if(!select) return;
+    const select = document.getElementById('w-emp-select'); if(!select) return;
     const empIdVal = select.value;
     if(!empIdVal) {
-        if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = '';
-        if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = '';
-        if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = '';
-        if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = '';
+        document.getElementById('w-emp-name').value = '';
+        document.getElementById('w-emp-id').value = '';
+        document.getElementById('w-emp-position').value = '';
+        document.getElementById('w-emp-department').value = '';
         return;
     }
     const emp = employeesDb.find(e => e.id === empIdVal);
     if(emp) {
-        if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = emp.fullName || '';
-        if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = emp.empId || '';
-        if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = emp.position || '';
-        if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = emp.department || '';
+        document.getElementById('w-emp-name').value = emp.fullName || '';
+        document.getElementById('w-emp-id').value = emp.empId || '';
+        document.getElementById('w-emp-position').value = emp.position || '';
+        document.getElementById('w-emp-department').value = emp.department || '';
         if(emp.section && document.getElementById('w-location')) {
             document.getElementById('w-location').value = emp.section;
         }
     }
 }
-
 function toggleIpField() {
     const cat = document.getElementById('w-category')?.value || '';
     const ipContainer = document.getElementById('w-ip-container');
@@ -709,7 +696,6 @@ function toggleIpField() {
     }
     generateAutoAssetTag();
 }
-
 function logItemToWarehouse() {
     const editId = document.getElementById('w-edit-id')?.value || '';
     const assetTag = document.getElementById('w-asset-tag')?.value.trim() || '';
@@ -735,12 +721,10 @@ function logItemToWarehouse() {
         showToast(editId ? "Warehouse Item Updated!" : "Asset Added to Warehouse!");
     });
 }
-
 function renderWarehouseList() {
     const tbody = document.getElementById('warehouse-list-body'); if(!tbody) return;
     const searchInput = document.getElementById('warehouse-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-     
     tbody.innerHTML = "";
     const filtered = wDb.filter(item => {
         const tag = (item.assetTag || "").toLowerCase();
@@ -752,7 +736,6 @@ function renderWarehouseList() {
         const dept = (item.empDepartment || "").toLowerCase();
         const ip = (item.ipAddress || "").toLowerCase();
         const detailsStr = (item.details || "").toLowerCase();
-         
         return tag.includes(searchTerm) || emp.includes(searchTerm) || desc.includes(searchTerm) || cat.includes(searchTerm) || serial.includes(searchTerm) || loc.includes(searchTerm) || dept.includes(searchTerm) || ip.includes(searchTerm) || detailsStr.includes(searchTerm);
     });
     const stockCountEl = document.getElementById('stock-count');
@@ -764,7 +747,6 @@ function renderWarehouseList() {
     filtered.forEach(item => {
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
-         
         let badgeClass = "bg-slate-500/20 text-slate-400 border-slate-500/30";
         if(item.status === "In Stock") badgeClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
         else if(item.status === "In Use") badgeClass = "bg-blue-500/20 text-blue-400 border-blue-500/30";
@@ -800,53 +782,50 @@ function renderWarehouseList() {
         tbody.appendChild(tr);
     });
 }
-
 function editWarehouseItem(id) {
     const item = wDb.find(i => i.id === id); if(!item) return;
-    if(document.getElementById('w-edit-id')) document.getElementById('w-edit-id').value = item.id;
-    if(document.getElementById('w-asset-tag')) document.getElementById('w-asset-tag').value = item.assetTag || '';
-    if(document.getElementById('w-category')) document.getElementById('w-category').value = item.category || 'Laptop';
-    if(document.getElementById('w-ip-address')) document.getElementById('w-ip-address').value = item.ipAddress || '';
-    if(document.getElementById('w-desc')) document.getElementById('w-desc').value = item.desc || '';
-    if(document.getElementById('w-details')) document.getElementById('w-details').value = item.details || '';
-    if(document.getElementById('w-serial')) document.getElementById('w-serial').value = item.serial || '';
-    if(document.getElementById('w-quantity')) document.getElementById('w-quantity').value = item.quantity || '1';
-    if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = item.empName || '';
-    if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = item.empId || '';
-    if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = item.empPosition || '';
-    if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = item.empDepartment || '';
-    if(document.getElementById('w-location')) document.getElementById('w-location').value = item.location || '';
-    if(document.getElementById('w-handover-date')) document.getElementById('w-handover-date').value = item.handoverDate || '';
-    if(document.getElementById('w-return-date')) document.getElementById('w-return-date').value = item.returnDate || '';
-    if(document.getElementById('w-status')) document.getElementById('w-status').value = item.status || 'In Stock';
-    if(document.getElementById('w-form-title')) document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-pen text-lg"></i> Edit Stock Item`;
+    document.getElementById('w-edit-id').value = item.id;
+    document.getElementById('w-asset-tag').value = item.assetTag || '';
+    document.getElementById('w-category').value = item.category || 'Laptop';
+    document.getElementById('w-ip-address').value = item.ipAddress || '';
+    document.getElementById('w-desc').value = item.desc || '';
+    document.getElementById('w-details').value = item.details || '';
+    document.getElementById('w-serial').value = item.serial || '';
+    document.getElementById('w-quantity').value = item.quantity || '1';
+    document.getElementById('w-emp-name').value = item.empName || '';
+    document.getElementById('w-emp-id').value = item.empId || '';
+    document.getElementById('w-emp-position').value = item.empPosition || '';
+    document.getElementById('w-emp-department').value = item.empDepartment || '';
+    document.getElementById('w-location').value = item.location || '';
+    document.getElementById('w-handover-date').value = item.handoverDate || '';
+    document.getElementById('w-return-date').value = item.returnDate || '';
+    document.getElementById('w-status').value = item.status || 'In Stock';
+    document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-pen text-lg"></i> Edit Stock Item`;
     toggleIpField();
     openWarehouseModal();
 }
-
 function clearWarehouseForm() {
-    if(document.getElementById('w-edit-id')) document.getElementById('w-edit-id').value = '';
-    if(document.getElementById('w-asset-tag')) document.getElementById('w-asset-tag').value = '';
-    if(document.getElementById('w-ip-address')) document.getElementById('w-ip-address').value = '';
-    if(document.getElementById('w-desc')) document.getElementById('w-desc').value = '';
-    if(document.getElementById('w-details')) document.getElementById('w-details').value = '';
-    if(document.getElementById('w-serial')) document.getElementById('w-serial').value = '';
-    if(document.getElementById('w-quantity')) document.getElementById('w-quantity').value = '1';
-    if(document.getElementById('w-emp-name')) document.getElementById('w-emp-name').value = '';
-    if(document.getElementById('w-emp-id')) document.getElementById('w-emp-id').value = '';
-    if(document.getElementById('w-emp-position')) document.getElementById('w-emp-position').value = '';
-    if(document.getElementById('w-emp-department')) document.getElementById('w-emp-department').value = '';
-    if(document.getElementById('w-location')) document.getElementById('w-location').value = '';
-    if(document.getElementById('w-handover-date')) document.getElementById('w-handover-date').value = '';
-    if(document.getElementById('w-return-date')) document.getElementById('w-return-date').value = '';
-    if(document.getElementById('w-status')) document.getElementById('w-status').value = 'In Stock';
-    if(document.getElementById('w-emp-search')) document.getElementById('w-emp-search').value = '';
-    if(document.getElementById('w-emp-select')) document.getElementById('w-emp-select').value = '';
-    if(document.getElementById('w-form-title')) document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
+    document.getElementById('w-edit-id').value = '';
+    document.getElementById('w-asset-tag').value = '';
+    document.getElementById('w-ip-address').value = '';
+    document.getElementById('w-desc').value = '';
+    document.getElementById('w-details').value = '';
+    document.getElementById('w-serial').value = '';
+    document.getElementById('w-quantity').value = '1';
+    document.getElementById('w-emp-name').value = '';
+    document.getElementById('w-emp-id').value = '';
+    document.getElementById('w-emp-position').value = '';
+    document.getElementById('w-emp-department').value = '';
+    document.getElementById('w-location').value = '';
+    document.getElementById('w-handover-date').value = '';
+    document.getElementById('w-return-date').value = '';
+    document.getElementById('w-status').value = 'In Stock';
+    document.getElementById('w-emp-search').value = '';
+    document.getElementById('w-emp-select').value = '';
+    document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
     toggleIpField();
     generateAutoAssetTag();
 }
-
 function deleteWarehouseItem(id) {
     if(!confirmDelete("Delete this warehouse item?")) return;
     database.ref('it_warehouse_inventory/' + id).remove().then(() => showToast("Warehouse Item Deleted"));
@@ -856,21 +835,14 @@ function deleteWarehouseItem(id) {
 function importWarehouseCSV(event) {
     const file = event.target.files[0];
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.csv')) {
-        alert("Please upload a valid .csv file.");
-        event.target.value = ""; 
-        return;
-    }
+    if (!file.name.toLowerCase().endsWith('.csv')) { alert("Please upload a valid .csv file."); event.target.value = ""; return; }
     const reader = new FileReader();
     reader.onload = function(e) {
         const text = e.target.result;
         const rows = text.split(/\r?\n/);
-        if (rows.length < 2) {
-            alert("The CSV file appears to be empty or missing data rows.");
-            return;
-        }
+        if (rows.length < 2) { alert("The CSV file appears to be empty."); return; }
         let addedCount = 0;
-        const updates = {}; 
+        const updates = {};
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i].trim();
             if (!row) continue;
@@ -885,22 +857,16 @@ function importWarehouseCSV(event) {
                 else if (mLower.includes('nvr') || mLower.includes('ni')) cat = "NVR";
                 else if (mLower.includes('switch')) cat = "Switch";
                 else if (mLower.includes('cartridge') || mLower.includes('catridge')) cat = "Printer cartridge";
-                 
                 const key = "W-CSV-" + Date.now() + "-" + i;
                 const payload = { 
                      id: key, 
                      assetTag: "AA-" + Date.now().toString().slice(-4) + "-" + i,
-                     category: cat, 
-                     ipAddress: ipStr, 
+                     category: cat, ipAddress: ipStr, 
                      desc: modelStr + " (Firmware: " + (cols[4] || '') + ")", 
-                     details: "",
-                     serial: serialStr, 
-                     quantity: "1",
+                     details: "", serial: serialStr, quantity: "1",
                      empName: "", empId: "", empPosition: "", empDepartment: "", 
-                     location: "Main Warehouse", 
-                     handoverDate: "", returnDate: "", 
-                     status: "In Stock", 
-                     updated: new Date().toLocaleDateString('en-GB') 
+                     location: "Main Warehouse", handoverDate: "", returnDate: "", 
+                     status: "In Stock", updated: new Date().toLocaleDateString('en-GB') 
                 };
                 updates['it_warehouse_inventory/' + key] = payload;
                 addedCount++;
@@ -909,15 +875,129 @@ function importWarehouseCSV(event) {
         if(addedCount > 0) {
             database.ref().update(updates).then(() => {
                 showToast(`Successfully imported ${addedCount} items from CSV!`);
-                event.target.value = ""; 
-            }).catch(err => {
-                alert("Failed to upload items: " + err.message);
-            });
-        } else {
-            alert("No valid rows found to import. Check the CSV format.");
-        }
+                event.target.value = "";
+            }).catch(err => { alert("Failed to upload items: " + err.message); });
+        } else { alert("No valid rows found to import."); }
     };
     reader.readAsText(file);
+}
+
+/* ================= HELPDESK TICKETS LOGIC (NEW) ================= */
+function saveHelpdeskEntry() {
+    const editId = document.getElementById('helpdesk-edit-id')?.value || '';
+    const emp = document.getElementById('hd-emp')?.value.trim() || '';
+    const title = document.getElementById('hd-title')?.value.trim() || '';
+    const status = document.getElementById('hd-status')?.value || 'Open';
+    const details = document.getElementById('hd-details')?.value.trim() || '';
+    if(!emp || !title) { alert("Please enter Employee and Issue Title!"); return; }
+    const key = editId ? editId : "HD-" + Date.now();
+    const payload = { id: key, emp, title, status, details, updated: new Date().toLocaleDateString('en-GB') };
+    database.ref('it_helpdesk_tickets/' + key).set(payload).then(() => {
+        closeHelpdeskModal();
+        showToast(editId ? "Ticket Updated!" : "Support Ticket Created!");
+    });
+}
+function renderHelpdeskList() {
+    const tbody = document.getElementById('helpdesk-list-body'); if(!tbody) return;
+    const s = document.getElementById('helpdesk-search')?.value.toLowerCase() || '';
+    tbody.innerHTML = "";
+    const filtered = helpdeskDb.filter(t => (t.emp || '').toLowerCase().includes(s) || (t.title || '').toLowerCase().includes(s) || (t.details || '').toLowerCase().includes(s));
+    if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No support tickets found.</td></tr>`; return; }
+    filtered.forEach(item => {
+        let statusBadge = "bg-amber-500/20 text-amber-400 border-amber-500/30";
+        if(item.status === 'Resolved') statusBadge = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+        else if(item.status === 'In Progress') statusBadge = "bg-blue-500/20 text-blue-400 border-blue-500/30";
+        const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+        tr.innerHTML = `
+            <td class="p-3 font-mono font-bold text-red-400">${item.id.slice(-6)}</td>
+            <td class="p-3 font-bold text-white">${item.emp}</td>
+            <td class="p-3"><span class="font-bold text-slate-200 block">${item.title}</span><span class="text-[10px] text-slate-400">${item.details || ''}</span></td>
+            <td class="p-3 font-mono text-slate-400">${item.updated || '-'}</td>
+            <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${statusBadge}">${item.status}</span></td>
+            <td class="p-3 text-center flex justify-center gap-2">
+                <button onclick="editHelpdeskItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="deleteHelpdeskItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+function editHelpdeskItem(id) {
+    const item = helpdeskDb.find(t => t.id === id); if(!item) return;
+    document.getElementById('helpdesk-edit-id').value = item.id;
+    document.getElementById('hd-emp').value = item.emp || '';
+    document.getElementById('hd-title').value = item.title || '';
+    document.getElementById('hd-status').value = item.status || 'Open';
+    document.getElementById('hd-details').value = item.details || '';
+    openHelpdeskModal();
+}
+function clearHelpdeskForm() {
+    document.getElementById('helpdesk-edit-id').value = '';
+    document.getElementById('hd-emp').value = '';
+    document.getElementById('hd-title').value = '';
+    document.getElementById('hd-status').value = 'Open';
+    document.getElementById('hd-details').value = '';
+}
+function deleteHelpdeskItem(id) {
+    if(!confirmDelete("Delete this support ticket?")) return;
+    database.ref('it_helpdesk_tickets/' + id).remove().then(() => showToast("Ticket Deleted"));
+}
+
+/* ================= IPAM SUBNET LOGIC (NEW) ================= */
+function saveIpamEntry() {
+    const editId = document.getElementById('ipam-edit-id')?.value || '';
+    const ip = document.getElementById('ipam-ip')?.value.trim() || '';
+    const device = document.getElementById('ipam-device')?.value.trim() || '';
+    const type = document.getElementById('ipam-type')?.value.trim() || '';
+    const owner = document.getElementById('ipam-owner')?.value.trim() || '';
+    if(!ip || !device) { alert("Please enter IP Address and Device Name!"); return; }
+    const key = editId ? editId : "IPAM-" + Date.now();
+    const payload = { id: key, ip, device, type, owner, updated: new Date().toLocaleDateString('en-GB') };
+    database.ref('it_ipam_subnets/' + key).set(payload).then(() => {
+        closeIpamModal();
+        showToast(editId ? "IP Entry Updated!" : "Static IP Recorded!");
+    });
+}
+function renderIpamList() {
+    const tbody = document.getElementById('ipam-list-body'); if(!tbody) return;
+    const s = document.getElementById('ipam-search')?.value.toLowerCase() || '';
+    tbody.innerHTML = "";
+    const filtered = ipamDb.filter(i => (i.ip || '').toLowerCase().includes(s) || (i.device || '').toLowerCase().includes(s) || (i.owner || '').toLowerCase().includes(s));
+    if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No static IP records found.</td></tr>`; return; }
+    filtered.forEach(item => {
+        const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+        tr.innerHTML = `
+            <td class="p-3 font-mono font-bold text-blue-400">${item.ip}</td>
+            <td class="p-3 font-bold text-white">${item.device}</td>
+            <td class="p-3 text-amber-400">${item.type || '-'}</td>
+            <td class="p-3 text-slate-300">${item.owner || '-'}</td>
+            <td class="p-3 text-center flex justify-center gap-2">
+                <button onclick="editIpamItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="deleteIpamItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+function editIpamItem(id) {
+    const item = ipamDb.find(i => i.id === id); if(!item) return;
+    document.getElementById('ipam-edit-id').value = item.id;
+    document.getElementById('ipam-ip').value = item.ip || '';
+    document.getElementById('ipam-device').value = item.device || '';
+    document.getElementById('ipam-type').value = item.type || '';
+    document.getElementById('ipam-owner').value = item.owner || '';
+    openIpamModal();
+}
+function clearIpamForm() {
+    document.getElementById('ipam-edit-id').value = '';
+    document.getElementById('ipam-ip').value = '';
+    document.getElementById('ipam-device').value = '';
+    document.getElementById('ipam-type').value = '';
+    document.getElementById('ipam-owner').value = '';
+}
+function deleteIpamItem(id) {
+    if(!confirmDelete("Delete this IP entry?")) return;
+    database.ref('it_ipam_subnets/' + id).remove().then(() => showToast("IP Entry Deleted"));
 }
 
 /* WORK SCHEDULE / DIRECTIVES */
@@ -943,23 +1023,18 @@ function addPlannedTaskToList() {
     renderPlannedTasksTable();
     saveWeeklyReport();
 }
-
 function editPlannedTask(index) {
     currentEditPlannedIdx = index;
     const t = plannedTasks[index];
-    if(document.getElementById('plan-task-date')) document.getElementById('plan-task-date').value = t.taskDate;
-    if(document.getElementById('plan-task-type')) document.getElementById('plan-task-type').value = t.type;
-    if(document.getElementById('plan-task-priority')) document.getElementById('plan-task-priority').value = t.priority;
-    if(document.getElementById('plan-task-details')) document.getElementById('plan-task-details').value = t.details;
+    document.getElementById('plan-task-date').value = t.taskDate;
+    document.getElementById('plan-task-type').value = t.type;
+    document.getElementById('plan-task-priority').value = t.priority;
+    document.getElementById('plan-task-details').value = t.details;
 }
-
 function renderPlannedTasksTable() {
     const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
     tbody.innerHTML = "";
-    if(plannedTasks.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`;
-        return;
-    }
+    if(plannedTasks.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`; return; }
     plannedTasks.forEach((t, idx) => {
         let badgeBg = "bg-slate-800 text-slate-300";
         if(t.priority === "High") badgeBg = "bg-red-500/20 text-red-400 font-bold border border-red-500/30";
@@ -981,13 +1056,11 @@ function renderPlannedTasksTable() {
         tbody.appendChild(tr);
     });
 }
-
 function removePlannedTask(index) {
     plannedTasks.splice(index, 1);
     renderPlannedTasksTable();
     saveWeeklyReport();
 }
-
 function addDailyTaskToList() {
     const taskDate = document.getElementById('daily-task-date')?.value || '';
     const details = document.getElementById('daily-task-details')?.value.trim() || '';
@@ -1006,21 +1079,16 @@ function addDailyTaskToList() {
     renderDailyTasksTable();
     saveWeeklyReport();
 }
-
 function editDailyTask(index) {
     currentEditDailyIdx = index;
     const t = dailyTasks[index];
-    if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').value = t.taskDate;
-    if(document.getElementById('daily-task-details')) document.getElementById('daily-task-details').value = t.details;
+    document.getElementById('daily-task-date').value = t.taskDate;
+    document.getElementById('daily-task-details').value = t.details;
 }
-
 function renderDailyTasksTable() {
     const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
     tbody.innerHTML = "";
-    if(dailyTasks.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`;
-        return;
-    }
+    if(dailyTasks.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`; return; }
     dailyTasks.forEach((t, idx) => {
         const tr = document.createElement('tr');
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
@@ -1037,13 +1105,11 @@ function renderDailyTasksTable() {
         tbody.appendChild(tr);
     });
 }
-
 function removeDailyTask(index) {
     dailyTasks.splice(index, 1);
     renderDailyTasksTable();
     saveWeeklyReport();
 }
-
 function saveWeeklyReport() {
     const date = document.getElementById('wr-date')?.value || '';
     const author = document.getElementById('wr-author')?.value.trim() || 'Ballen (IT Officer)';
@@ -1067,7 +1133,6 @@ function saveIspEntry() {
         showToast("ISP Record Saved Successfully!");
     });
 }
-
 function renderIspList() {
     const tbody = document.getElementById('isp-list-body'); if(!tbody) return;
     const s = document.getElementById('isp-search')?.value.toLowerCase() || '';
@@ -1090,30 +1155,27 @@ function renderIspList() {
         tbody.appendChild(tr);
     });
 }
-
 function editIspItem(id) {
     const item = ispDb.find(i => i.id === id); if(!item) return;
-    if(document.getElementById('isp-edit-id')) document.getElementById('isp-edit-id').value = item.id;
-    if(document.getElementById('isp-name')) document.getElementById('isp-name').value = item.name || '';
-    if(document.getElementById('isp-speed')) document.getElementById('isp-speed').value = item.speed || '';
-    if(document.getElementById('isp-ip')) document.getElementById('isp-ip').value = item.ip || '';
-    if(document.getElementById('isp-pass')) document.getElementById('isp-pass').value = item.pass || '';
-    if(document.getElementById('isp-notes')) document.getElementById('isp-notes').value = item.notes || '';
+    document.getElementById('isp-edit-id').value = item.id;
+    document.getElementById('isp-name').value = item.name || '';
+    document.getElementById('isp-speed').value = item.speed || '';
+    document.getElementById('isp-ip').value = item.ip || '';
+    document.getElementById('isp-pass').value = item.pass || '';
+    document.getElementById('isp-notes').value = item.notes || '';
     openIspModal();
 }
-
 function deleteIspItem(id) {
     if(!confirmDelete("Delete this ISP record?")) return;
     database.ref('it_isp_vault/' + id).remove().then(() => showToast("ISP Record Deleted"));
 }
-
 function clearIspForm() {
-    if(document.getElementById('isp-edit-id')) document.getElementById('isp-edit-id').value = '';
-    if(document.getElementById('isp-name')) document.getElementById('isp-name').value = '';
-    if(document.getElementById('isp-speed')) document.getElementById('isp-speed').value = '';
-    if(document.getElementById('isp-ip')) document.getElementById('isp-ip').value = '';
-    if(document.getElementById('isp-pass')) document.getElementById('isp-pass').value = '';
-    if(document.getElementById('isp-notes')) document.getElementById('isp-notes').value = '';
+    document.getElementById('isp-edit-id').value = '';
+    document.getElementById('isp-name').value = '';
+    document.getElementById('isp-speed').value = '';
+    document.getElementById('isp-ip').value = '';
+    document.getElementById('isp-pass').value = '';
+    document.getElementById('isp-notes').value = '';
 }
 
 /* IT KNOWLEDGE BASE */
@@ -1131,7 +1193,6 @@ function saveNoteEntry() {
         showToast("Knowledge Note Saved!");
     });
 }
-
 function renderNotesList() {
     const container = document.getElementById('notes-container'); if(!container) return;
     const s = document.getElementById('note-search')?.value.toLowerCase() || '';
@@ -1162,24 +1223,21 @@ function renderNotesList() {
         container.appendChild(card);
     });
 }
-
 function editNoteItem(id) {
     const item = notesDb.find(n => n.id === id); if(!item) return;
-    if(document.getElementById('note-edit-id')) document.getElementById('note-edit-id').value = item.id;
-    if(document.getElementById('note-title')) document.getElementById('note-title').value = item.title || '';
-    if(document.getElementById('note-category')) document.getElementById('note-category').value = item.category || 'General Note';
-    if(document.getElementById('note-problem')) document.getElementById('note-problem').value = item.problem || '';
-    if(document.getElementById('note-solution')) document.getElementById('note-solution').value = item.solution || '';
+    document.getElementById('note-edit-id').value = item.id;
+    document.getElementById('note-title').value = item.title || '';
+    document.getElementById('note-category').value = item.category || 'General Note';
+    document.getElementById('note-problem').value = item.problem || '';
+    document.getElementById('note-solution').value = item.solution || '';
     openNoteModal();
 }
-
 function clearNoteForm() {
-    if(document.getElementById('note-edit-id')) document.getElementById('note-edit-id').value = '';
-    if(document.getElementById('note-title')) document.getElementById('note-title').value = '';
-    if(document.getElementById('note-problem')) document.getElementById('note-problem').value = '';
-    if(document.getElementById('note-solution')) document.getElementById('note-solution').value = '';
+    document.getElementById('note-edit-id').value = '';
+    document.getElementById('note-title').value = '';
+    document.getElementById('note-problem').value = '';
+    document.getElementById('note-solution').value = '';
 }
-
 function deleteNoteItem(id) {
     if(!confirmDelete("Delete this knowledge note?")) return;
     database.ref('it_knowledge_notes/' + id).remove().then(() => showToast("Note Deleted"));
@@ -1202,7 +1260,6 @@ function saveRustDeskEntry() {
         showToast("RustDesk Device Saved!");
     });
 }
-
 function renderRustDeskList() {
     const tbody = document.getElementById('rd-list-body'); if(!tbody) return;
     const s = document.getElementById('rd-search')?.value.toLowerCase() || '';
@@ -1229,29 +1286,26 @@ function renderRustDeskList() {
         tbody.appendChild(tr);
     });
 }
-
 function editRustDeskItem(id) {
     const item = rustdeskDb.find(i => i.id === id); if(!item) return;
-    if(document.getElementById('rd-edit-id')) document.getElementById('rd-edit-id').value = item.id;
-    if(document.getElementById('rd-emp-name')) document.getElementById('rd-emp-name').value = item.empName || '';
-    if(document.getElementById('rd-dept')) document.getElementById('rd-dept').value = item.dept || '';
-    if(document.getElementById('rd-id')) document.getElementById('rd-id').value = item.rdId || '';
-    if(document.getElementById('rd-password')) document.getElementById('rd-password').value = item.password || '';
-    if(document.getElementById('rd-device')) document.getElementById('rd-device').value = item.device || '';
-    if(document.getElementById('rd-notes')) document.getElementById('rd-notes').value = item.notes || '';
+    document.getElementById('rd-edit-id').value = item.id;
+    document.getElementById('rd-emp-name').value = item.empName || '';
+    document.getElementById('rd-dept').value = item.dept || '';
+    document.getElementById('rd-id').value = item.rdId || '';
+    document.getElementById('rd-password').value = item.password || '';
+    document.getElementById('rd-device').value = item.device || '';
+    document.getElementById('rd-notes').value = item.notes || '';
     openRustDeskModal();
 }
-
 function clearRustDeskForm() {
-    if(document.getElementById('rd-edit-id')) document.getElementById('rd-edit-id').value = '';
-    if(document.getElementById('rd-emp-name')) document.getElementById('rd-emp-name').value = '';
-    if(document.getElementById('rd-dept')) document.getElementById('rd-dept').value = '';
-    if(document.getElementById('rd-id')) document.getElementById('rd-id').value = '';
-    if(document.getElementById('rd-password')) document.getElementById('rd-password').value = '';
-    if(document.getElementById('rd-device')) document.getElementById('rd-device').value = '';
-    if(document.getElementById('rd-notes')) document.getElementById('rd-notes').value = '';
+    document.getElementById('rd-edit-id').value = '';
+    document.getElementById('rd-emp-name').value = '';
+    document.getElementById('rd-dept').value = '';
+    document.getElementById('rd-id').value = '';
+    document.getElementById('rd-password').value = '';
+    document.getElementById('rd-device').value = '';
+    document.getElementById('rd-notes').value = '';
 }
-
 function deleteRustDeskItem(id) {
     if(!confirmDelete("Delete this RustDesk device entry?")) return;
     database.ref('it_rustdesk_devices/' + id).remove().then(() => showToast("Device Deleted"));
@@ -1260,7 +1314,6 @@ function deleteRustDeskItem(id) {
 function confirmDelete(msg) {
     return confirm(msg || "Are you sure you want to delete this? This cannot be undone.");
 }
-
 function showToast(m) {
     const t = document.getElementById('toast'); 
     const msgEl = document.getElementById('toast-msg');
@@ -1280,6 +1333,8 @@ function buildBackupPayload() {
             it_warehouse_inventory: wDb,
             it_rustdesk_devices: rustdeskDb,
             it_isp_vault: ispDb,
+            it_helpdesk_tickets: helpdeskDb,
+            it_ipam_subnets: ipamDb,
             it_weekly_plans: {
                 plannedTasks, dailyTasks,
                 date: document.getElementById('wr-date')?.value || "",
@@ -1289,7 +1344,6 @@ function buildBackupPayload() {
         }
     };
 }
-
 function downloadBlob(content, filename, mime) {
     const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
@@ -1298,14 +1352,12 @@ function downloadBlob(content, filename, mime) {
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
 }
-
 function exportData() {
     const payload = buildBackupPayload();
     const stamp = new Date().toISOString().slice(0, 10);
     downloadBlob(JSON.stringify(payload, null, 2), `asia-aluminium-backup-${stamp}.json`, 'application/json');
     showToast("Backup JSON Exported!");
 }
-
 function exportToExcel() {
     if (typeof XLSX === 'undefined') { alert("Excel export library failed to load."); return; }
     const wb = XLSX.utils.book_new();
@@ -1327,6 +1379,12 @@ function exportToExcel() {
     addSheet(ispDb.map(i => ({
         "Provider": i.name, "Speed": i.speed, "Gateway IP": i.ip, "Credentials": i.pass, "Notes": i.notes
     })), "ISP Vault");
+    addSheet(helpdeskDb.map(t => ({
+        "Ticket ID": t.id, "Employee": t.emp, "Issue": t.title, "Status": t.status, "Details": t.details
+    })), "Helpdesk Tickets");
+    addSheet(ipamDb.map(i => ({
+        "IP Address": i.ip, "Device Name": i.device, "Type": i.type, "Owner/Location": i.owner
+    })), "IPAM Subnets");
     addSheet(plannedTasks.map(t => ({
         "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
     })), "Planned Tasks");
@@ -1335,7 +1393,6 @@ function exportToExcel() {
     XLSX.writeFile(wb, `asia-aluminium-report-${stamp}.xlsx`);
     showToast("Excel Report Exported!");
 }
-
 function arrayToKeyedObject(arr, idField) {
     const obj = {};
     const list = Array.isArray(arr) ? arr : Object.values(arr || {});
@@ -1345,21 +1402,17 @@ function arrayToKeyedObject(arr, idField) {
     });
     return obj;
 }
-
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.json')) {
-        alert("Please select a valid .json backup file.");
-        event.target.value = ""; return;
-    }
+    if (!file.name.toLowerCase().endsWith('.json')) { alert("Please select a valid .json backup file."); event.target.value = ""; return; }
     const reader = new FileReader();
     reader.onload = (e) => {
         let parsed;
         try { parsed = JSON.parse(e.target.result); }
         catch (err) { alert("This file is not valid JSON."); event.target.value = ""; return; }
         const payload = parsed.data ? parsed.data : parsed;
-        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_isp_vault', 'it_weekly_plans', 'it_knowledge_notes'];
+        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_isp_vault', 'it_helpdesk_tickets', 'it_ipam_subnets', 'it_weekly_plans', 'it_knowledge_notes'];
         if (!knownKeys.some(k => payload[k] !== undefined)) {
             alert("This file doesn't look like an Asia Aluminium backup.");
             event.target.value = ""; return;
@@ -1373,6 +1426,8 @@ function importData(event) {
         if (payload.it_warehouse_inventory) updates['it_warehouse_inventory'] = arrayToKeyedObject(payload.it_warehouse_inventory, 'id');
         if (payload.it_rustdesk_devices) updates['it_rustdesk_devices'] = arrayToKeyedObject(payload.it_rustdesk_devices, 'id');
         if (payload.it_isp_vault) updates['it_isp_vault'] = arrayToKeyedObject(payload.it_isp_vault, 'id');
+        if (payload.it_helpdesk_tickets) updates['it_helpdesk_tickets'] = arrayToKeyedObject(payload.it_helpdesk_tickets, 'id');
+        if (payload.it_ipam_subnets) updates['it_ipam_subnets'] = arrayToKeyedObject(payload.it_ipam_subnets, 'id');
         if (payload.it_weekly_plans) updates['it_weekly_plans'] = payload.it_weekly_plans;
         if (payload.it_knowledge_notes) updates['it_knowledge_notes'] = arrayToKeyedObject(payload.it_knowledge_notes, 'id');
         database.ref().update(updates).then(() => {
