@@ -87,10 +87,9 @@ const firebaseConfig = {
                     accessState = 'unconfigured';
                 }
             } catch (e) {
-                accessState = 'unknown';
+                accessState = 'unconfigured'; // ئەگەر کێشەی فایەربەیس هەبوو، ڕێگا دەدات سیستەمەکە کراوە بمێنێت و قفڵ نەبێت
             }
         }
-
         function lockoutSecondsFor(count) {
             if (count >= 12) return 300;
             if (count >= 8) return 60;
@@ -280,14 +279,29 @@ const firebaseConfig = {
             const pinInput = document.getElementById('lock-pin-input');
             const errorMsg = document.getElementById('lock-error');
 
-            document.getElementById('lock-screen').addEventListener('contextmenu', e => e.preventDefault());
-            document.addEventListener('keydown', (e) => {
-                if(document.getElementById('lock-screen')) {
-                    if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
-                        e.preventDefault();
-                    }
-                }
-            });
+            await loadAccessSettings();
+
+            if(accessState === 'unconfigured') {
+                unlockApp();
+                return;
+            }
+
+            let alreadyUnlocked = false;
+            try { alreadyUnlocked = sessionStorage.getItem(LOCK_SESSION_KEY) === '1'; } catch(e) {}
+            if(alreadyUnlocked) { unlockApp(); return; }
+
+            if(submitBtn) {
+                submitBtn.removeAttribute('disabled');
+                submitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+            }
+            if(pinInput) {
+                pinInput.removeAttribute('disabled');
+                pinInput.focus();
+            }
+
+            lockForm.addEventListener('submit', handleUnlockSubmit);
+            resumeLockoutIfActive();
+        });
 
             if(submitBtn) {
                 submitBtn.setAttribute('disabled', 'true');
