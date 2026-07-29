@@ -802,6 +802,7 @@ const firebaseConfig = {
             if(document.getElementById('w-emp-select')) document.getElementById('w-emp-select').value = '';
             if(document.getElementById('w-form-title')) document.getElementById('w-form-title').innerHTML = `<i class="fa-solid fa-barcode text-lg"></i> Store / Edit Asset`;
             toggleIpField();
+                    generateAutoAssetTag();
         }
 
         function deleteWarehouseItem(id) {
@@ -1314,6 +1315,47 @@ const firebaseConfig = {
                 }).catch(err => {
                     alert("Import failed: " + err.message);
                     event.target.value = "";
+                            /* ================= AUTO ASSET TAG GENERATOR ================= */
+const categoryPrefixes = {
+    "Laptop": "LAP",
+    "PC": "PC",
+    "Cable": "CBL",
+    "Printer": "PRN",
+    "Monitor": "MON",
+    "Switch": "SW",
+    "Hub": "HUB",
+    "IP camera": "CAM",
+    "NVR": "NVR",
+    "Access point": "AP",
+    "Hard": "HDD",
+    "Ram": "RAM",
+    "Other": "OTH"
+};
+
+function generateAutoAssetTag() {
+    const catSelect = document.getElementById('w-category');
+    const tagInput = document.getElementById('w-asset-tag');
+    if(!catSelect || !tagInput) return;
+    
+    // ئەگەر لە حالەتی دەستکاریکردن (Edit) بوو، تاگەکە مەگۆڕە
+    const editId = document.getElementById('w-edit-id')?.value;
+    if(editId) return;
+
+    const cat = catSelect.value;
+    const prefix = categoryPrefixes[cat] || "OTH";
+    
+    let maxNum = 0;
+    wDb.forEach(item => {
+        if(item.assetTag && item.assetTag.startsWith(`AA-${prefix}-`)) {
+            const parts = item.assetTag.split('-');
+            const num = parseInt(parts[parts.length - 1], 10);
+            if(!isNaN(num) && num > maxNum) maxNum = num;
+        }
+    });
+    
+    const nextNum = String(maxNum + 1).padStart(3, '0');
+    tagInput.value = `AA-${prefix}-${nextNum}`;
+}
                 });
             };
             reader.readAsText(file);
