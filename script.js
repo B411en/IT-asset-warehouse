@@ -710,11 +710,15 @@ function logItemToWarehouse() {
     const handoverDate = document.getElementById('w-handover-date')?.value || '';
     const returnDate = document.getElementById('w-return-date')?.value || '';
     const status = document.getElementById('w-status')?.value || 'In Stock';
+    
     if(!assetTag || !desc) { alert("Please fill Tag and Description!"); return; }
+    
     const key = editId ? editId : "W-" + Date.now();
     const payload = { id: key, assetTag, category, ipAddress, desc, details, serial, quantity, empName, empId, empPosition, empDepartment, location, handoverDate, returnDate, status, updated: new Date().toLocaleDateString('en-GB') };
+    
     database.ref('it_warehouse_inventory/' + key).set(payload).then(() => {
         closeWarehouseModal();
+        switchTab('warehouse-tab'); // 👈 ئەمە دەبێتە هۆی ئەوەی ڕاستەوخۆ بەشی واوەرهۆس پیشان بدات
         showToast(editId ? "Warehouse Item Updated!" : "Asset Added to Warehouse!");
     });
 }
