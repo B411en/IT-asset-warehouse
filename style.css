@@ -190,83 +190,11 @@ header h1 {
     color: #2c3e50;
     font-weight: bold;
 }
-/* --- Modern Cyberpunk & Comedic Lock Screen Styles --- */
-.glitch-form-wrapper {
-    --bg-color: #090d16;
-    --primary-color: #00f2ea;
-    --secondary-color: #ff0055;
-    --text-color: #f8fafc;
-    --font-family: "Fira Code", Consolas, monospace;
-    --glitch-anim-duration: 0.4s;
+
+.data-table tr {
+    transition: background-color 0.2s ease;
 }
 
-.glitch-card {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.95));
-    border: 1px solid rgba(0, 242, 234, 0.3);
-    box-shadow: 0 0 40px rgba(0, 242, 234, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(20px);
-}
-
-.form-group input:focus + .form-label,
-.form-group input:not(:placeholder-shown) + .form-label {
-    top: -1.2rem;
-    font-size: 0.7rem;
-    opacity: 1;
-    color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(0, 242, 234, 0.5);
-}
-
-.form-group input:focus + .form-label::before,
-.form-group input:focus + .form-label::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-}
-
-.form-group input:focus + .form-label::before {
-    color: var(--secondary-color);
-    animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-.form-group input:focus + .form-label::after {
-    color: var(--primary-color);
-    animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
-}
-
-@keyframes glitch-anim {
-    0% { transform: translate(0); clip-path: inset(0 0 0 0); }
-    20% { transform: translate(-4px, 2px); clip-path: inset(40% 0 30% 0); }
-    40% { transform: translate(4px, -2px); clip-path: inset(10% 0 70% 0); }
-    60% { transform: translate(-2px, 3px); clip-path: inset(60% 0 10% 0); }
-    80% { transform: translate(2px, -3px); clip-path: inset(20% 0 50% 0); }
-    100% { transform: translate(0); clip-path: inset(0 0 0 0); }
-}
-
-/* Comedic Button Animations */
-@keyframes comicDodge {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    20% { transform: translate(-40px, -15px) rotate(-15deg); }
-    40% { transform: translate(45px, 15px) rotate(18deg); }
-    60% { transform: translate(-30px, 25px) rotate(-10deg); }
-    80% { transform: translate(30px, -12px) rotate(12deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
-}
-.comic-dodge {
-    animation: comicDodge 0.5s ease-in-out;
-    pointer-events: none;
-}
-
-@keyframes giantGrowth {
-    0% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(2.2) rotate(360deg); background-color: #10b981; color: #000; border-color: #10b981; box-shadow: 0 0 50px #10b981; }
-    100% { transform: scale(2) rotate(360deg); background-color: #10b981; color: #000; border-color: #10b981; box-shadow: 0 0 50px #10b981; }
-}
-.comic-giant {
-    animation: giantGrowth 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: visible !important;
-    z-index: 999;
+.data-table tr:hover {
+    background-color: #f1f8f6;
 }
