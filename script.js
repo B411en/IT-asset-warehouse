@@ -329,23 +329,49 @@ async function handleUnlockSubmit(evt) {
     let lockedOut = false;
     try { lockedOut = Date.now() < parseInt(sessionStorage.getItem(LOCKOUT_UNTIL_KEY) || '0', 10); } catch(e) {}
     if(lockedOut) return false;
+    
     const input = document.getElementById('lock-pin-input');
     const errorMsg = document.getElementById('lock-error');
+    const submitBtn = document.querySelector('#lock-form button[type="submit"]');
     const val = input.value.trim();
     if(!val) return false;
+    
     const enteredHash = await pbkdf2Hash(val, currentAccessSalt, currentAccessIterations);
+    
     if(enteredHash === currentAccessHash) {
         clearFailedAttempts();
         try { sessionStorage.setItem(LOCK_SESSION_KEY, '1'); } catch(e) {}
         errorMsg.classList.add('hidden');
-        unlockApp();
+        
+        // ئەگەر پاسووردەکە ڕاست بوو: بەتنەکە دەبێتە دوو ئەوەندە و دەخولێتەوە بە شێوازێکی کۆمیدی!
+        if(submitBtn) {
+            submitBtn.classList.add('comic-giant');
+        }
+        
+        // کەمێک چاوەڕێ دەکات بۆ ئەوەی شانۆگەریی بەتنە گەورەکە ببینی پاشان سیستەمەکە دەکرێتەوە
+        setTimeout(() => {
+            unlockApp();
+        }, 700);
+        
     } else {
         errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Incorrect passcode. Try again.`;
         errorMsg.classList.remove('hidden');
         input.value = '';
         input.focus();
-        const card = document.querySelector('#lock-screen .card-3d-effect');
-        if(card) { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
+        
+        // ئەگەر پاسووردەکە هەڵە بوو: بەتنەکە ئەملاولاش دەکات و بۆ ماوەیەک کلیل دەبێت (نەتوانیت کلیک بکەیت)
+        if(submitBtn) {
+            submitBtn.classList.add('comic-dodge');
+            submitBtn.setAttribute('disabled', 'true');
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                submitBtn.classList.remove('comic-dodge');
+                submitBtn.removeAttribute('disabled');
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }, 500);
+        }
+        
         registerFailedAttempt();
     }
     return false;
