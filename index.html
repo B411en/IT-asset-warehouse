@@ -52,34 +52,229 @@
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+        /* --- Glitch Lock Screen Styles --- */
+        .glitch-form-wrapper {
+            --bg-color: #0d0d0d;
+            --primary-color: #00f2ea;
+            --secondary-color: #a855f7;
+            --text-color: #e5e5e5;
+            --font-family: "Fira Code", Consolas, "Courier New", Courier, monospace;
+            --glitch-anim-duration: 0.5s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-family);
+            background-color: transparent;
+        }
+        .glitch-card {
+            background-color: var(--bg-color);
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid rgba(0, 242, 234, 0.2);
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.1), inset 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            margin: 1rem;
+            border-radius: 8px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 0.75em 1em;
+            border-bottom: 1px solid rgba(0, 242, 234, 0.2);
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .card-title svg {
+            width: 1.2em;
+            height: 1.2em;
+            stroke: var(--primary-color);
+        }
+        .card-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #333;
+            margin-left: 5px;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            position: absolute;
+            top: 0.75em;
+            left: 0;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .form-group input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(0, 242, 234, 0.3);
+            padding: 0.75em 0;
+            font-size: 1rem;
+            color: var(--text-color);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
+        .form-group input:focus + .form-label,
+        .form-group input:not(:placeholder-shown) + .form-label {
+            top: -1.2em;
+            font-size: 0.75rem;
+            opacity: 1;
+        }
+        .form-group input:focus + .form-label::before,
+        .form-group input:focus + .form-label::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+        }
+        .form-group input:focus + .form-label::before {
+            color: var(--secondary-color);
+            animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        .form-group input:focus + .form-label::after {
+            color: var(--primary-color);
+            animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+        }
+        @keyframes glitch-anim {
+            0% { transform: translate(0); clip-path: inset(0 0 0 0); }
+            20% { transform: translate(-5px, 3px); clip-path: inset(50% 0 20% 0); }
+            40% { transform: translate(3px, -2px); clip-path: inset(20% 0 60% 0); }
+            60% { transform: translate(-4px, 2px); clip-path: inset(80% 0 5% 0); }
+            80% { transform: translate(4px, -3px); clip-path: inset(30% 0 45% 0); }
+            100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 0.8em;
+            margin-top: 0.5rem;
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .submit-btn:hover,
+        .submit-btn:focus {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 25px var(--primary-color);
+            outline: none;
+        }
+        .submit-btn:active {
+            transform: scale(0.97);
+        }
+        .submit-btn .btn-text {
+            position: relative;
+            z-index: 1;
+            transition: opacity 0.2s ease;
+        }
+        .submit-btn:hover .btn-text {
+            opacity: 0;
+        }
+        .submit-btn::before,
+        .submit-btn::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            background-color: var(--primary-color);
+            transition: opacity 0.2s ease;
+        }
+        .submit-btn:hover::before,
+        .submit-btn:focus::before {
+            opacity: 1;
+            color: var(--secondary-color);
+            animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        .submit-btn:hover::after,
+        .submit-btn:focus::after {
+            opacity: 1;
+            color: var(--bg-color);
+            animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-red-500 selection:text-white">
 
     <!-- LOCK SCREEN -->
-    <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden card-3d-effect my-auto">
-            <div class="absolute -top-12 -right-12 w-32 h-32 bg-red-600/15 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="text-center mb-6 relative z-10">
-                <div class="w-16 h-16 bg-red-600/20 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-500/30 text-2xl shadow-lg shadow-red-600/10 animate-pulse">
-                    <i class="fa-solid fa-shield-halved"></i>
+    <div id="lock-screen" class="fixed inset-0 z-50 bg-[#050505] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glitch-form-wrapper w-full max-w-sm p-4">
+            <form id="lock-form" class="glitch-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                            <path d="M12 11.5a3 3 0 0 0 -3 2.824v1.176a3 3 0 0 0 6 0v-1.176a3 3 0 0 0 -3 -2.824z"></path>
+                        </svg>
+                        <span>SECURE_DATA</span>
+                    </div>
+                    <div class="card-dots"><span></span><span></span><span></span></div>
                 </div>
-                <h2 class="text-xl font-black text-white tracking-wide">Asia Aluminium IT</h2>
-                <p class="text-xs text-slate-400 mt-1">Enter security passcode to unlock core system</p>
-            </div>
-            <form id="lock-form" class="space-y-4 relative z-10">
-                <div>
-                    <input type="password" id="lock-pin-input" disabled placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-center tracking-widest text-lg text-white focus:outline-none focus:border-red-500 transition-all opacity-40 shadow-inner">
+
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="password" id="lock-pin-input" name="passcode" required="" placeholder="" autocomplete="current-password" disabled />
+                        <label for="lock-pin-input" class="form-label" data-text="ACCESS_PASSCODE">ACCESS_PASSCODE</label>
+                    </div>
+
+                    <div id="lock-error" class="hidden text-red-400 text-xs mt-2 mb-3 bg-red-950/40 p-2 border border-red-900/50 rounded"></div>
+
+                    <button data-text="UNLOCK_SYSTEM" type="submit" class="submit-btn" disabled>
+                        <span class="btn-text">UNLOCK_SYSTEM</span>
+                    </button>
                 </div>
-                <button type="submit" disabled class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-red-600/30 transition-all opacity-40 cursor-not-allowed">
-                    Unlock System
-                </button>
             </form>
-            <div id="lock-error" class="mt-3 text-center text-xs text-red-400 hidden"></div>
         </div>
     </div>
 
-    <!-- MAIN APP ROOT -->
+    <!-- MAIN APP ROOT[cite: 14] -->
     <div id="app-root" class="hidden flex-col min-h-screen">
         <!-- HEADER -->
         <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-30 shadow-lg">
@@ -128,7 +323,6 @@
                     <button onclick="switchTab('rustdesk-tab')" id="btn-rustdesk-tab" class="tab-btn text-slate-300 hover:bg-slate-800/60 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-desktop"></i> RustDesk IDs
                     </button>
-                    <!-- ISP TAB REPLACED WITH SWITCH PORT MAPPING -->
                     <button onclick="switchTab('isp-tab')" id="btn-isp-tab" class="tab-btn text-slate-300 hover:bg-slate-800/60 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-network-wired text-emerald-400"></i> Switch Port Mapping
                     </button>
@@ -222,12 +416,10 @@
                         </div>
                     </div>
                     
-                    <!-- Search bar for snippets -->
                     <div class="mb-4">
                         <input type="text" id="snippet-search" oninput="renderCommandSnippets()" placeholder="Search commands (e.g. DNS, MikroTik, Windows)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
                     </div>
 
-                    <!-- Snippets Grid -->
                     <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
                         <!-- Injected via JS -->
                     </div>
@@ -370,7 +562,7 @@
                 </div>
             </div>
 
-            <!-- SWITCH PORT MAPPING TAB (REPLACED ISP VAULT) -->
+            <!-- SWITCH PORT MAPPING TAB -->
             <div id="isp-tab" class="tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
                     <div class="relative w-full sm:w-80">
