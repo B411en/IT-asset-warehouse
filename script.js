@@ -1,4 +1,3 @@
-// ڕێکخستنی Firebase بە شێوەیەکی پارێزراو
 const firebaseConfig = {
     apiKey: "AIzaSyC32BVdl1WOfxij22MVBtOYeoyxfQRQMrg",
     authDomain: "it-asset-system-3462d.firebaseapp.com",
@@ -9,19 +8,6 @@ const firebaseConfig = {
     appId: "1:918668871166:web:bac8e8ba00836ccdfc2caf"
 };
 
-let database = null;
-
-// دڵنیابوونەوە لە باربوونی Firebase بەبێ ئەوەی کۆدەکە کراش بکات
-try {
-    if (typeof firebase !== 'undefined') {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        database = firebase.database();
-    }
-} catch (e) {
-    console.warn("Firebase failed to initialize:", e);
-}
 const LOCK_SESSION_KEY = "aa_it_unlocked";
 const FAIL_COUNT_KEY = "aa_it_fail_count";
 const LOCKOUT_UNTIL_KEY = "aa_it_lockout_until";
@@ -33,9 +19,7 @@ let currentAccessHash = null;
 let currentAccessIterations = ACCESS_ITERATIONS;
 let accessState = 'unknown';
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 let dashWarehouseChartInstance = null;
@@ -56,95 +40,82 @@ let currentEditDailyIdx = -1;
 /* ================= MODAL LOGICS ================= */
 function openEmpModal() {
     const m = document.getElementById('emp-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeEmpModal() {
     const m = document.getElementById('emp-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearEmployeeForm();
 }
 
-window.openWarehouseModal = function() {
+function openWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
-    if (m) {
-        m.classList.remove('hidden');
-        m.classList.add('flex');
-        if (typeof generateAutoAssetTag === 'function') generateAutoAssetTag();
-    } else {
-        alert("کێشە: فۆرمی warehouse-modal لە HTML نەدۆزرایەوە!");
-    }
-};
-
-window.closeWarehouseModal = function() {
-    const m = document.getElementById('warehouse-modal');
-    if (m) {
-        m.classList.add('hidden');
-        m.classList.remove('flex');
-    }
-};
+    m.classList.remove('hidden'); m.classList.add('flex');
+    generateAutoAssetTag();
+}
 function closeWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearWarehouseForm();
 }
 
 function openRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearRustDeskForm();
 }
 
 function openIspModal() {
     const m = document.getElementById('isp-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeIspModal() {
     const m = document.getElementById('isp-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearIspForm();
 }
 
 function openHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearHelpdeskForm();
 }
 
 function openIpamModal() {
     const m = document.getElementById('ipam-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeIpamModal() {
     const m = document.getElementById('ipam-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearIpamForm();
 }
 
 function openSnippetModal() {
     const m = document.getElementById('snippet-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeSnippetModal() {
     const m = document.getElementById('snippet-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearSnippetForm();
 }
 
 function openNoteModal() {
     const m = document.getElementById('notes-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    m.classList.remove('hidden'); m.classList.add('flex');
 }
 function closeNoteModal() {
     const m = document.getElementById('notes-modal');
-    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    m.classList.add('hidden'); m.classList.remove('flex');
     clearNoteForm();
 }
 
@@ -338,13 +309,13 @@ function updateAccessUIState() {
         banner.classList.add('flex');
         navBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
         navBtn.classList.add('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
-        if(navBtnText) navBtnText.innerText = 'Set Passcode';
+        navBtnText.innerText = 'Set Passcode';
     } else {
         banner.classList.add('hidden');
         banner.classList.remove('flex');
         navBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
         navBtn.classList.remove('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
-        if(navBtnText) navBtnText.innerText = 'Passcode';
+        navBtnText.innerText = 'Passcode';
     }
 }
 
@@ -360,7 +331,6 @@ async function handleUnlockSubmit(evt) {
     if(lockedOut) return false;
     const input = document.getElementById('lock-pin-input');
     const errorMsg = document.getElementById('lock-error');
-    if(!input || !errorMsg) return false;
     const val = input.value.trim();
     if(!val) return false;
     const enteredHash = await pbkdf2Hash(val, currentAccessSalt, currentAccessIterations);
@@ -422,14 +392,14 @@ function openChangePasscodeModal() {
     if(document.getElementById('cp-current-wrap')) document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
     if(document.getElementById('cp-submit-text')) document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
     const modal = document.getElementById('change-pin-modal');
-    if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    modal.classList.remove('hidden'); modal.classList.add('flex');
     const focusInput = document.getElementById(isSetMode ? 'cp-new' : 'cp-current');
     if(focusInput) focusInput.focus();
 }
 
 function closeChangePasscodeModal() {
     const modal = document.getElementById('change-pin-modal');
-    if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    modal.classList.add('hidden'); modal.classList.remove('flex');
 }
 
 async function handleChangePasscodeSubmit(evt) {
@@ -481,14 +451,14 @@ function switchTab(tabId) {
     if(target) target.classList.remove('hidden');
      
     document.querySelectorAll('.tab-btn').forEach(btn => { 
-         btn.classList.remove('bg-cyan-500', 'text-slate-950', 'shadow-lg', 'shadow-cyan-500/25');
-         btn.classList.add('text-slate-300', 'hover:bg-slate-900', 'hover:text-white'); 
+         btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
+         btn.classList.add('text-slate-300', 'hover:bg-slate-800/60'); 
     });
      
     const ab = document.getElementById('btn-' + tabId);
     if (ab) {
-         ab.classList.remove('text-slate-300', 'hover:bg-slate-900', 'hover:text-white');
-         ab.classList.add('bg-cyan-500', 'text-slate-950', 'shadow-lg', 'shadow-cyan-500/25');
+         ab.classList.remove('text-slate-300', 'hover:bg-slate-800/60');
+         ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
     }
     if (tabId === 'dashboard-tab') updateDashboardCharts();
 }
@@ -498,7 +468,7 @@ function updateDashboardCharts() {
     wDb.forEach(item => { 
          if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1);
     });
-    const bgColors = ['#00f2ea','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
+    const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
     const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
     if(ctxW) {
         if (dashWarehouseChartInstance) dashWarehouseChartInstance.destroy();
@@ -508,9 +478,7 @@ function updateDashboardCharts() {
                 labels: Object.keys(wCounts),
                 datasets: [{
                     data: Object.values(wCounts),
-                    backgroundColor: bgColors,
-                    borderWidth: 1,
-                    borderColor: '#0f172a'
+                    backgroundColor: bgColors
                 }]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
@@ -787,7 +755,7 @@ function renderWarehouseList() {
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
             <td class="p-3">
-                <span class="font-bold text-white block">${item.category} <span class="text-xs bg-slate-800 px-1.5 py-0.5 rounded text-amber-400 ml-1">Qty: ${item.quantity || 1}</span></span>
+                <span class="font-bold text-white block">${item.category} <span class="text-xs bg-slate-700 px-1.5 py-0.5 rounded text-amber-400 ml-1">Qty: ${item.quantity || 1}</span></span>
                 <span class="text-slate-400 text-[10px] block mt-1">${item.desc} (S/N: ${item.serial || 'N/A'})</span>
                 ${detailsText}
                 ${ipText}
@@ -862,23 +830,55 @@ function deleteWarehouseItem(id) {
 }
 
 /* ================= CSV BULK UPLOAD ================= */
-window.importWarehouseCSV = function(event) {
+function importWarehouseCSV(event) {
     const file = event.target.files[0];
     if (!file) return;
-
+    if (!file.name.toLowerCase().endsWith('.csv')) { alert("Please upload a valid .csv file."); event.target.value = ""; return; }
     const reader = new FileReader();
     reader.onload = function(e) {
-        try {
-            const text = e.target.result;
-            const rows = text.split(/\r?\n/);
-            alert(`فایلەکە خوێنرایەوە! ژمارەی دێڕەکان: ${rows.length}`);
-            event.target.value = "";
-        } catch (err) {
-            alert("کێشە لە خوێندنەوەی فایلی CSV: " + err.message);
+        const text = e.target.result;
+        const rows = text.split(/\r?\n/);
+        if (rows.length < 2) { alert("The CSV file appears to be empty."); return; }
+        let addedCount = 0;
+        const updates = {};
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i].trim();
+            if (!row) continue;
+            const cols = row.split(',');
+            if (cols.length >= 6) {
+                const modelStr = cols[1].trim();
+                const ipStr = cols[2].trim();
+                const serialStr = cols[5].trim();
+                let cat = "Other";
+                const mLower = modelStr.toLowerCase();
+                if(mLower.includes('camera') || mLower.includes('cd')) cat = "IP camera";
+                else if (mLower.includes('nvr') || mLower.includes('ni')) cat = "NVR";
+                else if (mLower.includes('switch')) cat = "Switch";
+                else if (mLower.includes('cartridge') || mLower.includes('catridge')) cat = "Printer cartridge";
+                const key = "W-CSV-" + Date.now() + "-" + i;
+                const payload = { 
+                     id: key, 
+                     assetTag: "AA-" + Date.now().toString().slice(-4) + "-" + i,
+                     category: cat, ipAddress: ipStr, 
+                     desc: modelStr + " (Firmware: " + (cols[4] || '') + ")", 
+                     details: "", serial: serialStr, quantity: "1",
+                     empName: "", empId: "", empPosition: "", empDepartment: "", 
+                     location: "Main Warehouse", handoverDate: "", returnDate: "", 
+                     status: "In Stock", updated: new Date().toLocaleDateString('en-GB') 
+                };
+                updates['it_warehouse_inventory/' + key] = payload;
+                addedCount++;
+            }
         }
+        if(addedCount > 0) {
+            database.ref().update(updates).then(() => {
+                showToast(`Successfully imported ${addedCount} items from CSV!`);
+                event.target.value = "";
+            }).catch(err => { alert("Failed to upload items: " + err.message); });
+        } else { alert("No valid rows found to import."); }
     };
     reader.readAsText(file);
-};
+}
 
 /* ================= HELPDESK TICKETS LOGIC ================= */
 function saveHelpdeskEntry() {
@@ -1025,7 +1025,7 @@ function clearSnippetForm() {
     document.getElementById('snippet-category').value = '';
     document.getElementById('snippet-cmd').value = '';
     document.getElementById('snippet-desc').value = '';
-    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i> Add Command Snippet`;
+    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Add Command Snippet`;
 }
 
 function saveSnippetEntry() {
@@ -1070,7 +1070,7 @@ function renderCommandSnippets() {
                 <div class="flex justify-between items-center mb-1.5">
                     <span class="text-xs font-bold text-white">${item.title}</span>
                     <div class="flex items-center gap-1.5">
-                        <span class="text-[9px] font-mono bg-slate-900 text-cyan-400 px-2 py-0.5 rounded border border-slate-800">${item.category}</span>
+                        <span class="text-[9px] font-mono bg-slate-900 text-red-400 px-2 py-0.5 rounded border border-slate-800">${item.category}</span>
                         <button onclick="editSnippetItem('${item.id}')" class="text-blue-400 hover:text-blue-300 text-xs px-1"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deleteSnippetItem('${item.id}')" class="text-slate-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -1095,7 +1095,7 @@ function editSnippetItem(id) {
     document.getElementById('snippet-category').value = item.category || '';
     document.getElementById('snippet-cmd').value = item.cmd || '';
     document.getElementById('snippet-desc').value = item.desc || '';
-    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i> Edit Command Snippet`;
+    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Edit Command Snippet`;
     openSnippetModal();
 }
 
@@ -1155,7 +1155,7 @@ function renderPlannedTasksTable() {
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-            <td class="p-3 font-semibold text-cyan-400">${t.type}</td>
+            <td class="p-3 font-semibold text-red-400">${t.type}</td>
             <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
             <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority}</span></td>
             <td class="p-3 text-center no-print">
@@ -1229,7 +1229,7 @@ function saveWeeklyReport() {
     database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Synchronized!"));
 }
 
-/* ================= SWITCH PORT MAPPING LOGIC ================= */
+/* ================= SWITCH PORT MAPPING LOGIC (REPLACED ISP) ================= */
 function saveIspEntry() {
     const name = document.getElementById('isp-name')?.value.trim() || '';
     const location = document.getElementById('isp-speed')?.value.trim() || '';
@@ -1254,7 +1254,7 @@ function renderIspList() {
     filtered.forEach(item => {
         const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
-            <td class="p-3 font-bold text-cyan-400">${item.name}</td>
+            <td class="p-3 font-bold text-red-400">${item.name}</td>
             <td class="p-3 text-slate-300">${item.location || '-'}</td>
             <td class="p-3 text-slate-300">Port Configuration</td>
             <td class="p-3 font-mono text-blue-400">${item.ip || '-'}</td>
@@ -1324,7 +1324,7 @@ function renderNotesList() {
         card.innerHTML = `
             <div>
                 <div class="flex justify-between items-start mb-2">
-                    <span class="text-[10px] font-bold bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded-full border border-cyan-500/30">${note.category}</span>
+                    <span class="text-[10px] font-bold bg-red-500/20 text-red-400 px-2.5 py-0.5 rounded-full border border-red-500/30">${note.category}</span>
                     <div class="flex gap-2">
                         <button onclick="editNoteItem('${note.id}')" class="text-blue-400 hover:text-blue-300 text-xs"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deleteNoteItem('${note.id}')" class="text-slate-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
@@ -1386,7 +1386,7 @@ function renderRustDeskList() {
         const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3"><span class="font-bold text-white block">${item.empName}</span><span class="text-slate-400 text-[10px]">${item.dept || '-'}</span></td>
-            <td class="p-3 font-mono font-black text-cyan-400">${item.rdId}</td>
+            <td class="p-3 font-mono font-black text-red-400">${item.rdId}</td>
             <td class="p-3 font-mono text-slate-300">${item.password || ' '}</td>
             <td class="p-3"><span class="font-semibold text-slate-200 block">${item.device || '-'}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
             <td class="p-3 text-center">
@@ -1475,26 +1475,44 @@ function exportData() {
     downloadBlob(JSON.stringify(payload, null, 2), `asia-aluminium-backup-${stamp}.json`, 'application/json');
     showToast("Backup JSON Exported!");
 }
-window.exportToExcel = function() {
-    if (typeof XLSX === 'undefined') {
-        alert("کێشە: کتێبخانەی SheetJS بار نەبووە. دڵنیابەوە کە ئینتەرنێت هەیە!");
-        return;
-    }
-    
-    try {
-        const wb = XLSX.utils.book_new();
-        const dataToExport = (typeof wDb !== 'undefined' && wDb.length > 0) ? wDb : [{ Note: "No items available" }];
-        
-        const ws = XLSX.utils.json_to_sheet(dataToExport);
-        XLSX.utils.book_append_sheet(wb, ws, "Warehouse Inventory");
-        
-        const stamp = new Date().toISOString().slice(0, 10);
-        XLSX.writeFile(wb, `warehouse-report-${stamp}.xlsx`);
-        if (typeof showToast === 'function') showToast("فایلی ئێکسڵ داگیرا!");
-    } catch (err) {
-        alert("هەڵە لە دروستکردنی فایلی ئێکسڵ: " + err.message);
-    }
-};
+function exportToExcel() {
+    if (typeof XLSX === 'undefined') { alert("Excel export library failed to load."); return; }
+    const wb = XLSX.utils.book_new();
+    const addSheet = (rows, name) => {
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.length ? rows : [{ Note: "No records" }]), name);
+    };
+    addSheet(employeesDb.map(e => ({
+        "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section, "Phone": e.phone, "Status": e.status, "Start Date": e.startDate, "End Date": e.endDate
+    })), "Employees Directory");
+    addSheet(wDb.map(i => ({
+        "Asset Tag": i.assetTag, "Category": i.category, "IP Address": i.ipAddress, "Description": i.desc, "Details/Notes": i.details || "", "Serial": i.serial, "Quantity": i.quantity || 1,
+        "Employee Name": i.empName, "Emp ID": i.empId, "Position": i.empPosition, "Department": i.empDepartment,
+        "Location": i.location, "Handover Date": i.handoverDate, "Return Date": i.returnDate, "Status": i.status
+    })), "Warehouse");
+    addSheet(rustdeskDb.map(i => ({
+        "Employee": i.empName, "Department": i.dept, "RustDesk ID": i.rdId, "Password": i.password,
+        "Device": i.device, "Notes": i.notes, "Updated": i.updated
+    })), "RustDesk");
+    addSheet(switchesDb.map(i => ({
+        "Switch Name": i.name, "Location": i.location, "Management IP": i.ip, "Uplink & VLANs": i.uplink, "Notes": i.notes
+    })), "Switch Port Mapping");
+    addSheet(helpdeskDb.map(t => ({
+        "Ticket ID": t.id, "Employee": t.emp, "Issue": t.title, "Status": t.status, "Details": t.details
+    })), "Helpdesk Tickets");
+    addSheet(ipamDb.map(i => ({
+        "IP Address": i.ip, "Device Name": i.device, "Type": i.type, "Owner/Location": i.owner
+    })), "IPAM Subnets");
+    addSheet(snippetsDb.map(s => ({
+        "Title": s.title, "Category": s.category, "Command": s.cmd, "Description": s.desc
+    })), "Command Snippets");
+    addSheet(plannedTasks.map(t => ({
+        "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
+    })), "Planned Tasks");
+    addSheet(dailyTasks.map(t => ({ "Date": t.taskDate, "Details": t.details })), "Daily Log");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `asia-aluminium-report-${stamp}.xlsx`);
+    showToast("Excel Report Exported!");
+}
 function arrayToKeyedObject(arr, idField) {
     const obj = {};
     const list = Array.isArray(arr) ? arr : Object.values(arr || {});
