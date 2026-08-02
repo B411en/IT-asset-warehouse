@@ -769,33 +769,39 @@ function importData(event) {
             const parsed = JSON.parse(e.target.result);
             console.log("Parsed JSON:", parsed);
             
-            // وەرگرتنی داتاکان چ لە ناو data بێت یان ڕاستەوخۆ
             const payload = parsed.data ? parsed.data : parsed;
-            
             const updates = {};
             updates['it_forms_archive'] = null;
             
-            // وەرگرتنی هەموو کلیلەکانی ناو فایلەکە بە بێ جیاکاری
+            // دروستکردنی فەنکشنی ناوخۆیی بۆ ڕێکخستنی داتاکان بە بێ هیچ کێشەیەک
+            const localArrayToObj = (arr, idField) => {
+                const obj = {};
+                const list = Array.isArray(arr) ? arr : Object.values(arr || {});
+                list.forEach((item, idx) => {
+                    const key = (item && item[idField]) ? item[idField] : (idField + '-' + Date.now() + '-' + idx);
+                    obj[key] = item;
+                });
+                return obj;
+            };
+
             for (const key in payload) {
                 if (payload.hasOwnProperty(key)) {
                     const val = payload[key];
-                    if (Array.isArray(val) || (val && typeof val === 'object' && !val.plannedTasks)) {
-                        updates[key] = arrayToKeyedObject(val, 'id');
+                    if (Array.isArray(val)) {
+                        updates[key] = localArrayToObj(val, 'id');
                     } else {
                         updates[key] = val;
                     }
                 }
             }
             
-            console.log("Prepared updates for Firebase:", updates);
-            
             database.ref().update(updates).then(() => {
-                alert("سەرکەوتوو بوو! باک ئەپەکە بە سەرکەوتوویی گەڕێنرایەوە.");
+                alert("سەرکەوتوو بوو! باک ئەپەکە بە سەرکەوتوویی گەڕێنرایەوە بۆ فایربەیس.");
                 event.target.value = "";
                 location.reload();
             }).catch(err => {
                 console.error("Firebase update error:", err);
-                alert("هەڵە لە فایربەیس (ڕەنگە پێویستی بە مەرجی ڕێپێدان هەبێت): " + err.message);
+                alert("هەڵە لە فایربەیس: " + err.message);
             });
             
         } catch (err) {
