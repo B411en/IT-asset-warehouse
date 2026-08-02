@@ -64,11 +64,24 @@ function closeEmpModal() {
     clearEmployeeForm();
 }
 
-function openWarehouseModal() {
+window.openWarehouseModal = function() {
     const m = document.getElementById('warehouse-modal');
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
-    generateAutoAssetTag();
-}
+    if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        if (typeof generateAutoAssetTag === 'function') generateAutoAssetTag();
+    } else {
+        alert("کێشە: فۆرمی warehouse-modal لە HTML نەدۆزرایەوە!");
+    }
+};
+
+window.closeWarehouseModal = function() {
+    const m = document.getElementById('warehouse-modal');
+    if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+    }
+};
 function closeWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
     if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
@@ -849,55 +862,23 @@ function deleteWarehouseItem(id) {
 }
 
 /* ================= CSV BULK UPLOAD ================= */
-function importWarehouseCSV(event) {
+window.importWarehouseCSV = function(event) {
     const file = event.target.files[0];
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.csv')) { alert("Please upload a valid .csv file."); event.target.value = ""; return; }
+
     const reader = new FileReader();
     reader.onload = function(e) {
-        const text = e.target.result;
-        const rows = text.split(/\r?\n/);
-        if (rows.length < 2) { alert("The CSV file appears to be empty."); return; }
-        let addedCount = 0;
-        const updates = {};
-        for (let i = 1; i < rows.length; i++) {
-            const row = rows[i].trim();
-            if (!row) continue;
-            const cols = row.split(',');
-            if (cols.length >= 6) {
-                const modelStr = cols[1].trim();
-                const ipStr = cols[2].trim();
-                const serialStr = cols[5].trim();
-                let cat = "Other";
-                const mLower = modelStr.toLowerCase();
-                if(mLower.includes('camera') || mLower.includes('cd')) cat = "IP camera";
-                else if (mLower.includes('nvr') || mLower.includes('ni')) cat = "NVR";
-                else if (mLower.includes('switch')) cat = "Switch";
-                else if (mLower.includes('cartridge') || mLower.includes('catridge')) cat = "Printer cartridge";
-                const key = "W-CSV-" + Date.now() + "-" + i;
-                const payload = { 
-                     id: key, 
-                     assetTag: "AA-" + Date.now().toString().slice(-4) + "-" + i,
-                     category: cat, ipAddress: ipStr, 
-                     desc: modelStr + " (Firmware: " + (cols[4] || '') + ")", 
-                     details: "", serial: serialStr, quantity: "1",
-                     empName: "", empId: "", empPosition: "", empDepartment: "", 
-                     location: "Main Warehouse", handoverDate: "", returnDate: "", 
-                     status: "In Stock", updated: new Date().toLocaleDateString('en-GB') 
-                };
-                updates['it_warehouse_inventory/' + key] = payload;
-                addedCount++;
-            }
+        try {
+            const text = e.target.result;
+            const rows = text.split(/\r?\n/);
+            alert(`فایلەکە خوێنرایەوە! ژمارەی دێڕەکان: ${rows.length}`);
+            event.target.value = "";
+        } catch (err) {
+            alert("کێشە لە خوێندنەوەی فایلی CSV: " + err.message);
         }
-        if(addedCount > 0) {
-            database.ref().update(updates).then(() => {
-                showToast(`Successfully imported ${addedCount} items from CSV!`);
-                event.target.value = "";
-            }).catch(err => { alert("Failed to upload items: " + err.message); });
-        } else { alert("No valid rows found to import."); }
     };
     reader.readAsText(file);
-}
+};
 
 /* ================= HELPDESK TICKETS LOGIC ================= */
 function saveHelpdeskEntry() {
@@ -1494,44 +1475,26 @@ function exportData() {
     downloadBlob(JSON.stringify(payload, null, 2), `asia-aluminium-backup-${stamp}.json`, 'application/json');
     showToast("Backup JSON Exported!");
 }
-function exportToExcel() {
-    if (typeof XLSX === 'undefined') { alert("Excel export library failed to load."); return; }
-    const wb = XLSX.utils.book_new();
-    const addSheet = (rows, name) => {
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.length ? rows : [{ Note: "No records" }]), name);
-    };
-    addSheet(employeesDb.map(e => ({
-        "ID": e.empId, "Employee Name": e.fullName, "Position": e.position, "Department": e.department, "Section": e.section, "Phone": e.phone, "Status": e.status, "Start Date": e.startDate, "End Date": e.endDate
-    })), "Employees Directory");
-    addSheet(wDb.map(i => ({
-        "Asset Tag": i.assetTag, "Category": i.category, "IP Address": i.ipAddress, "Description": i.desc, "Details/Notes": i.details || "", "Serial": i.serial, "Quantity": i.quantity || 1,
-        "Employee Name": i.empName, "Emp ID": i.empId, "Position": i.empPosition, "Department": i.empDepartment,
-        "Location": i.location, "Handover Date": i.handoverDate, "Return Date": i.returnDate, "Status": i.status
-    })), "Warehouse");
-    addSheet(rustdeskDb.map(i => ({
-        "Employee": i.empName, "Department": i.dept, "RustDesk ID": i.rdId, "Password": i.password,
-        "Device": i.device, "Notes": i.notes, "Updated": i.updated
-    })), "RustDesk");
-    addSheet(switchesDb.map(i => ({
-        "Switch Name": i.name, "Location": i.location, "Management IP": i.ip, "Uplink & VLANs": i.uplink, "Notes": i.notes
-    })), "Switch Port Mapping");
-    addSheet(helpdeskDb.map(t => ({
-        "Ticket ID": t.id, "Employee": t.emp, "Issue": t.title, "Status": t.status, "Details": t.details
-    })), "Helpdesk Tickets");
-    addSheet(ipamDb.map(i => ({
-        "IP Address": i.ip, "Device Name": i.device, "Type": i.type, "Owner/Location": i.owner
-    })), "IPAM Subnets");
-    addSheet(snippetsDb.map(s => ({
-        "Title": s.title, "Category": s.category, "Command": s.cmd, "Description": s.desc
-    })), "Command Snippets");
-    addSheet(plannedTasks.map(t => ({
-        "Date": t.taskDate, "Category": t.type, "Priority": t.priority, "Details": t.details
-    })), "Planned Tasks");
-    addSheet(dailyTasks.map(t => ({ "Date": t.taskDate, "Details": t.details })), "Daily Log");
-    const stamp = new Date().toISOString().slice(0, 10);
-    XLSX.writeFile(wb, `asia-aluminium-report-${stamp}.xlsx`);
-    showToast("Excel Report Exported!");
-}
+window.exportToExcel = function() {
+    if (typeof XLSX === 'undefined') {
+        alert("کێشە: کتێبخانەی SheetJS بار نەبووە. دڵنیابەوە کە ئینتەرنێت هەیە!");
+        return;
+    }
+    
+    try {
+        const wb = XLSX.utils.book_new();
+        const dataToExport = (typeof wDb !== 'undefined' && wDb.length > 0) ? wDb : [{ Note: "No items available" }];
+        
+        const ws = XLSX.utils.json_to_sheet(dataToExport);
+        XLSX.utils.book_append_sheet(wb, ws, "Warehouse Inventory");
+        
+        const stamp = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, `warehouse-report-${stamp}.xlsx`);
+        if (typeof showToast === 'function') showToast("فایلی ئێکسڵ داگیرا!");
+    } catch (err) {
+        alert("هەڵە لە دروستکردنی فایلی ئێکسڵ: " + err.message);
+    }
+};
 function arrayToKeyedObject(arr, idField) {
     const obj = {};
     const list = Array.isArray(arr) ? arr : Object.values(arr || {});
