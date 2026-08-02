@@ -19,7 +19,9 @@ let currentAccessHash = null;
 let currentAccessIterations = ACCESS_ITERATIONS;
 let accessState = 'unknown';
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const database = firebase.database();
 
 let dashWarehouseChartInstance = null;
@@ -40,82 +42,82 @@ let currentEditDailyIdx = -1;
 /* ================= MODAL LOGICS ================= */
 function openEmpModal() {
     const m = document.getElementById('emp-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeEmpModal() {
     const m = document.getElementById('emp-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearEmployeeForm();
 }
 
 function openWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
     generateAutoAssetTag();
 }
 function closeWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearWarehouseForm();
 }
 
 function openRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearRustDeskForm();
 }
 
 function openIspModal() {
     const m = document.getElementById('isp-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeIspModal() {
     const m = document.getElementById('isp-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearIspForm();
 }
 
 function openHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearHelpdeskForm();
 }
 
 function openIpamModal() {
     const m = document.getElementById('ipam-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeIpamModal() {
     const m = document.getElementById('ipam-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearIpamForm();
 }
 
 function openSnippetModal() {
     const m = document.getElementById('snippet-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeSnippetModal() {
     const m = document.getElementById('snippet-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearSnippetForm();
 }
 
 function openNoteModal() {
     const m = document.getElementById('notes-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 function closeNoteModal() {
     const m = document.getElementById('notes-modal');
-    m.classList.add('hidden'); m.classList.remove('flex');
+    if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
     clearNoteForm();
 }
 
@@ -309,13 +311,13 @@ function updateAccessUIState() {
         banner.classList.add('flex');
         navBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
         navBtn.classList.add('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
-        navBtnText.innerText = 'Set Passcode';
+        if(navBtnText) navBtnText.innerText = 'Set Passcode';
     } else {
         banner.classList.add('hidden');
         banner.classList.remove('flex');
         navBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
         navBtn.classList.remove('bg-amber-500', 'text-slate-900', 'hover:bg-amber-400');
-        navBtnText.innerText = 'Passcode';
+        if(navBtnText) navBtnText.innerText = 'Passcode';
     }
 }
 
@@ -331,6 +333,7 @@ async function handleUnlockSubmit(evt) {
     if(lockedOut) return false;
     const input = document.getElementById('lock-pin-input');
     const errorMsg = document.getElementById('lock-error');
+    if(!input || !errorMsg) return false;
     const val = input.value.trim();
     if(!val) return false;
     const enteredHash = await pbkdf2Hash(val, currentAccessSalt, currentAccessIterations);
@@ -392,14 +395,14 @@ function openChangePasscodeModal() {
     if(document.getElementById('cp-current-wrap')) document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
     if(document.getElementById('cp-submit-text')) document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
     const modal = document.getElementById('change-pin-modal');
-    modal.classList.remove('hidden'); modal.classList.add('flex');
+    if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
     const focusInput = document.getElementById(isSetMode ? 'cp-new' : 'cp-current');
     if(focusInput) focusInput.focus();
 }
 
 function closeChangePasscodeModal() {
     const modal = document.getElementById('change-pin-modal');
-    modal.classList.add('hidden'); modal.classList.remove('flex');
+    if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
 }
 
 async function handleChangePasscodeSubmit(evt) {
@@ -451,14 +454,14 @@ function switchTab(tabId) {
     if(target) target.classList.remove('hidden');
      
     document.querySelectorAll('.tab-btn').forEach(btn => { 
-         btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
-         btn.classList.add('text-slate-300', 'hover:bg-slate-800/60'); 
+         btn.classList.remove('bg-cyan-500', 'text-slate-950', 'shadow-lg', 'shadow-cyan-500/25');
+         btn.classList.add('text-slate-300', 'hover:bg-slate-900', 'hover:text-white'); 
     });
      
     const ab = document.getElementById('btn-' + tabId);
     if (ab) {
-         ab.classList.remove('text-slate-300', 'hover:bg-slate-800/60');
-         ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
+         ab.classList.remove('text-slate-300', 'hover:bg-slate-900', 'hover:text-white');
+         ab.classList.add('bg-cyan-500', 'text-slate-950', 'shadow-lg', 'shadow-cyan-500/25');
     }
     if (tabId === 'dashboard-tab') updateDashboardCharts();
 }
@@ -468,7 +471,7 @@ function updateDashboardCharts() {
     wDb.forEach(item => { 
          if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1);
     });
-    const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
+    const bgColors = ['#00f2ea','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
     const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
     if(ctxW) {
         if (dashWarehouseChartInstance) dashWarehouseChartInstance.destroy();
@@ -478,7 +481,9 @@ function updateDashboardCharts() {
                 labels: Object.keys(wCounts),
                 datasets: [{
                     data: Object.values(wCounts),
-                    backgroundColor: bgColors
+                    backgroundColor: bgColors,
+                    borderWidth: 1,
+                    borderColor: '#0f172a'
                 }]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
@@ -755,7 +760,7 @@ function renderWarehouseList() {
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-red-400">${item.assetTag}</td>
             <td class="p-3">
-                <span class="font-bold text-white block">${item.category} <span class="text-xs bg-slate-700 px-1.5 py-0.5 rounded text-amber-400 ml-1">Qty: ${item.quantity || 1}</span></span>
+                <span class="font-bold text-white block">${item.category} <span class="text-xs bg-slate-800 px-1.5 py-0.5 rounded text-amber-400 ml-1">Qty: ${item.quantity || 1}</span></span>
                 <span class="text-slate-400 text-[10px] block mt-1">${item.desc} (S/N: ${item.serial || 'N/A'})</span>
                 ${detailsText}
                 ${ipText}
@@ -1025,7 +1030,7 @@ function clearSnippetForm() {
     document.getElementById('snippet-category').value = '';
     document.getElementById('snippet-cmd').value = '';
     document.getElementById('snippet-desc').value = '';
-    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Add Command Snippet`;
+    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i> Add Command Snippet`;
 }
 
 function saveSnippetEntry() {
@@ -1070,7 +1075,7 @@ function renderCommandSnippets() {
                 <div class="flex justify-between items-center mb-1.5">
                     <span class="text-xs font-bold text-white">${item.title}</span>
                     <div class="flex items-center gap-1.5">
-                        <span class="text-[9px] font-mono bg-slate-900 text-red-400 px-2 py-0.5 rounded border border-slate-800">${item.category}</span>
+                        <span class="text-[9px] font-mono bg-slate-900 text-cyan-400 px-2 py-0.5 rounded border border-slate-800">${item.category}</span>
                         <button onclick="editSnippetItem('${item.id}')" class="text-blue-400 hover:text-blue-300 text-xs px-1"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deleteSnippetItem('${item.id}')" class="text-slate-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -1095,7 +1100,7 @@ function editSnippetItem(id) {
     document.getElementById('snippet-category').value = item.category || '';
     document.getElementById('snippet-cmd').value = item.cmd || '';
     document.getElementById('snippet-desc').value = item.desc || '';
-    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-red-500"></i> Edit Command Snippet`;
+    document.getElementById('snippet-form-title').innerHTML = `<i class="fa-solid fa-terminal text-cyan-400"></i> Edit Command Snippet`;
     openSnippetModal();
 }
 
@@ -1155,7 +1160,7 @@ function renderPlannedTasksTable() {
         tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-slate-200">${t.taskDate || '-'}</td>
-            <td class="p-3 font-semibold text-red-400">${t.type}</td>
+            <td class="p-3 font-semibold text-cyan-400">${t.type}</td>
             <td class="p-3 text-slate-200 whitespace-pre-line leading-relaxed">${t.details}</td>
             <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badgeBg}">${t.priority}</span></td>
             <td class="p-3 text-center no-print">
@@ -1229,7 +1234,7 @@ function saveWeeklyReport() {
     database.ref('it_weekly_plans').set(payload).then(() => showToast("Schedule Synchronized!"));
 }
 
-/* ================= SWITCH PORT MAPPING LOGIC (REPLACED ISP) ================= */
+/* ================= SWITCH PORT MAPPING LOGIC ================= */
 function saveIspEntry() {
     const name = document.getElementById('isp-name')?.value.trim() || '';
     const location = document.getElementById('isp-speed')?.value.trim() || '';
@@ -1254,7 +1259,7 @@ function renderIspList() {
     filtered.forEach(item => {
         const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
-            <td class="p-3 font-bold text-red-400">${item.name}</td>
+            <td class="p-3 font-bold text-cyan-400">${item.name}</td>
             <td class="p-3 text-slate-300">${item.location || '-'}</td>
             <td class="p-3 text-slate-300">Port Configuration</td>
             <td class="p-3 font-mono text-blue-400">${item.ip || '-'}</td>
@@ -1324,7 +1329,7 @@ function renderNotesList() {
         card.innerHTML = `
             <div>
                 <div class="flex justify-between items-start mb-2">
-                    <span class="text-[10px] font-bold bg-red-500/20 text-red-400 px-2.5 py-0.5 rounded-full border border-red-500/30">${note.category}</span>
+                    <span class="text-[10px] font-bold bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded-full border border-cyan-500/30">${note.category}</span>
                     <div class="flex gap-2">
                         <button onclick="editNoteItem('${note.id}')" class="text-blue-400 hover:text-blue-300 text-xs"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deleteNoteItem('${note.id}')" class="text-slate-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
@@ -1386,7 +1391,7 @@ function renderRustDeskList() {
         const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3"><span class="font-bold text-white block">${item.empName}</span><span class="text-slate-400 text-[10px]">${item.dept || '-'}</span></td>
-            <td class="p-3 font-mono font-black text-red-400">${item.rdId}</td>
+            <td class="p-3 font-mono font-black text-cyan-400">${item.rdId}</td>
             <td class="p-3 font-mono text-slate-300">${item.password || ' '}</td>
             <td class="p-3"><span class="font-semibold text-slate-200 block">${item.device || '-'}</span><span class="text-slate-400 text-[10px]">${item.notes || ''}</span></td>
             <td class="p-3 text-center">
