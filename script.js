@@ -761,28 +761,30 @@ function exportData() {
 }
 function importData(evt) {
     const file = evt.target.files[0];
-    if (!file) return;
+    if (!file) {
+        alert('هیچ فایلێک هەڵنەبژێردراوە!');
+        return;
+    }
     
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const data = JSON.parse(e.target.result);
+            const jsonContent = e.target.result;
+            const data = JSON.parse(jsonContent);
+            
+            let count = 0;
             for (const key in data) {
                 localStorage.setItem(key, data[key]);
+                count++;
             }
-            if (typeof showToast === 'function') {
-                showToast('Data restored successfully!');
-            }
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
+            
+            alert('سەرکەوتوو بوو! ' + count + ' زانیاری گەڕێنرانەوە بۆ ناو سیستەم.');
+            location.reload();
         } catch(err) {
             console.error(err);
-            alert('Invalid backup file format. Please select a valid JSON file.');
+            alert('هەڵە لە خوێندنەوەی فایلی باک ئەپ: ' + err.message);
         }
     };
     reader.readAsText(file);
-    
-    // گرنگ: پاککردنەوەی خانەی فایلەکە بۆ ئەوەی دووبارە کار بکاتەوە ئەگەر هەمان فایل هەڵبژێریتەوە
     evt.target.value = '';
 }
