@@ -769,16 +769,23 @@ function importData(evt) {
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const jsonContent = e.target.result;
-            const data = JSON.parse(jsonContent);
+            const parsed = JSON.parse(e.target.result);
+            
+            // دیاریکردنی شوێنی راستەقینەی داتاکان (ئایا لە ناو 'data' دان یان ڕاستەوخۆن)
+            const content = (parsed.data && typeof parsed.data === 'object') ? parsed.data : parsed;
             
             let count = 0;
-            for (const key in data) {
-                localStorage.setItem(key, data[key]);
+            for (const key in content) {
+                let val = content[key];
+                // ئەگەر زانیارییەکە ئارەی یان ئۆبجێکت بێت، دەبێت بکرێتە سترینگ پێش خستنە ناو LocalStorage
+                if (typeof val === 'object') {
+                    val = JSON.stringify(val);
+                }
+                localStorage.setItem(key, val);
                 count++;
             }
             
-            alert('سەرکەوتوو بوو! ' + count + ' زانیاری گەڕێنرانەوە بۆ ناو سیستەم.');
+            alert('سەرکەوتوو بوو! ' + count + ' بەشی سەرەکی داتا بە سەرکەوتوویی گەڕێنرانەوە.');
             location.reload();
         } catch(err) {
             console.error(err);
