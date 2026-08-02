@@ -762,6 +762,7 @@ function exportData() {
 function importData(evt) {
     const file = evt.target.files[0];
     if (!file) return;
+    
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
@@ -769,10 +770,19 @@ function importData(evt) {
             for (const key in data) {
                 localStorage.setItem(key, data[key]);
             }
-            location.reload();
+            if (typeof showToast === 'function') {
+                showToast('Data restored successfully!');
+            }
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         } catch(err) {
-            alert('Invalid backup file.');
+            console.error(err);
+            alert('Invalid backup file format. Please select a valid JSON file.');
         }
     };
     reader.readAsText(file);
+    
+    // گرنگ: پاککردنەوەی خانەی فایلەکە بۆ ئەوەی دووبارە کار بکاتەوە ئەگەر هەمان فایل هەڵبژێریتەوە
+    evt.target.value = '';
 }
