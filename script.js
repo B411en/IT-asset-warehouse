@@ -762,57 +762,47 @@ function exportData() {
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.json')) { 
-        alert("تکایە فایلی ڕەسەنی .json هەڵبژێرە."); 
-        event.target.value = ""; 
-        return; 
-    }
     
     const reader = new FileReader();
     reader.onload = (e) => {
-        let parsed;
-        try { 
-            parsed = JSON.parse(e.target.result); 
-        } catch (err) { 
-            alert("ئەم فایلە JSON نییە یان تێکچووە."); 
-            event.target.value = ""; 
-            return; 
-        }
-        
-        // دەرهێنانی ناوەرۆکی داتاکان چ لە ناو 'data' بێت یان ڕاستەوخۆ
-        const payload = parsed.data ? parsed.data : parsed;
-        const knownKeys = ['it_employees_directory', 'it_warehouse_inventory', 'it_rustdesk_devices', 'it_switches', 'it_helpdesk_tickets', 'it_ipam_subnets', 'it_command_snippets', 'it_weekly_plans', 'it_knowledge_notes'];
-        
-        if (!knownKeys.some(k => payload[k] !== undefined)) {
-            alert("ئەم فایلە هی سیستەمی ئاسیا ئەلومینۆم نییە.");
-            event.target.value = ""; 
-            return;
-        }
-        
-        if (!confirm("گەڕاندنەوەی باک ئەپ داتای ئێستای سیستەمەکە دەگۆڕێت. دڵنیای لە جێبەجێکردنی؟")) {
-            event.target.value = ""; 
-            return;
-        }
-        
-        const updates = {};
-        if (payload.it_employees_directory) updates['it_employees_directory'] = arrayToKeyedObject(payload.it_employees_directory, 'id');
-        if (payload.it_warehouse_inventory) updates['it_warehouse_inventory'] = arrayToKeyedObject(payload.it_warehouse_inventory, 'id');
-        if (payload.it_rustdesk_devices) updates['it_rustdesk_devices'] = arrayToKeyedObject(payload.it_rustdesk_devices, 'id');
-        if (payload.it_switches) updates['it_switches'] = arrayToKeyedObject(payload.it_switches, 'id');
-        if (payload.it_helpdesk_tickets) updates['it_helpdesk_tickets'] = arrayToKeyedObject(payload.it_helpdesk_tickets, 'id');
-        if (payload.it_ipam_subnets) updates['it_ipam_subnets'] = arrayToKeyedObject(payload.it_ipam_subnets, 'id');
-        if (payload.it_command_snippets) updates['it_command_snippets'] = arrayToKeyedObject(payload.it_command_snippets, 'id');
-        if (payload.it_weekly_plans) updates['it_weekly_plans'] = payload.it_weekly_plans;
-        if (payload.it_knowledge_notes) updates['it_knowledge_notes'] = arrayToKeyedObject(payload.it_knowledge_notes, 'id');
-        
-        database.ref().update(updates).then(() => {
-            showToast("باک ئەپ بە سەرکەوتوویی گەڕێنراوەوە!");
+        try {
+            const parsed = JSON.parse(e.target.result);
+            console.log("Parsed JSON:", parsed);
+            
+            // وەرگرتنی داتاکان چ لە ناو data بێت یان ڕاستەوخۆ
+            const payload = parsed.data ? parsed.data : parsed;
+            
+            const updates = {};
+            updates['it_forms_archive'] = null;
+            
+            // وەرگرتنی هەموو کلیلەکانی ناو فایلەکە بە بێ جیاکاری
+            for (const key in payload) {
+                if (payload.hasOwnProperty(key)) {
+                    const val = payload[key];
+                    if (Array.isArray(val) || (val && typeof val === 'object' && !val.plannedTasks)) {
+                        updates[key] = arrayToKeyedObject(val, 'id');
+                    } else {
+                        updates[key] = val;
+                    }
+                }
+            }
+            
+            console.log("Prepared updates for Firebase:", updates);
+            
+            database.ref().update(updates).then(() => {
+                alert("سەرکەوتوو بوو! باک ئەپەکە بە سەرکەوتوویی گەڕێنرایەوە.");
+                event.target.value = "";
+                location.reload();
+            }).catch(err => {
+                console.error("Firebase update error:", err);
+                alert("هەڵە لە فایربەیس (ڕەنگە پێویستی بە مەرجی ڕێپێدان هەبێت): " + err.message);
+            });
+            
+        } catch (err) {
+            console.error("JSON parse error:", err);
+            alert("هەڵە لە خوێندنەوەی فایلەکە: " + err.message);
             event.target.value = "";
-            setTimeout(() => location.reload(), 1000);
-        }).catch(err => {
-            alert("هەڵە لە گەڕاندنەوەی داتا: " + err.message);
-            event.target.value = "";
-        });
+        }
     };
     reader.readAsText(file);
 }
