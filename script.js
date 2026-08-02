@@ -1,3 +1,4 @@
+// ڕێکخستنی Firebase بە شێوەیەکی پارێزراو
 const firebaseConfig = {
     apiKey: "AIzaSyC32BVdl1WOfxij22MVBtOYeoyxfQRQMrg",
     authDomain: "it-asset-system-3462d.firebaseapp.com",
@@ -8,6 +9,19 @@ const firebaseConfig = {
     appId: "1:918668871166:web:bac8e8ba00836ccdfc2caf"
 };
 
+let database = null;
+
+// دڵنیابوونەوە لە باربوونی Firebase بەبێ ئەوەی کۆدەکە کراش بکات
+try {
+    if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        database = firebase.database();
+    }
+} catch (e) {
+    console.warn("Firebase failed to initialize:", e);
+}
 const LOCK_SESSION_KEY = "aa_it_unlocked";
 const FAIL_COUNT_KEY = "aa_it_fail_count";
 const LOCKOUT_UNTIL_KEY = "aa_it_lockout_until";
