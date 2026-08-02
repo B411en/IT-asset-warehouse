@@ -34,7 +34,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap');
-        
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #030712; 
@@ -45,14 +44,12 @@
                 radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.03) 0%, transparent 40%);
             background-attachment: fixed;
         }
-
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20%, 60% { transform: translateX(-6px); }
             40%, 80% { transform: translateX(6px); }
         }
         .shake { animation: shake 0.4s ease-in-out; }
-
         .card-3d-effect {
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(3, 7, 18, 0.95));
@@ -65,21 +62,16 @@
             border-color: rgba(0, 242, 234, 0.4);
             box-shadow: 0 20px 40px -10px rgba(0, 242, 234, 0.15), 0 10px 20px -5px rgba(0, 0, 0, 0.8);
         }
-
-        /* Neon Table & Scrollbars */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 242, 234, 0.2); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(0, 242, 234, 0.4); }
-
-        /* --- Cyberpunk Lock Screen Styles --- */
         .glitch-form-wrapper {
             --bg-color: #090d16;
             --primary-color: #00f2ea;
             --secondary-color: #ff0055;
             --text-color: #f8fafc;
             --font-family: "Fira Code", Consolas, monospace;
-            --glitch-anim-duration: 0.4s;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -100,57 +92,6 @@
             color: var(--primary-color);
             text-shadow: 0 0 10px rgba(0, 242, 234, 0.5);
         }
-        .form-group input:focus + .form-label::before,
-        .form-group input:focus + .form-label::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-        }
-        .form-group input:focus + .form-label::before {
-            color: var(--secondary-color);
-            animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-        }
-        .form-group input:focus + .form-label::after {
-            color: var(--primary-color);
-            animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
-        }
-        @keyframes glitch-anim {
-            0% { transform: translate(0); clip-path: inset(0 0 0 0); }
-            20% { transform: translate(-4px, 2px); clip-path: inset(40% 0 30% 0); }
-            40% { transform: translate(4px, -2px); clip-path: inset(10% 0 70% 0); }
-            60% { transform: translate(-2px, 3px); clip-path: inset(60% 0 10% 0); }
-            80% { transform: translate(2px, -3px); clip-path: inset(20% 0 50% 0); }
-            100% { transform: translate(0); clip-path: inset(0 0 0 0); }
-        }
-
-        /* Comedic Button Animations */
-        @keyframes comicDodge {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-40px, -15px) rotate(-15deg); }
-            40% { transform: translate(45px, 15px) rotate(18deg); }
-            60% { transform: translate(-30px, 25px) rotate(-10deg); }
-            80% { transform: translate(30px, -12px) rotate(12deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-        .comic-dodge {
-            animation: comicDodge 0.5s ease-in-out;
-            pointer-events: none;
-        }
-
-        @keyframes giantGrowth {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(2.2) rotate(360deg); background-color: #10b981; color: #000; border-color: #10b981; box-shadow: 0 0 50px #10b981; }
-            100% { transform: scale(2) rotate(360deg); background-color: #10b981; color: #000; border-color: #10b981; box-shadow: 0 0 50px #10b981; }
-        }
-        .comic-giant {
-            animation: giantGrowth 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: visible !important;
-            z-index: 999;
-        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-slate-950">
@@ -164,18 +105,8 @@
             <form id="lock-form" class="glitch-card backdrop-blur-xl bg-slate-950/80 border border-cyan-500/30 rounded-2xl shadow-[0_0_50px_rgba(0,242,234,0.15)] overflow-hidden">
                 <div class="card-header bg-slate-900/80 border-b border-cyan-500/20 px-5 py-4 flex justify-between items-center">
                     <div class="card-title flex items-center gap-2 text-cyan-400 font-mono text-xs tracking-widest uppercase font-bold">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                            <path d="M12 11.5a3 3 0 0 0 -3 2.824v1.176a3 3 0 0 0 6 0v-1.176a3 3 0 0 0 -3 -2.824z"></path>
-                        </svg>
+                        <i class="fa-solid fa-shield-halved animate-pulse"></i>
                         <span>ASIA_ALUMINIUM_SECURE_CORE</span>
-                    </div>
-                    <div class="card-dots flex gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-500/40 inline-block animate-ping"></span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-red-500/40 inline-block"></span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/40 inline-block"></span>
                     </div>
                 </div>
 
@@ -193,18 +124,18 @@
                             type="password"
                             id="lock-pin-input"
                             name="passcode"
-                            required=""
+                            required
                             placeholder=""
                             autocomplete="current-password"
                             disabled
                             class="w-full bg-slate-900/50 border-b-2 border-cyan-500/40 px-0 py-3 text-white font-mono tracking-widest text-center focus:outline-none focus:border-cyan-400 transition-all placeholder-transparent"
                         />
-                        <label for="lock-pin-input" class="form-label absolute left-0 top-3 text-cyan-400/60 font-mono text-xs uppercase tracking-wider pointer-events-none transition-all" data-text="ENTER_ACCESS_KEY">ENTER_ACCESS_KEY</label>
+                        <label for="lock-pin-input" class="form-label absolute left-0 top-3 text-cyan-400/60 font-mono text-xs uppercase tracking-wider pointer-events-none transition-all">ENTER_ACCESS_KEY</label>
                     </div>
 
                     <div id="lock-error" class="hidden text-red-400 text-xs text-center bg-red-950/40 p-2.5 border border-red-900/50 rounded-xl font-mono shadow-inner"></div>
 
-                    <button data-text="INITIATE_UNLOCK" type="submit" class="submit-btn w-full py-3.5 bg-gradient-to-r from-cyan-500/10 to-red-500/10 border-2 border-cyan-500 text-cyan-400 font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all relative overflow-hidden group shadow-[0_0_20px_rgba(0,242,234,0.2)] hover:shadow-[0_0_30px_rgba(0,242,234,0.4)] disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <button type="submit" class="submit-btn w-full py-3.5 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border-2 border-cyan-500 text-cyan-400 font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all relative overflow-hidden group shadow-[0_0_20px_rgba(0,242,234,0.2)] hover:shadow-[0_0_30px_rgba(0,242,234,0.4)] disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                         <span class="btn-text relative z-10 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-lock-open text-cyan-400"></i> INITIATE_UNLOCK
                         </span>
@@ -229,7 +160,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="openScheduleModal()" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/30 shadow-md hover:scale-105">
+                    <button onclick="openScheduleModal()" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/30 shadow-md">
                         <i class="fa-solid fa-calendar-check text-cyan-400"></i> Work Schedule
                     </button>
                     <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-amber-500/30">
@@ -350,9 +281,6 @@
                             <button onclick="openSnippetModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-lg shadow-cyan-500/20">
                                 <i class="fa-solid fa-plus text-[10px]"></i> Add Snippet
                             </button>
-                            <span class="text-[10px] text-cyan-400 font-mono bg-cyan-500/10 px-2.5 py-1 rounded-full border border-cyan-500/20 hidden sm:inline-block">
-                                <i class="fa-solid fa-bolt text-[8px] mr-1"></i> CLI Reference
-                            </span>
                         </div>
                     </div>
                     
@@ -367,7 +295,6 @@
 
                 <!-- IT INFRASTRUCTURE & PROFILE CARD -->
                 <div class="card-3d-effect rounded-2xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                    <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="space-y-3 max-w-xl relative z-10">
                         <div class="inline-flex items-center gap-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase font-mono">
                             <i class="fa-solid fa-shield-halved"></i> IT Infrastructure Core
@@ -386,7 +313,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- EMPLOYEES TAB -->
@@ -435,7 +361,7 @@
                     </div>
                     <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between">
                         <span id="stock-count" class="text-xs text-slate-400 font-mono">0 Items</span>
-                        <div id="csv-upload-container" class="flex items-center gap-2">
+                        <div class="flex items-center gap-2">
                             <label class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all border border-cyan-500/20">
                                 <i class="fa-solid fa-file-csv text-emerald-400"></i> Import CSV
                                 <input type="file" id="csv-input" onchange="importWarehouseCSV(event)" accept=".csv" class="hidden">
@@ -528,7 +454,7 @@
                                 </tr>
                             </thead>
                             <tbody id="switch-mapping-list-body">
-                                <!-- Previews/Injected via JS -->
+                                <!-- Injected via JS -->
                             </tbody>
                         </table>
                     </div>
@@ -618,14 +544,10 @@
 
     <!-- WORK SCHEDULE MODAL -->
     <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden overflow-y-auto p-4 items-center justify-center transition-all duration-300">
-        <div class="card-3d-effect rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto transform transition-all border border-cyan-500/30">
-            
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
+        <div class="card-3d-effect rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto border border-cyan-500/30">
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-cyan-500/20 relative z-10">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-500/30 shadow-lg shadow-cyan-500/20 animate-pulse">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-500/30 shadow-lg shadow-cyan-500/20">
                         <i class="fa-solid fa-network-wired text-sm"></i>
                     </div>
                     <div>
@@ -748,7 +670,7 @@
         </div>
     </div>
 
-    <!-- MODALS (Unified Cyber Styling) -->
+    <!-- ALL OTHER MODALS (Employees, Warehouse, RustDesk, Switch, Helpdesk, IPAM, Snippet, Notes, Passcode) -->
     <!-- EMPLOYEE MODAL -->
     <div id="emp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="card-3d-effect rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto border border-cyan-500/30">
