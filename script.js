@@ -1586,3 +1586,55 @@ function importData(event) {
     };
     reader.readAsText(file);
 }
+function importWarehouseFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    if (file.name.endsWith('.csv')) {
+        reader.onload = function(e) {
+            parseAndSaveWarehouseCSV(e.target.result);
+        };
+        reader.readAsText(file);
+    } else {
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+                
+                if (jsonRows && jsonRows.length > 0) {
+                    let warehouseData = getWarehouseData(); // یان ئەو متغیەرەی داتاکانی تێدا هەڵدەگریت
+                    jsonRows.forEach(row => {
+                        let newItem = {
+                            id: 'AST-' + Date.now() + Math.floor(Math.random()*1000),
+                            tag: row['Asset Tag'] || row['tag'] || 'AA-AST-' + Math.floor(Math.random()*1000),
+                            category: row['Category'] || row['category'] || 'Other',
+                            desc: row['Description'] || row['desc'] || row['Model'] || '',
+                            serial: row['Serial'] || row['serial'] || '',
+                            quantity: parseInt(row['Quantity'] || row['quantity'] || 1),
+                            status: row['Status'] || row['status'] || 'In Stock',
+                            empName: row['Employee Name'] || row['empName'] || '',
+                            empId: row['Employee ID'] || row['empId'] || '',
+                            location: row['Location'] || row['location'] || '',
+                            details: row['Details'] || row['details'] || ''
+                        };
+                        warehouseData.push(newItem);
+                    });
+                    
+                    saveWarehouseData(warehouseData); // فەنکشنی پاشەکەوتکردن
+                    renderWarehouseList();
+                    showToast('Excel file imported successfully!');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error parsing Excel file. Please check format.');
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+    event.target.value = '';
+}
