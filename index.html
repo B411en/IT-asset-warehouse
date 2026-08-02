@@ -434,16 +434,15 @@
                         <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search assets, tag, serial, employee..." class="w-full bg-slate-900 border border-cyan-500/20 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
                     </div>
                     <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between">
-                        <span id="stock-count" class="text-xs text-slate-400 font-mono">0 Items</span>
-                        <div id="csv-upload-container" class="flex items-center gap-2">
-                            <label class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all border border-cyan-500/20">
-                                <i class="fa-solid fa-file-csv text-emerald-400"></i> Import CSV
-                                <input type="file" id="csv-input" onchange="importWarehouseCSV(event)" accept=".csv" class="hidden">
-                            </label>
-                            <button onclick="exportToExcel()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/20">
-                                <i class="fa-solid fa-file-excel text-emerald-400"></i> Export XLSX
-                            </button>
-                        </div>
+                      <div id="csv-upload-container" class="flex items-center gap-2">
+    <label class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all border border-cyan-500/20">
+        <i class="fa-solid fa-file-excel text-emerald-400"></i> Import Excel / CSV
+        <input type="file" id="excel-input" onchange="importWarehouseFile(event)" accept=".xlsx, .xls, .csv" class="hidden">
+    </label>
+    <button onclick="exportToExcel()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/20">
+        <i class="fa-solid fa-file-excel text-emerald-400"></i> Export XLSX
+    </button>
+</div>
                         <button onclick="openWarehouseModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all">
                             <i class="fa-solid fa-plus"></i> Store Asset
                         </button>
