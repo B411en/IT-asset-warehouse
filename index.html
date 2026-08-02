@@ -482,6 +482,7 @@
                                     <th class="p-3">Device Name</th>
                                     <th class="p-3">Type / Subnet</th>
                                     <th class="p-3">Location / Owner</th>
+                                    <th class="p-3">Password</th>
                                     <th class="p-3">Notes</th>
                                     <th class="p-3 text-center">Actions</th>
                                 </tr>
@@ -929,6 +930,15 @@
                     <label class="block text-[10px] text-slate-400 mb-1">Location / Owner</label>
                     <input type="text" id="ipam-owner" placeholder="Main Office 1st Floor" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none">
                 </div>
+                <div>
+    <label class="block text-[10px] text-slate-400 mb-1">Device Password</label>
+    <div class="relative">
+        <input type="password" id="ipam-password" placeholder="••••••••" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-3 py-2 pr-10 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+        <button type="button" onclick="toggleIpamPasswordVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-cyan-400 text-xs">
+            <i class="fa-solid fa-eye" id="ipam-eye-icon"></i>
+        </button>
+    </div>
+</div>
                 <div>
     <label class="block text-[10px] text-slate-400 mb-1">Notes / Description</label>
     <textarea id="ipam-notes" rows="2" placeholder="Additional notes or configuration details..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-white focus:border-cyan-500 focus:outline-none"></textarea>
