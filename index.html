@@ -217,66 +217,79 @@
     <div id="app-root" class="hidden flex-col min-h-screen">
         <!-- HEADER -->
         <header class="bg-slate-900/80 backdrop-blur-xl border-b border-cyan-500/20 sticky top-0 z-30 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 text-slate-950 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 font-black text-sm tracking-wider">
-                        AA
-                    </div>
-                    <div>
-                        <h1 class="text-sm font-black tracking-wider text-white">ASIA ALUMINIUM <span class="text-cyan-400">IT</span></h1>
-                        <span class="text-[10px] text-slate-400 font-mono tracking-tight">Asset & Operations Management</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-amber-500/30">
-                        <i class="fa-solid fa-key text-amber-400"></i>
-                        <span id="passcode-nav-btn-text">Passcode</span>
-                    </button>
-                    <!-- Two Master Excel Export Buttons -->
-                    <button onclick="exportAllCoreDataExcel()" class="bg-slate-900/80 hover:bg-slate-800 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/30 shadow-md">
-                        <i class="fa-solid fa-file-excel text-cyan-400"></i> Export Core Assets (.xlsx)
-                    </button>
-                    <button onclick="exportAllNetworkOperationsExcel()" class="bg-slate-900/80 hover:bg-slate-800 text-emerald-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-emerald-500/30 shadow-md">
-                        <i class="fa-solid fa-file-excel text-emerald-400"></i> Export Network & Ops (.xlsx)
-                    </button>
-                    <button onclick="lockApp()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all">
-                        <i class="fa-solid fa-lock"></i> Lock
-                    </button>
-                </div>
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between flex-wrap gap-2 py-2">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 text-slate-950 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 font-black text-sm tracking-wider">
+                AA
             </div>
-            <!-- NAVIGATION TABS -->
-            <div class="bg-slate-950/80 border-t border-cyan-500/10 overflow-x-auto">
-                <div class="max-w-7xl mx-auto px-4 flex gap-1.5 py-2">
-                    <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="tab-btn bg-cyan-500 text-slate-950 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-500/25 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-chart-pie"></i> Dashboard
-                    </button>
-                    <button onclick="openScheduleModal()" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all border border-cyan-500/20 shadow-md">
-                        <i class="fa-solid fa-calendar-check text-cyan-400"></i> Work Schedule
-                    </button>
-                    <button onclick="switchTab('employees-tab')" id="btn-employees-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-users"></i> Employees Directory
-                    </button>
-                    <button onclick="switchTab('warehouse-tab')" id="btn-warehouse-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-warehouse"></i> Warehouse & Assets
-                    </button>
-                    <button onclick="switchTab('rustdesk-tab')" id="btn-rustdesk-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-desktop"></i> RustDesk IDs
-                    </button>
-                    <button onclick="switchTab('isp-tab')" id="btn-isp-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-network-wired text-cyan-400"></i> Switch Port Mapping
-                    </button>
-                    <button onclick="switchTab('helpdesk-tab')" id="btn-helpdesk-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-headset text-amber-400"></i> Helpdesk Tickets
-                    </button>
-                    <button onclick="switchTab('ipam-tab')" id="btn-ipam-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-sitemap text-blue-400"></i> IPAM Subnet
-                    </button>
-                    <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-book-medical"></i> IT Knowledge Notes
-                    </button>
-                </div>
+            <div>
+                <h1 class="text-sm font-black tracking-wider text-white">ASIA ALUMINIUM <span class="text-cyan-400">IT</span></h1>
+                <span class="text-[10px] text-slate-400 font-mono tracking-tight">Asset & Operations Management</span>
             </div>
-        </header>
+        </div>
+        
+        <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-amber-500/30">
+                <i class="fa-solid fa-key text-amber-400"></i>
+                <span id="passcode-nav-btn-text">Passcode</span>
+            </button>
+            
+            <!-- Excel Master Exports -->
+            <button onclick="exportAllCoreDataExcel()" class="bg-slate-900/80 hover:bg-slate-800 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/30 shadow-md">
+                <i class="fa-solid fa-file-excel text-cyan-400"></i> Export Core (.xlsx)
+            </button>
+            <button onclick="exportAllNetworkOperationsExcel()" class="bg-slate-900/80 hover:bg-slate-800 text-emerald-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-emerald-500/30 shadow-md">
+                <i class="fa-solid fa-file-excel text-emerald-400"></i> Export Net (.xlsx)
+            </button>
+
+            <!-- JSON Backup & Restore -->
+            <button onclick="exportData()" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-emerald-500/30">
+                <i class="fa-solid fa-download text-emerald-400"></i> Backup (JSON)
+            </button>
+            <label class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all border border-blue-500/30">
+                <i class="fa-solid fa-upload text-blue-400"></i> Restore (JSON)
+                <input type="file" id="import-json-input" onchange="importData(event)" accept=".json" class="hidden">
+            </label>
+
+            <button onclick="lockApp()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all">
+                <i class="fa-solid fa-lock"></i> Lock
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="bg-slate-950/80 border-t border-cyan-500/10 overflow-x-auto">
+        <div class="max-w-7xl mx-auto px-4 flex gap-1.5 py-2">
+            <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="tab-btn bg-cyan-500 text-slate-950 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-500/25 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </button>
+            <button onclick="openScheduleModal()" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all border border-cyan-500/20 shadow-md">
+                <i class="fa-solid fa-calendar-check text-cyan-400"></i> Work Schedule
+            </button>
+            <button onclick="switchTab('employees-tab')" id="btn-employees-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-users"></i> Employees Directory
+            </button>
+            <button onclick="switchTab('warehouse-tab')" id="btn-warehouse-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-warehouse"></i> Warehouse & Assets
+            </button>
+            <button onclick="switchTab('rustdesk-tab')" id="btn-rustdesk-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-desktop"></i> RustDesk IDs
+            </button>
+            <button onclick="switchTab('isp-tab')" id="btn-isp-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-network-wired text-cyan-400"></i> Switch Port Mapping
+            </button>
+            <button onclick="switchTab('helpdesk-tab')" id="btn-helpdesk-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-headset text-amber-400"></i> Helpdesk Tickets
+            </button>
+            <button onclick="switchTab('ipam-tab')" id="btn-ipam-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-sitemap text-blue-400"></i> IPAM Subnet
+            </button>
+            <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                <i class="fa-solid fa-book-medical"></i> IT Knowledge Notes
+            </button>
+        </div>
+    </div>
+</header>
 
         <!-- SETUP WARNING BANNER -->
         <div id="setup-warning-banner" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 py-2.5 text-xs text-amber-400 items-center justify-between">
