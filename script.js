@@ -343,12 +343,12 @@ async function handleUnlockSubmit(evt) {
         try { sessionStorage.setItem(LOCK_SESSION_KEY, '1'); } catch(e) {}
         errorMsg.classList.add('hidden');
         
-        // ئەگەر پاسووردەکە ڕاست بوو: بەتنەکە دەبێتە دوو ئەوەندە و دەخولێتەوە بە شێوازێکی کۆمیدی!
+        // ئەگەر پاسووردەکە ڕاست بوو: بەتنەکە دەبێتە دوو ئەوەندە و سەوز دەبێت
         if(submitBtn) {
             submitBtn.classList.add('comic-giant');
         }
         
-        // کەمێک چاوەڕێ دەکات بۆ ئەوەی شانۆگەریی بەتنە گەورەکە ببینی پاشان سیستەمەکە دەکرێتەوە
+        // کەمێک چاوەڕێ دەکات پاشان سیستەمەکە دەکرێتەوە
         setTimeout(() => {
             unlockApp();
         }, 700);
@@ -359,7 +359,7 @@ async function handleUnlockSubmit(evt) {
         input.value = '';
         input.focus();
         
-        // ئەگەر پاسووردەکە هەڵە بوو: بەتنەکە ئەملاولاش دەکات و بۆ ماوەیەک کلیل دەبێت (نەتوانیت کلیک بکەیت)
+        // ئەگەر پاسووردەکە هەڵە بوو: بەتنەکە ئەملاولا دەکات و کلیل دەبێت
         if(submitBtn) {
             submitBtn.classList.add('comic-dodge');
             submitBtn.setAttribute('disabled', 'true');
@@ -376,7 +376,6 @@ async function handleUnlockSubmit(evt) {
     }
     return false;
 }
-
 async function initApp() {
     const lockForm = document.getElementById('lock-form');
     if(!lockForm) return;
