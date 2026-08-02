@@ -794,7 +794,11 @@ function importData(event) {
                 }
             }
             
-            // بەکارهێنانی firebase.database() بە شێوەی ڕاستەوخۆ
+            // دڵنیابوونەوە لەوەی فایربەیس ئینیشیاڵ بووە پێش ناردنی داتا
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            
             firebase.database().ref().update(updates).then(() => {
                 alert("سەرکەوتوو بوو! باک ئەپەکە بە سەرکەوتوویی گەڕێنرایەوە بۆ فایربەیس.");
                 event.target.value = "";
