@@ -693,6 +693,20 @@ function toggleIpField() {
     }
     generateAutoAssetTag();
 }
+function toggleIpamPasswordVisibility() {
+    const input = document.getElementById('ipam-password');
+    const icon = document.getElementById('ipam-eye-icon');
+    if (!input || !icon) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
 function logItemToWarehouse() {
     const editId = document.getElementById('w-edit-id')?.value || '';
     const assetTag = document.getElementById('w-asset-tag')?.value.trim() || '';
@@ -951,12 +965,13 @@ function saveIpamEntry() {
     const device = document.getElementById('ipam-device')?.value.trim() || '';
     const type = document.getElementById('ipam-type')?.value.trim() || '';
     const owner = document.getElementById('ipam-owner')?.value.trim() || '';
-    const notes = document.getElementById('ipam-notes')?.value.trim() || ''; // وەرگرتنی نۆت
+    const password = document.getElementById('ipam-password')?.value.trim() || ''; // وەرگرتنی پاسۆرد
+    const notes = document.getElementById('ipam-notes')?.value.trim() || '';
     
     if(!ip || !device) { alert("Please enter IP Address and Device Name!"); return; }
     
     const key = editId ? editId : "IPAM-" + Date.now();
-    const payload = { id: key, ip, device, type, owner, notes, updated: new Date().toLocaleDateString('en-GB') };
+    const payload = { id: key, ip, device, type, owner, password, notes, updated: new Date().toLocaleDateString('en-GB') };
     
     database.ref('it_ipam_subnets/' + key).set(payload).then(() => {
         closeIpamModal();
@@ -976,7 +991,7 @@ function renderIpamList() {
     );
     
     if(filtered.length === 0) { 
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No static IP records found.</td></tr>`; 
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center p-6 text-slate-500">No static IP records found.</td></tr>`; 
         return; 
     }
     
@@ -988,6 +1003,7 @@ function renderIpamList() {
             <td class="p-3 font-bold text-white">${item.device}</td>
             <td class="p-3 text-amber-400">${item.type || '-'}</td>
             <td class="p-3 text-slate-300">${item.owner || '-'}</td>
+            <td class="p-3 font-mono text-emerald-400">${item.password ? '••••••••' : '-'}</td>
             <td class="p-3 text-slate-400 text-[11px]">${item.notes || '-'}</td>
             <td class="p-3 text-center flex justify-center gap-2">
                 <button onclick="editIpamItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -1004,6 +1020,7 @@ function editIpamItem(id) {
     document.getElementById('ipam-device').value = item.device || '';
     document.getElementById('ipam-type').value = item.type || '';
     document.getElementById('ipam-owner').value = item.owner || '';
+    document.getElementById('ipam-password').value = item.password || '';
     openIpamModal();
 }
 function clearIpamForm() {
@@ -1012,6 +1029,7 @@ function clearIpamForm() {
     document.getElementById('ipam-device').value = '';
     document.getElementById('ipam-type').value = '';
     document.getElementById('ipam-owner').value = '';
+    document.getElementById('ipam-password').value = '';
 }
 function deleteIpamItem(id) {
     if(!confirmDelete("Delete this IP entry?")) return;
