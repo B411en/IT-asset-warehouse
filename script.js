@@ -947,9 +947,13 @@ function saveIpamEntry() {
     const device = document.getElementById('ipam-device')?.value.trim() || '';
     const type = document.getElementById('ipam-type')?.value.trim() || '';
     const owner = document.getElementById('ipam-owner')?.value.trim() || '';
+    const notes = document.getElementById('ipam-notes')?.value.trim() || ''; // وەرگرتنی نۆت
+    
     if(!ip || !device) { alert("Please enter IP Address and Device Name!"); return; }
+    
     const key = editId ? editId : "IPAM-" + Date.now();
-    const payload = { id: key, ip, device, type, owner, updated: new Date().toLocaleDateString('en-GB') };
+    const payload = { id: key, ip, device, type, owner, notes, updated: new Date().toLocaleDateString('en-GB') };
+    
     database.ref('it_ipam_subnets/' + key).set(payload).then(() => {
         closeIpamModal();
         showToast(editId ? "IP Entry Updated!" : "Static IP Recorded!");
@@ -959,15 +963,28 @@ function renderIpamList() {
     const tbody = document.getElementById('ipam-list-body'); if(!tbody) return;
     const s = document.getElementById('ipam-search')?.value.toLowerCase() || '';
     tbody.innerHTML = "";
-    const filtered = ipamDb.filter(i => (i.ip || '').toLowerCase().includes(s) || (i.device || '').toLowerCase().includes(s) || (i.owner || '').toLowerCase().includes(s));
-    if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No static IP records found.</td></tr>`; return; }
+    
+    const filtered = ipamDb.filter(i => 
+        (i.ip || '').toLowerCase().includes(s) || 
+        (i.device || '').toLowerCase().includes(s) || 
+        (i.owner || '').toLowerCase().includes(s) || 
+        (i.notes || '').toLowerCase().includes(s)
+    );
+    
+    if(filtered.length === 0) { 
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No static IP records found.</td></tr>`; 
+        return; 
+    }
+    
     filtered.forEach(item => {
-        const tr = document.createElement('tr'); tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
+        const tr = document.createElement('tr'); 
+        tr.className = "border-b border-slate-800 text-xs hover:bg-slate-800/40";
         tr.innerHTML = `
             <td class="p-3 font-mono font-bold text-blue-400">${item.ip}</td>
             <td class="p-3 font-bold text-white">${item.device}</td>
             <td class="p-3 text-amber-400">${item.type || '-'}</td>
             <td class="p-3 text-slate-300">${item.owner || '-'}</td>
+            <td class="p-3 text-slate-400 text-[11px]">${item.notes || '-'}</td>
             <td class="p-3 text-center flex justify-center gap-2">
                 <button onclick="editIpamItem('${item.id}')" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
                 <button onclick="deleteIpamItem('${item.id}')" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
