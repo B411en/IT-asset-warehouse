@@ -1638,3 +1638,104 @@ function importWarehouseFile(event) {
     }
     event.target.value = '';
 }
+// Export Warehouse Data to Excel (.xlsx)
+function exportToExcel() {
+    let warehouseData = [];
+    try {
+        warehouseData = JSON.parse(localStorage.getItem('aa_warehouse_items')) || [];
+    } catch(e) { warehouseData = []; }
+
+    if (!warehouseData || warehouseData.length === 0) {
+        showToast('No inventory data to export!');
+        return;
+    }
+    
+    const formattedData = warehouseData.map(item => ({
+        'Asset Tag': item.tag || '',
+        'Category': item.category || '',
+        'Description': item.desc || '',
+        'Serial Number': item.serial || '',
+        'Quantity': item.quantity || 1,
+        'Status': item.status || '',
+        'Employee Name': item.empName || '',
+        'Employee ID': item.empId || '',
+        'Position': item.empPosition || '',
+        'Department': item.empDepartment || '',
+        'Location': item.location || '',
+        'Handover Date': item.handoverDate || '',
+        'Return Date': item.returnDate || '',
+        'Details': item.details || ''
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Warehouse Assets");
+    
+    XLSX.writeFile(workbook, "Asia_Aluminium_Warehouse_Assets.xlsx");
+    showToast('Excel file exported successfully!');
+}
+
+// Import Warehouse Data from Excel (.xlsx, .xls) or CSV
+function importWarehouseFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    if (file.name.endsWith('.csv')) {
+        reader.onload = function(e) {
+            parseAndSaveWarehouseCSV(e.target.result);
+        };
+        reader.readAsText(file);
+    } else {
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+                
+                if (jsonRows && jsonRows.length > 0) {
+                    let warehouseData = [];
+                    try {
+                        warehouseData = JSON.parse(localStorage.getItem('aa_warehouse_items')) || [];
+                    } catch(e) { warehouseData = []; }
+
+                    jsonRows.forEach(row => {
+                        let newItem = {
+                            id: 'AST-' + Date.now() + Math.floor(Math.random()*1000),
+                            tag: row['Asset Tag'] || row['tag'] || 'AA-AST-' + Math.floor(Math.random()*1000),
+                            category: row['Category'] || row['category'] || 'Other',
+                            desc: row['Description'] || row['desc'] || row['Model'] || '',
+                            serial: row['Serial Number'] || row['Serial'] || row['serial'] || '',
+                            quantity: parseInt(row['Quantity'] || row['quantity'] || 1),
+                            status: row['Status'] || row['status'] || 'In Stock',
+                            empName: row['Employee Name'] || row['empName'] || '',
+                            empId: row['Employee ID'] || row['empId'] || '',
+                            empPosition: row['Position'] || row['empPosition'] || '',
+                            empDepartment: row['Department'] || row['empDepartment'] || '',
+                            location: row['Location'] || row['location'] || '',
+                            handoverDate: row['Handover Date'] || row['handoverDate'] || '',
+                            returnDate: row['Return Date'] || row['returnDate'] || '',
+                            details: row['Details'] || row['details'] || ''
+                        };
+                        warehouseData.push(newItem);
+                    });
+                    
+                    localStorage.setItem('aa_warehouse_items', JSON.stringify(warehouseData));
+                    if (typeof renderWarehouseList === 'function') renderWarehouseList();
+                    if (typeof updateDashboardStats === 'function') updateDashboardStats();
+                    showToast('Excel data imported successfully!');
+                } else {
+                    alert('The Excel file is empty or formatted incorrectly.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error parsing Excel file. Please check format.');
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+    event.target.value = '';
+}
