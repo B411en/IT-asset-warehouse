@@ -194,7 +194,29 @@ header h1 {
 .data-table tr {
     transition: background-color 0.2s ease;
 }
+/* --- Comedic Unlock Button Effects --- */
+@keyframes comicDodge {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    20% { transform: translate(-35px, -15px) rotate(-12deg); }
+    40% { transform: translate(40px, 12px) rotate(15deg); }
+    60% { transform: translate(-25px, 20px) rotate(-8deg); }
+    80% { transform: translate(25px, -10px) rotate(10deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+.comic-dodge {
+    animation: comicDodge 0.5s ease-in-out;
+    pointer-events: none;
+}
 
+@keyframes giantGrowth {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(2.2) rotate(360deg); background-color: #10b981; color: #000; border-color: #10b981; }
+    100% { transform: scale(2) rotate(360deg); background-color: #10b981; color: #000; border-color: #10b981; }
+}
+.comic-giant {
+    animation: giantGrowth 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 99;
+}
 .data-table tr:hover {
     background-color: #f1f8f6;
 }
