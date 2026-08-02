@@ -773,7 +773,6 @@ function importData(event) {
             const updates = {};
             updates['it_forms_archive'] = null;
             
-            // دروستکردنی فەنکشنی ناوخۆیی بۆ ڕێکخستنی داتاکان بە بێ هیچ کێشەیەک
             const localArrayToObj = (arr, idField) => {
                 const obj = {};
                 const list = Array.isArray(arr) ? arr : Object.values(arr || {});
@@ -795,7 +794,8 @@ function importData(event) {
                 }
             }
             
-            database.ref().update(updates).then(() => {
+            // بەکارهێنانی firebase.database() بە شێوەی ڕاستەوخۆ
+            firebase.database().ref().update(updates).then(() => {
                 alert("سەرکەوتوو بوو! باک ئەپەکە بە سەرکەوتوویی گەڕێنرایەوە بۆ فایربەیس.");
                 event.target.value = "";
                 location.reload();
