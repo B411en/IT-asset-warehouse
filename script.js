@@ -759,60 +759,39 @@ function exportData() {
     a.click();
     showToast('Backup downloaded!');
 }
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+function importData(evt) {
+    const file = evt.target.files[0];
+    if (!file) {
+        alert('هیچ فایلێک هەڵنەبژێردراوە!');
+        return;
+    }
     
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = function(e) {
         try {
             const parsed = JSON.parse(e.target.result);
-            console.log("Parsed JSON:", parsed);
             
-            const payload = parsed.data ? parsed.data : parsed;
-            const updates = {};
-            updates['it_forms_archive'] = null;
+            // دیاریکردنی شوێنی راستەقینەی داتاکان (ئایا لە ناو 'data' دان یان ڕاستەوخۆن)
+            const content = (parsed.data && typeof parsed.data === 'object') ? parsed.data : parsed;
             
-            const localArrayToObj = (arr, idField) => {
-                const obj = {};
-                const list = Array.isArray(arr) ? arr : Object.values(arr || {});
-                list.forEach((item, idx) => {
-                    const key = (item && item[idField]) ? item[idField] : (idField + '-' + Date.now() + '-' + idx);
-                    obj[key] = item;
-                });
-                return obj;
-            };
-
-            for (const key in payload) {
-                if (payload.hasOwnProperty(key)) {
-                    const val = payload[key];
-                    if (Array.isArray(val)) {
-                        updates[key] = localArrayToObj(val, 'id');
-                    } else {
-                        updates[key] = val;
-                    }
+            let count = 0;
+            for (const key in content) {
+                let val = content[key];
+                // ئەگەر زانیارییەکە ئارەی یان ئۆبجێکت بێت، دەبێت بکرێتە سترینگ پێش خستنە ناو LocalStorage
+                if (typeof val === 'object') {
+                    val = JSON.stringify(val);
                 }
+                localStorage.setItem(key, val);
+                count++;
             }
             
-            // دڵنیابوونەوە لەوەی فایربەیس ئینیشیاڵ بووە پێش ناردنی داتا
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            
-            firebase.database().ref().update(updates).then(() => {
-                alert("سەرکەوتوو بوو! باک ئەپەکە بە سەرکەوتوویی گەڕێنرایەوە بۆ فایربەیس.");
-                event.target.value = "";
-                location.reload();
-            }).catch(err => {
-                console.error("Firebase update error:", err);
-                alert("هەڵە لە فایربەیس: " + err.message);
-            });
-            
-        } catch (err) {
-            console.error("JSON parse error:", err);
-            alert("هەڵە لە خوێندنەوەی فایلەکە: " + err.message);
-            event.target.value = "";
+            alert('سەرکەوتوو بوو! ' + count + ' بەشی سەرەکی داتا بە سەرکەوتوویی گەڕێنرانەوە.');
+            location.reload();
+        } catch(err) {
+            console.error(err);
+            alert('هەڵە لە خوێندنەوەی فایلی باک ئەپ: ' + err.message);
         }
     };
     reader.readAsText(file);
+    evt.target.value = '';
 }
