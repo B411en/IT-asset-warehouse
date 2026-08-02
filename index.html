@@ -66,7 +66,6 @@
             box-shadow: 0 20px 40px -10px rgba(0, 242, 234, 0.15), 0 10px 20px -5px rgba(0, 0, 0, 0.8);
         }
 
-        /* Neon Table & Scrollbars */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 242, 234, 0.2); border-radius: 4px; }
@@ -170,7 +169,7 @@
                             <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
                             <path d="M12 11.5a3 3 0 0 0 -3 2.824v1.176a3 3 0 0 0 6 0v-1.176a3 3 0 0 0 -3 -2.824z"></path>
                         </svg>
-                        <span>BallenIT_SECURE_CORE</span>
+                        <span>ASIA_ALUMINIUM_SECURE_CORE</span>
                     </div>
                     <div class="card-dots flex gap-1.5">
                         <span class="w-2.5 h-2.5 rounded-full bg-cyan-500/40 inline-block animate-ping"></span>
@@ -206,7 +205,7 @@
 
                     <button data-text="INITIATE_UNLOCK" type="submit" class="submit-btn w-full py-3.5 bg-gradient-to-r from-cyan-500/10 to-red-500/10 border-2 border-cyan-500 text-cyan-400 font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all relative overflow-hidden group shadow-[0_0_20px_rgba(0,242,234,0.2)] hover:shadow-[0_0_30px_rgba(0,242,234,0.4)] disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                         <span class="btn-text relative z-10 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-lock-open text-cyan-400"></i> سم سم بکرێرەوە
+                            <i class="fa-solid fa-lock-open text-cyan-400"></i> INITIATE_UNLOCK
                         </span>
                     </button>
                 </div>
@@ -228,10 +227,8 @@
                         <span class="text-[10px] text-slate-400 font-mono tracking-tight">Asset & Operations Management</span>
                     </div>
                 </div>
+                <!-- Work Schedule removed from here and placed into the tabs row below -->
                 <div class="flex items-center gap-2">
-                    <button onclick="openScheduleModal()" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/30 shadow-md hover:scale-105">
-                        <i class="fa-solid fa-calendar-check text-cyan-400"></i> Work Schedule
-                    </button>
                     <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-amber-500/30">
                         <i class="fa-solid fa-key text-amber-400"></i>
                         <span id="passcode-nav-btn-text">Passcode</span>
@@ -240,7 +237,7 @@
                         <i class="fa-solid fa-download text-emerald-400"></i> Backup
                     </button>
                     <label class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer hidden sm:flex transition-all border border-blue-500/30">
-                        <i class="fa-solid fa-upload text-blue-400"></i> Import
+                        <i class="fa-solid fa-upload text-blue-400"></i> Restore
                         <input type="file" id="import-json-input" onchange="importData(event)" accept=".json" class="hidden">
                     </label>
                     <button onclick="lockApp()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all">
@@ -254,8 +251,12 @@
                     <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="tab-btn bg-cyan-500 text-slate-950 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-500/25 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-chart-pie"></i> Dashboard
                     </button>
+                    <!-- Work Schedule moved here to the tabs row -->
+                    <button onclick="openScheduleModal()" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all border border-cyan-500/20 shadow-md">
+                        <i class="fa-solid fa-calendar-check text-cyan-400"></i> Work Schedule
+                    </button>
                     <button onclick="switchTab('employees-tab')" id="btn-employees-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-users"></i> Employees
+                        <i class="fa-solid fa-users"></i> Employees Directory
                     </button>
                     <button onclick="switchTab('warehouse-tab')" id="btn-warehouse-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-warehouse"></i> Warehouse & Assets
@@ -270,7 +271,7 @@
                         <i class="fa-solid fa-headset text-amber-400"></i> Helpdesk Tickets
                     </button>
                     <button onclick="switchTab('ipam-tab')" id="btn-ipam-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
-                        <i class="fa-solid fa-sitemap text-blue-400"></i> IP Managment
+                        <i class="fa-solid fa-sitemap text-blue-400"></i> IPAM Subnet
                     </button>
                     <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn text-slate-300 hover:bg-slate-900 hover:text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                         <i class="fa-solid fa-book-medical"></i> IT Knowledge Notes
@@ -434,15 +435,16 @@
                         <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search assets, tag, serial, employee..." class="w-full bg-slate-900 border border-cyan-500/20 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
                     </div>
                     <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between">
-                      <div id="csv-upload-container" class="flex items-center gap-2">
-    <label class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all border border-cyan-500/20">
-        <i class="fa-solid fa-file-excel text-emerald-400"></i> Import Excel / CSV
-        <input type="file" id="excel-input" onchange="importWarehouseFile(event)" accept=".xlsx, .xls, .csv" class="hidden">
-    </label>
-    <button onclick="exportToExcel()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/20">
-        <i class="fa-solid fa-file-excel text-emerald-400"></i> Export XLSX
-    </button>
-</div>
+                        <span id="stock-count" class="text-xs text-slate-400 font-mono">0 Items</span>
+                        <div id="csv-upload-container" class="flex items-center gap-2">
+                            <label class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all border border-cyan-500/20">
+                                <i class="fa-solid fa-file-csv text-emerald-400"></i> Import CSV
+                                <input type="file" id="csv-input" onchange="importWarehouseCSV(event)" accept=".csv" class="hidden">
+                            </label>
+                            <button onclick="exportToExcel()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border border-cyan-500/20">
+                                <i class="fa-solid fa-file-excel text-emerald-400"></i> Export XLSX
+                            </button>
+                        </div>
                         <button onclick="openWarehouseModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all">
                             <i class="fa-solid fa-plus"></i> Store Asset
                         </button>
@@ -747,7 +749,7 @@
         </div>
     </div>
 
-    <!-- MODALS (Unified Cyber Styling) -->
+    <!-- MODALS -->
     <!-- EMPLOYEE MODAL -->
     <div id="emp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="card-3d-effect rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto border border-cyan-500/30">
