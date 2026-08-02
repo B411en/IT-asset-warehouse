@@ -451,18 +451,17 @@ function switchTab(tabId) {
     if(target) target.classList.remove('hidden');
      
     document.querySelectorAll('.tab-btn').forEach(btn => { 
-         btn.classList.remove('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
-         btn.classList.add('text-slate-300', 'hover:bg-slate-800/60'); 
+         btn.classList.remove('bg-cyan-600', 'text-white', 'shadow-[0_0_10px_rgba(6,182,212,0.4)]');
+         btn.classList.add('text-slate-300', 'hover:bg-slate-800/80'); 
     });
      
     const ab = document.getElementById('btn-' + tabId);
     if (ab) {
-         ab.classList.remove('text-slate-300', 'hover:bg-slate-800/60');
-         ab.classList.add('bg-red-600', 'text-white', 'shadow-lg', 'shadow-red-600/30');
+         ab.classList.remove('text-slate-300', 'hover:bg-slate-800/80');
+         ab.classList.add('bg-cyan-600', 'text-white', 'shadow-[0_0_10px_rgba(6,182,212,0.4)]');
     }
     if (tabId === 'dashboard-tab') updateDashboardCharts();
 }
-
 function updateDashboardCharts() {
     const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
     wDb.forEach(item => { 
