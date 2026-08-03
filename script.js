@@ -44,9 +44,14 @@ function openEmpModal() {
     const m = document.getElementById('emp-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
 setTimeout(() => {
+        const innerBox = m.querySelector('.card-3d-effect');
+        if (innerBox) innerBox.scrollTop = 0;
+        
         m.scrollTop = 0;
-        if(m.children[0]) m.children[0].scrollTop = 0;
-    }, 10);
+        
+        const title = document.getElementById('emp-form-title');
+        if (title) title.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }, 100);
 }
 function closeEmpModal() {
     const m = document.getElementById('emp-modal');
@@ -57,10 +62,19 @@ function closeEmpModal() {
 function openWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-setTimeout(() => {
+// کاتەکەمان بۆ ١٠٠ زیاد کرد بۆ ئەوەی مۆبایل فریای کردنەوەی بکەوێت
+    setTimeout(() => {
+        // ١. چینی ناوەوە (بۆکسەکەی فۆرمەکە خۆی) دەبەینە سەرەوە
+        const innerBox = m.querySelector('.card-3d-effect');
+        if (innerBox) innerBox.scrollTop = 0;
+        
+        // ٢. چینی دەرەوە (باگگراوندە تاریکەکە) دەبەینە سەرەوە
         m.scrollTop = 0;
-        if(m.children[0]) m.children[0].scrollTop = 0;
-    }, 10);
+        
+        // ٣. وەک دڵنیایی زیاتر، شاشەکە بە زۆر ڕادەکێشینە سەرەوە بۆ لای تایتڵەکە
+        const title = document.getElementById('w-form-title');
+        if (title) title.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }, 100);
     generateAutoAssetTag();
 }
 function closeWarehouseModal() {
