@@ -54,7 +54,7 @@ function closeEmpModal() {
 function openWarehouseModal() {
     const m = document.getElementById('warehouse-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-     m.scrollTop = 0;
+if(m.children[0]) m.children[0].scrollTop = 0;
     generateAutoAssetTag();
 }
 function closeWarehouseModal() {
@@ -66,7 +66,7 @@ function closeWarehouseModal() {
 function openRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-        m.scrollTop = 0;
+if(m.children[0]) m.children[0].scrollTop = 0;
 }
 function closeRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
@@ -77,8 +77,7 @@ function closeRustDeskModal() {
 function openIspModal() {
     const m = document.getElementById('isp-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-        m.scrollTop = 0;
-
+if(m.children[0]) m.children[0].scrollTop = 0;
 }
 function closeIspModal() {
     const m = document.getElementById('isp-modal');
@@ -89,8 +88,7 @@ function closeIspModal() {
 function openHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-        m.scrollTop = 0;
-
+if(m.children[0]) m.children[0].scrollTop = 0;
 }
 function closeHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
@@ -101,8 +99,7 @@ function closeHelpdeskModal() {
 function openIpamModal() {
     const m = document.getElementById('ipam-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-        m.scrollTop = 0;
-
+if(m.children[0]) m.children[0].scrollTop = 0;
 }
 function closeIpamModal() {
     const m = document.getElementById('ipam-modal');
@@ -113,8 +110,7 @@ function closeIpamModal() {
 function openSnippetModal() {
     const m = document.getElementById('snippet-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-        m.scrollTop = 0;
-
+if(m.children[0]) m.children[0].scrollTop = 0;
 }
 function closeSnippetModal() {
     const m = document.getElementById('snippet-modal');
@@ -125,8 +121,7 @@ function closeSnippetModal() {
 function openNoteModal() {
     const m = document.getElementById('notes-modal');
     m.classList.remove('hidden'); m.classList.add('flex');
-        m.scrollTop = 0;
-
+if(m.children[0]) m.children[0].scrollTop = 0;
 }
 function closeNoteModal() {
     const m = document.getElementById('notes-modal');
@@ -139,8 +134,7 @@ function openScheduleModal() {
     if(!modal) return;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-        m.scrollTop = 0;
-
+if(m.children[0]) m.children[0].scrollTop = 0;
     initDefaultDates();
 }
 function closeScheduleModal() {
