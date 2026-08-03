@@ -117,6 +117,23 @@
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
     }
+        /* ================= TEXT CONTRAST FIX FOR LIGHT MODE ================= */
+    html:not(.dark) .text-white,
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200,
+    html:not(.dark) .text-slate-300 {
+        color: #0f172a !important; /* ڕەنگی ڕەشی تۆخ بۆ نووسینە سەرەکییەکان */
+    }
+    
+    html:not(.dark) .text-slate-400,
+    html:not(.dark) .text-slate-500 {
+        color: #475569 !important; /* ڕەنگی خۆڵەمێشی تۆخ بۆ تێکستە لاوەکییەکان */
+    }
+    
+    html:not(.dark) .text-cyan-400,
+    html:not(.dark) .text-cyan-500 {
+        color: #0284c7 !important; /* گۆڕینی ڕەنگی سیانی کاڵ بۆ شینی تۆخ و ڕوون */
+    }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
