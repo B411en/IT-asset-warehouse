@@ -1610,16 +1610,6 @@ function importData(event) {
     reader.readAsText(file);
 }
 
-// ناساندنی فەنکشنەکە بە شێوەیەکی گشتی بۆ ئەوەی لە HTMLـەوە کار بکات
-window.toggleTheme = function() {
-    const html = document.documentElement;
-    html.classList.toggle('dark');
-    const isDark = html.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    updateThemeIcon();
-    console.log("Theme changed to: ", isDark ? "Dark" : "Light");
-};
-
 window.updateThemeIcon = function() {
     const icon = document.getElementById('theme-icon');
     if (!icon) return;
