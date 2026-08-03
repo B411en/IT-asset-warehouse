@@ -2,10 +2,8 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <!-- ڕێکخستنی زووم و قەبارەی شاشە بۆ مۆبایل و کۆمپیوتەر -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Asia Aluminium - IT Operations System</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -24,19 +22,14 @@
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- SheetJS (XLSX) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
-        /* Dynamic Scaling based on Viewport for consistent zooming */
         html {
             font-size: clamp(14px, 1vw + 10px, 16px);
         }
@@ -87,7 +80,6 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen  antialiased selection:bg-cyan-500 selection:text-white">
 
-    <!-- LOCK SCREEN - CYBERPUNK 3D EDITION -->
     <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 overflow-y-auto">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.08)_0,transparent_100%)] pointer-events-none"></div>
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -123,9 +115,7 @@
         </div>
     </div>
 
-    <!-- MAIN APP ROOT -->
     <div id="app-root" class="hidden flex-col min-h-screen">
-        <!-- HEADER -->
         <header class="bg-slate-900/80 backdrop-blur-lg border-b border-cyan-500/20 sticky top-0 z-30 shadow-lg w-full">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between max-w-7xl mx-auto">
                 <div class="flex items-center gap-3">
@@ -158,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- NEW MODERN NAVIGATION TABS -->
             <div class="bg-slate-950/80 border-t border-slate-800/60 overflow-hidden w-full">
                 <div class="max-w-7xl mx-auto px-2 md:px-6 flex gap-2 py-3 overflow-x-auto no-scrollbar scroll-smooth">
                     <div class="flex gap-2 p-1.5 bg-slate-900/50 backdrop-blur-md rounded-2xl border border-slate-800/60 shadow-inner w-max">
@@ -191,7 +180,6 @@
             </div>
         </header>
 
-        <!-- SETUP WARNING BANNER -->
         <div id="setup-warning-banner" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 py-2.5 text-xs text-amber-400 items-center justify-between">
             <div class="flex items-center gap-2 max-w-7xl mx-auto w-full">
                 <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i>
@@ -200,12 +188,9 @@
             </div>
         </div>
 
-        <!-- MAIN CONTENT AREA -->
         <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
             
-            <!-- DASHBOARD TAB -->
             <div id="dashboard-tab" class="tab-content space-y-6 block">
-                <!-- STAT CARDS -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
                         <div class="flex justify-between items-start mb-3">
@@ -237,7 +222,6 @@
                     </div>
                 </div>
 
-                <!-- CHARTS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
                         <h4 class="text-sm font-bold text-white mb-4 flex items-center"><i class="fa-solid fa-chart-pie mr-2 text-cyan-400"></i> Assets By Category</h4>
@@ -249,7 +233,6 @@
                     </div>
                 </div>
 
-                <!-- IT QUICK COMMAND SNIPPETS VAULT -->
                 <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
                         <div class="flex items-center gap-2.5">
@@ -275,7 +258,6 @@
                     <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- IT INFRASTRUCTURE & PROFILE CARD -->
                 <div class="bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800/90 rounded-2xl p-6 md:p-8 shadow-xl  md:flex-row items-center justify-between gap-6 relative overflow-hidden card-3d-effect">
                     <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="space-y-3 max-w-xl relative z-10">
@@ -299,7 +281,6 @@
 
             </div>
 
-            <!-- EMPLOYEES TAB -->
             <div id="employees-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -336,7 +317,6 @@
                 </div>
             </div>
 
-            <!-- WAREHOUSE TAB -->
             <div id="warehouse-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -380,7 +360,6 @@
                 </div>
             </div>
 
-            <!-- RUSTDESK TAB -->
             <div id="rustdesk-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -412,7 +391,6 @@
                 </div>
             </div>
 
-            <!-- SWITCH PORT MAPPING TAB -->
             <div id="isp-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -453,7 +431,6 @@
                 </div>
             </div>
 
-            <!-- HELPDESK TICKETS TAB -->
             <div id="helpdesk-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -485,7 +462,6 @@
                 </div>
             </div>
 
-            <!-- IPAM SUBNET TABLE TAB -->
             <div id="ipam-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -518,7 +494,6 @@
                 </div>
             </div>
 
-            <!-- IT KNOWLEDGE NOTES TAB -->
             <div id="notes-tab" class="tab-content hidden space-y-6 w-full">
                 <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
@@ -534,7 +509,6 @@
         </main>
     </div>
 
-    <!-- WORK SCHEDULE MODAL -->
     <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden overflow-y-auto p-4 items-center justify-center transition-all duration-300">
         <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-cyan-500/30 rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-[0_0_30px_rgba(6,182,212,0.15)] relative my-auto max-h-[90vh] overflow-y-auto transform transition-all card-3d-effect">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -665,8 +639,6 @@
         </div>
     </div>
 
-    <!-- MODALS -->
-    <!-- EMPLOYEE MODAL -->
     <div id="emp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-lg w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 id="emp-form-title" class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-pen text-cyan-400"></i> Register Employee</h3>
@@ -719,7 +691,6 @@
         </div>
     </div>
 
-    <!-- WAREHOUSE MODAL -->
 <div id="warehouse-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-start justify-center py-10">
     <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-xl w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 id="w-form-title" class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-barcode text-cyan-400"></i> Store / Edit Asset</h3>
@@ -823,7 +794,6 @@
         </div>
     </div>
 
-    <!-- RUSTDESK MODAL -->
     <div id="rustdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-desktop text-cyan-400"></i> RustDesk Device Record</h3>
@@ -861,7 +831,6 @@
         </div>
     </div>
 
-    <!-- SWITCH MAPPING MODAL -->
     <div id="isp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-network-wired text-cyan-400"></i> Switch Mapping Record</h3>
@@ -895,7 +864,6 @@
         </div>
     </div>
 
-    <!-- HELPDESK TICKET MODAL -->
     <div id="helpdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-headset text-amber-400"></i> New IT Support Ticket</h3>
@@ -929,7 +897,6 @@
         </div>
     </div>
 
-    <!-- IPAM MODAL -->
     <div id="ipam-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-network-wired text-cyan-400"></i> Static IPAM Record</h3>
@@ -972,7 +939,6 @@
         </div>
     </div>
 
-    <!-- COMMAND SNIPPET MODAL -->
     <div id="snippet-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 id="snippet-form-title" class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-terminal text-cyan-400"></i> Add Command Snippet</h3>
@@ -1002,7 +968,6 @@
         </div>
     </div>
 
-    <!-- NOTES MODAL -->
     <div id="notes-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-lg w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative my-auto max-h-[90vh] overflow-y-auto card-3d-effect">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-book-medical text-cyan-400"></i> IT Troubleshooting Note</h3>
@@ -1038,7 +1003,6 @@
         </div>
     </div>
 
-    <!-- CHANGE PASSCODE MODAL -->
     <div id="change-pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden overflow-y-auto p-4 items-center justify-center">
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-sm w-full p-6 shadow-[0_0_20px_rgba(6,182,212,0.1)] relative text-center my-auto card-3d-effect">
             <div id="cp-modal-title" class="text-base font-black text-white mb-1"><i class="fa-solid fa-key text-cyan-400"></i> Change Passcode</div>
@@ -1065,13 +1029,11 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-cyan-500/30 text-white px-4 py-3 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.2)] transform translate-y-28 transition-transform duration-300 flex items-center gap-3">
         <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs border border-emerald-500/30"><i class="fa-solid fa-check"></i></div>
         <span id="toast-msg" class="text-xs font-semibold">Action completed</span>
     </div>
 
-    <!-- MAIN SCRIPT -->
     <script src="script.js"></script>
 </body>
 </html>
