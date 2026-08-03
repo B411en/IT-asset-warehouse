@@ -83,6 +83,40 @@
         
         /* Prevent input zooming on iOS */
         input, select, textarea { font-size: 1rem !important; }
+
+        /* ================= STANDARD LIGHT MODE STYLES ================= */
+    html:not(.dark) body {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        background-image: radial-gradient(rgba(14, 116, 144, 0.07) 1px, transparent 1px) !important;
+    }
+    
+    html:not(.dark) header,
+    html:not(.dark) .card-3d-effect,
+    html:not(.dark) div[class*="bg-slate-9"] {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #e2e8f0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    html:not(.dark) table th {
+        background-color: #f1f5f9 !important;
+        color: #0284c7 !important;
+    }
+    
+    html:not(.dark) table td {
+        border-bottom-color: #f1f5f9 !important;
+        color: #334155 !important;
+    }
+    
+    html:not(.dark) input, 
+    html:not(.dark) select, 
+    html:not(.dark) textarea {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+    }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
