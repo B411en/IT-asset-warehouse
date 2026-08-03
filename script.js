@@ -1609,18 +1609,12 @@ function importData(event) {
     };
     reader.readAsText(file);
 }
-/* ================= THEME TOGGLE (DARK/LIGHT MODE) ================= */
+
 function toggleTheme() {
     const html = document.documentElement;
-    if (html.classList.contains('dark')) {
-        // گۆڕین بۆ لایت مۆد
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-    } else {
-        // گۆڕین بۆ دارک مۆد
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-    }
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcon();
 }
 
@@ -1628,13 +1622,12 @@ function updateThemeIcon() {
     const icon = document.getElementById('theme-icon');
     if (!icon) return;
     if (document.documentElement.classList.contains('dark')) {
-        icon.className = 'fa-solid fa-sun text-amber-400'; // لە دارک مۆد وێنەی خۆر پیشان بدە
+        icon.className = 'fa-solid fa-sun text-amber-400';
     } else {
-        icon.className = 'fa-solid fa-moon text-indigo-500'; // لە لایت مۆد وێنەی مانگ پیشان بدە
+        icon.className = 'fa-solid fa-moon text-indigo-500';
     }
 }
 
-// کاتێک وێبەکە دەکرێتەوە با بزانێت پێشتر چ مۆدێک هەڵبژێردراوە
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
@@ -1645,8 +1638,7 @@ function initTheme() {
     updateThemeIcon();
 }
 
-// ئەمە زیاد بکە بۆ ئەوەی لە سەرەتادا ڕەن ببێت
+// دڵنیابوونەوە لە کارپێکردنی لە کاتی باربوونی پەڕەکەدا
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    // ... ئەو شتانەی تریش کە پێشتر هەبوون لێرەدا دەمێننەوە (وەک initApp)
 });
