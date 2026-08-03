@@ -567,7 +567,7 @@ function updateDashboardCharts() {
 const categoryPrefixes = {
     "Laptop": "LAP", "PC": "PC", "Cable": "CBL", "Printer": "PRN", 
     "Monitor": "MON", "Switch": "SW", "Hub": "HUB", "IP camera": "CAM", 
-    "NVR": "NVR", "Access point": "AP", "Hard": "HDD", "Ram": "RAM", 
+    "NVR": "NVR", "Access point": "AP", "Hard": "Hard", "Ram": "RAM", 
     "Printer cartridge": "CRT", "Other": "OTH"
 };
 function generateAutoAssetTag() {
