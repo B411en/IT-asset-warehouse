@@ -85,7 +85,7 @@
         input, select, textarea { font-size: 1rem !important; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-screen  antialiased selection:bg-cyan-500 selection:text-white">
 
     <!-- LOCK SCREEN - CYBERPUNK 3D EDITION -->
     <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 overflow-y-auto">
@@ -276,7 +276,7 @@
                 </div>
 
                 <!-- IT INFRASTRUCTURE & PROFILE CARD -->
-                <div class="bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800/90 rounded-2xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden card-3d-effect">
+                <div class="bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800/90 rounded-2xl p-6 md:p-8 shadow-xl  md:flex-row items-center justify-between gap-6 relative overflow-hidden card-3d-effect">
                     <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="space-y-3 max-w-xl relative z-10">
                         <div class="inline-flex items-center gap-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
@@ -301,7 +301,7 @@
 
             <!-- EMPLOYEES TAB -->
             <div id="employees-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="employee-search" oninput="renderEmployeesList()" placeholder="Search employees by ID, name, dept..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -338,7 +338,7 @@
 
             <!-- WAREHOUSE TAB -->
             <div id="warehouse-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search assets, tag, serial, employee..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -382,7 +382,7 @@
 
             <!-- RUSTDESK TAB -->
             <div id="rustdesk-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="rd-search" oninput="renderRustDeskList()" placeholder="Search RustDesk ID, employee..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -414,7 +414,7 @@
 
             <!-- SWITCH PORT MAPPING TAB -->
             <div id="isp-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="isp-search" oninput="renderIspList()" placeholder="Search switch name, IP, location..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -455,7 +455,7 @@
 
             <!-- HELPDESK TICKETS TAB -->
             <div id="helpdesk-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="helpdesk-search" oninput="renderHelpdeskList()" placeholder="Search tickets by employee, issue..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -487,7 +487,7 @@
 
             <!-- IPAM SUBNET TABLE TAB -->
             <div id="ipam-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="ipam-search" oninput="renderIpamList()" placeholder="Search IP, device, location..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -520,7 +520,7 @@
 
             <!-- IT KNOWLEDGE NOTES TAB -->
             <div id="notes-tab" class="tab-content hidden space-y-6 w-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                <div class="sticky top-[135px] z-20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
                     <div class="relative w-full sm:w-80">
                         <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
                         <input type="text" id="note-search" oninput="renderNotesList()" placeholder="Search troubleshooting notes..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
@@ -556,7 +556,7 @@
             </div>
 
             <div class="space-y-6 relative z-10">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-950/60 border border-slate-800/80 p-4 rounded-2xl">
+                <div class="sticky top-[135px] z-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-950/60 border border-slate-800/80 p-4 rounded-2xl">
                     <div class="flex items-center gap-3">
                         <div>
                             <label class="block text-[10px] text-slate-400 uppercase font-semibold mb-1">Schedule Date</label>
