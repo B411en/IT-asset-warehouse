@@ -12,7 +12,9 @@ const LOCK_SESSION_KEY = "aa_it_unlocked";
 const FAIL_COUNT_KEY = "aa_it_fail_count";
 const LOCKOUT_UNTIL_KEY = "aa_it_lockout_until";
 const ACCESS_SETTINGS_PATH = "it_system_settings/access";
-const ACCESS_ITERATIONS = 150000;
+
+// گۆڕدرا بۆ ١ ملیۆن جار هاشکردن بۆ پاراستنی زۆر توندتر
+const ACCESS_ITERATIONS = 1000000;
 
 let currentAccessSalt = null;
 let currentAccessHash = null;
@@ -169,11 +171,12 @@ async function loadAccessSettings() {
         accessState = 'unconfigured';
     }
 }
+// کاتی بلۆکبوونی توندتر
 function lockoutSecondsFor(count) {
-    if (count >= 12) return 300;
-    if (count >= 8) return 60;
-    if (count >= 5) return 20;
-    if (count >= 3) return 5;
+    if (count >= 10) return 3600; // ١ سەعات بلۆک
+    if (count >= 7) return 600;   // ١٠ خولەک بلۆک
+    if (count >= 5) return 60;    // ١ خولەک بلۆک
+    if (count >= 3) return 10;    // ١٠ چرکە بلۆک
     return 0;
 }
 function clearFailedAttempts() {
@@ -445,23 +448,30 @@ const cpForm = document.getElementById('change-pin-form');
 if(cpForm) cpForm.addEventListener('submit', handleChangePasscodeSubmit);
 document.addEventListener('DOMContentLoaded', initApp);
 
+// گۆڕینی لۆژیکی تابەکان بە دیزاینە نوێیەکە
 function switchTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.add('hidden');
+        el.classList.remove('block');
+    });
+    
     const target = document.getElementById(tabId);
-    if(target) target.classList.remove('hidden');
+    if(target) {
+        target.classList.remove('hidden');
+        target.classList.add('block');
+    }
      
     document.querySelectorAll('.tab-btn').forEach(btn => { 
-         btn.classList.remove('bg-cyan-600', 'text-white', 'shadow-[0_0_10px_rgba(6,182,212,0.4)]');
-         btn.classList.add('text-slate-300', 'hover:bg-slate-800/80'); 
+         btn.className = "tab-btn text-slate-400 hover:text-cyan-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all";
     });
      
     const ab = document.getElementById('btn-' + tabId);
     if (ab) {
-         ab.classList.remove('text-slate-300', 'hover:bg-slate-800/80');
-         ab.classList.add('bg-cyan-600', 'text-white', 'shadow-[0_0_10px_rgba(6,182,212,0.4)]');
+         ab.className = "tab-btn active-tab bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/30 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all transform hover:scale-105 scale-105";
     }
     if (tabId === 'dashboard-tab') updateDashboardCharts();
 }
+
 function updateDashboardCharts() {
     const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
     wDb.forEach(item => { 
@@ -732,7 +742,7 @@ function logItemToWarehouse() {
     
     database.ref('it_warehouse_inventory/' + key).set(payload).then(() => {
         closeWarehouseModal();
-        switchTab('warehouse-tab'); // 👈 ئەمە دەبێتە هۆی ئەوەی ڕاستەوخۆ بەشی واوەرهۆس پیشان بدات
+        switchTab('warehouse-tab'); 
         showToast(editId ? "Warehouse Item Updated!" : "Asset Added to Warehouse!");
     });
 }
@@ -965,7 +975,7 @@ function saveIpamEntry() {
     const device = document.getElementById('ipam-device')?.value.trim() || '';
     const type = document.getElementById('ipam-type')?.value.trim() || '';
     const owner = document.getElementById('ipam-owner')?.value.trim() || '';
-    const password = document.getElementById('ipam-password')?.value.trim() || ''; // وەرگرتنی پاسۆرد
+    const password = document.getElementById('ipam-password')?.value.trim() || '';
     const notes = document.getElementById('ipam-notes')?.value.trim() || '';
     
     if(!ip || !device) { alert("Please enter IP Address and Device Name!"); return; }
