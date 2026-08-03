@@ -1609,3 +1609,44 @@ function importData(event) {
     };
     reader.readAsText(file);
 }
+/* ================= THEME TOGGLE (DARK/LIGHT MODE) ================= */
+function toggleTheme() {
+    const html = document.documentElement;
+    if (html.classList.contains('dark')) {
+        // گۆڕین بۆ لایت مۆد
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    } else {
+        // گۆڕین بۆ دارک مۆد
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    }
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const icon = document.getElementById('theme-icon');
+    if (!icon) return;
+    if (document.documentElement.classList.contains('dark')) {
+        icon.className = 'fa-solid fa-sun text-amber-400'; // لە دارک مۆد وێنەی خۆر پیشان بدە
+    } else {
+        icon.className = 'fa-solid fa-moon text-indigo-500'; // لە لایت مۆد وێنەی مانگ پیشان بدە
+    }
+}
+
+// کاتێک وێبەکە دەکرێتەوە با بزانێت پێشتر چ مۆدێک هەڵبژێردراوە
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+    } else {
+        document.documentElement.classList.add('dark'); // دارک مۆد وەک دیفۆڵت
+    }
+    updateThemeIcon();
+}
+
+// ئەمە زیاد بکە بۆ ئەوەی لە سەرەتادا ڕەن ببێت
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    // ... ئەو شتانەی تریش کە پێشتر هەبوون لێرەدا دەمێننەوە (وەک initApp)
+});
