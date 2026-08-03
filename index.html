@@ -83,47 +83,52 @@
         
         /* Prevent input zooming on iOS */
         input, select, textarea { font-size: 1rem !important; }
-
-    /* ================= PROFESSIONAL LIGHT MODE OVERRIDE ================= */
+/* ================= CLEAN & PROFESSIONAL LIGHT MODE ================= */
     html:not(.dark) body {
-        background-color: #f8fafc !important;
+        background-color: #f1f5f9 !important;
         color: #0f172a !important;
-        background-image: radial-gradient(rgba(14, 116, 144, 0.05) 1px, transparent 1px) !important;
+        background-image: radial-gradient(rgba(14, 116, 144, 0.04) 1px, transparent 1px) !important;
     }
     
-    /* گۆڕینی هەموو کارت و بەشە تاریکەکان بۆ سپی و ڕووناک */
-    html:not(.dark) header,
-    html:not(.dark) .card-3d-effect,
-    html:not(.dark) div[class*="bg-slate-"],
-    html:not(.dark) div[class*="bg-gradient-to"] {
+    /* هیدەر و سەرەوەی وێبەکە */
+    html:not(.dark) header {
         background-color: #ffffff !important;
-        background-image: none !important;
         color: #0f172a !important;
         border-color: #e2e8f0 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
     }
 
-    /* خانەکانی نووسین و گەڕان */
+    /* کارتە ئاساییەکانی داشبۆرد و خشتەکان */
+    html:not(.dark) .card-3d-effect {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #e2e8f0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    /* خانەکانی گەڕان و نووسین و مۆدالەکان */
     html:not(.dark) input,
     html:not(.dark) select,
-    html:not(.dark) textarea {
-        background-color: #f8fafc !important;
+    html:not(.dark) textarea,
+    html:not(.dark) .fixed > div {
+        background-color: #ffffff !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
     }
 
-    /* ڕەنگی خشتەکان */
+    /* خشتەکانی واوەرهۆس و کارمەندان */
     html:not(.dark) table th {
-        background-color: #f1f5f9 !important;
+        background-color: #f8fafc !important;
         color: #0284c7 !important;
+        border-bottom: 2px solid #e2e8f0 !important;
     }
     
     html:not(.dark) table td {
         border-bottom-color: #f1f5f9 !important;
         color: #334155 !important;
     }
-
-    /* ڕەنگی نووسینەکان بۆ ئەوەی بە روونی دیار بن */
+    
+    /* ڕەنگی تێکستەکان بۆ خوێنەرەوەی زۆر ڕوون لە لایت مۆددا */
     html:not(.dark) .text-white,
     html:not(.dark) .text-slate-100,
     html:not(.dark) .text-slate-200,
