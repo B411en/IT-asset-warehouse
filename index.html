@@ -84,22 +84,35 @@
         /* Prevent input zooming on iOS */
         input, select, textarea { font-size: 1rem !important; }
 
-        /* ================= STANDARD LIGHT MODE STYLES ================= */
+    /* ================= PROFESSIONAL LIGHT MODE OVERRIDE ================= */
     html:not(.dark) body {
         background-color: #f8fafc !important;
         color: #0f172a !important;
-        background-image: radial-gradient(rgba(14, 116, 144, 0.07) 1px, transparent 1px) !important;
+        background-image: radial-gradient(rgba(14, 116, 144, 0.05) 1px, transparent 1px) !important;
     }
     
+    /* گۆڕینی هەموو کارت و بەشە تاریکەکان بۆ سپی و ڕووناک */
     html:not(.dark) header,
     html:not(.dark) .card-3d-effect,
-    html:not(.dark) div[class*="bg-slate-9"] {
+    html:not(.dark) div[class*="bg-slate-"],
+    html:not(.dark) div[class*="bg-gradient-to"] {
         background-color: #ffffff !important;
+        background-image: none !important;
         color: #0f172a !important;
         border-color: #e2e8f0 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
     }
-    
+
+    /* خانەکانی نووسین و گەڕان */
+    html:not(.dark) input,
+    html:not(.dark) select,
+    html:not(.dark) textarea {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    /* ڕەنگی خشتەکان */
     html:not(.dark) table th {
         background-color: #f1f5f9 !important;
         color: #0284c7 !important;
@@ -109,30 +122,18 @@
         border-bottom-color: #f1f5f9 !important;
         color: #334155 !important;
     }
-    
-    html:not(.dark) input, 
-    html:not(.dark) select, 
-    html:not(.dark) textarea {
-        background-color: #ffffff !important;
-        color: #0f172a !important;
-        border-color: #cbd5e1 !important;
-    }
-        /* ================= TEXT CONTRAST FIX FOR LIGHT MODE ================= */
+
+    /* ڕەنگی نووسینەکان بۆ ئەوەی بە روونی دیار بن */
     html:not(.dark) .text-white,
     html:not(.dark) .text-slate-100,
     html:not(.dark) .text-slate-200,
     html:not(.dark) .text-slate-300 {
-        color: #0f172a !important; /* ڕەنگی ڕەشی تۆخ بۆ نووسینە سەرەکییەکان */
+        color: #0f172a !important;
     }
     
     html:not(.dark) .text-slate-400,
     html:not(.dark) .text-slate-500 {
-        color: #475569 !important; /* ڕەنگی خۆڵەمێشی تۆخ بۆ تێکستە لاوەکییەکان */
-    }
-    
-    html:not(.dark) .text-cyan-400,
-    html:not(.dark) .text-cyan-500 {
-        color: #0284c7 !important; /* گۆڕینی ڕەنگی سیانی کاڵ بۆ شینی تۆخ و ڕوون */
+        color: #64748b !important;
     }
     </style>
 </head>
