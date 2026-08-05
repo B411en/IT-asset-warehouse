@@ -48,19 +48,27 @@
         .shake { animation: shake 0.4s ease-in-out; }
         
         .card-3d-effect {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
         }
         .card-3d-effect:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.15);
+            transform: translateY(-4px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 20px 30px -10px rgba(6, 182, 212, 0.15), 0 10px 20px -5px rgba(0, 0, 0, 0.5);
+            border-color: rgba(6, 182, 212, 0.3);
         }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: #0891b2; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        input:focus, textarea:focus, select:focus {
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+        
+        input, select, textarea { font-size: 1rem !important; }
 
         @media print {
             body * { visibility: hidden; }
@@ -73,24 +81,28 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
 
     <!-- LOCK SCREEN -->
-    <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4">
-        <div class="bg-gradient-to-br from-slate-900/90 via-slate-950/95 to-slate-950 border border-cyan-500/40 rounded-3xl p-8 max-w-md w-full shadow-2xl relative my-auto">
+    <div id="lock-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 overflow-y-auto">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.08)_0,transparent_100%)] pointer-events-none"></div>
+        <div class="bg-gradient-to-br from-slate-900/90 via-slate-950/95 to-slate-950 border border-cyan-500/40 rounded-3xl p-8 max-w-md w-full shadow-[0_0_60px_rgba(6,182,212,0.2)] relative overflow-hidden card-3d-effect my-auto backdrop-blur-xl">
             <div class="text-center mb-8 relative z-10">
-                <div class="w-20 h-20 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-cyan-500/40 text-3xl shadow-[0_0_25px_rgba(6,182,212,0.3)]">
+                <div class="w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-cyan-500/40 text-3xl shadow-[0_0_25px_rgba(6,182,212,0.3)] animate-pulse">
                     <i class="fa-solid fa-fingerprint"></i>
                 </div>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono tracking-widest uppercase mb-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span> SECURE-CORE v4.0
+                </div>
                 <h2 class="text-xl font-black text-white tracking-wider">Ballen || IT Officer</h2>
-                <p class="text-xs text-slate-400 mt-1 font-mono">کۆدەکەی خۆمان بنووسە</p>
+                <p class="text-xs text-slate-400 mt-1 font-mono tracking-tight">کۆدەکەی خۆمان بنووسە</p>
             </div>
             <form id="lock-form" class="space-y-5 relative z-10">
-                <div>
-                    <input type="password" id="lock-pin-input" placeholder="••••••••" class="w-full bg-slate-950/90 border border-cyan-500/50 rounded-2xl px-4 py-3.5 text-center tracking-[0.5em] text-lg text-cyan-300 focus:outline-none focus:border-cyan-300 font-mono">
+                <div class="relative">
+                    <input type="password" id="lock-pin-input" placeholder="••••••••" class="w-full bg-slate-950/90 border border-cyan-500/50 rounded-2xl px-4 py-3.5 text-center tracking-[0.5em] text-lg text-cyan-300 focus:outline-none focus:border-cyan-300 focus:ring-4 focus:ring-cyan-500/30 transition-all shadow-inner font-mono">
                 </div>
-                <button type="submit" id="lock-submit-btn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black py-3.5 rounded-2xl shadow-lg uppercase tracking-wider text-xs border border-cyan-400/30">
-                    <i class="fa-solid fa-shield-halved mr-2"></i> Open system
+                <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-black py-3.5 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all uppercase tracking-wider text-xs border border-cyan-400/30 transform active:scale-95">
+                    <i class="fa-solid fa-shield-halved mr-2"></i> Open the door
                 </button>
             </form>
             <div id="lock-error" class="mt-4 text-center text-xs text-red-400 font-mono bg-red-500/10 border border-red-500/20 py-2.5 rounded-xl hidden"></div>
@@ -102,56 +114,60 @@
         <header class="bg-slate-900/80 backdrop-blur-lg border-b border-cyan-500/20 sticky top-0 z-30 shadow-lg w-full">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between max-w-7xl mx-auto">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-700 text-white rounded-xl flex items-center justify-center font-black text-sm">
+                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-700 text-white rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)] font-black text-sm tracking-wider flex-shrink-0">
                         IT
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="text-sm font-black tracking-wider text-white">ASIA ALUMINIUM <span class="text-cyan-400">IT System</span></h1>
-                        <span class="text-[10px] text-cyan-500/70 font-mono">Asset & Operations Management</span>
+                        <span class="text-[10px] text-cyan-500/70 font-mono tracking-tight">Asset & Operations Management</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 md:gap-3">
-                    <button onclick="openScheduleModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
-                        <i class="fa-solid fa-calendar-check text-cyan-400"></i> Work Schedule
+                    <button onclick="openScheduleModal()" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-slate-700/50 shadow-md whitespace-nowrap">
+                        <i class="fa-solid fa-calendar-check text-cyan-400"></i> <span class="hidden md:inline">Work Schedule</span>
                     </button>
-                    <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
-                        <i class="fa-solid fa-key text-amber-400"></i> Passcode
+                    <button onclick="openChangePasscodeModal()" id="passcode-nav-btn" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-slate-700/50">
+                        <i class="fa-solid fa-key text-amber-400"></i> <span id="passcode-nav-btn-text" class="hidden md:inline">Passcode</span>
                     </button>
-                    <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                    <button onclick="exportData()" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all hidden lg:flex border border-slate-700/50">
                         <i class="fa-solid fa-download text-emerald-400"></i> Backup
                     </button>
-                    <button onclick="lockApp()" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1">
+                    <label class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer hidden sm:flex transition-all border border-slate-700/50">
+                        <i class="fa-solid fa-upload text-blue-400"></i> Import
+                        <input type="file" id="import-json-input" onchange="importData(event)" accept=".json" class="hidden">
+                    </label>
+                    <button onclick="lockApp()" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all">
                         <i class="fa-solid fa-lock"></i> Lock
                     </button>
                 </div>
             </div>
 
-            <!-- TABS -->
-            <div class="bg-slate-950/80 border-t border-slate-800/60 w-full">
-                <div class="max-w-7xl mx-auto px-2 md:px-6 flex gap-2 py-3 overflow-x-auto no-scrollbar">
-                    <div class="flex gap-2 p-1.5 bg-slate-900/50 rounded-2xl border border-slate-800 w-max">
-                        <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="tab-btn active-tab bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+            <!-- NAVIGATION TABS -->
+            <div class="bg-slate-950/80 border-t border-slate-800/60 overflow-hidden w-full">
+                <div class="max-w-7xl mx-auto px-2 md:px-6 flex gap-2 py-3 overflow-x-auto no-scrollbar scroll-smooth">
+                    <div class="flex gap-2 p-1.5 bg-slate-900/50 backdrop-blur-md rounded-2xl border border-slate-800/60 shadow-inner w-max">
+                        <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="tab-btn active-tab bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/30 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all">
                             <i class="fa-solid fa-chart-pie"></i> Dashboard
                         </button>
-                        <button onclick="switchTab('employees-tab')" id="btn-employees-tab" class="tab-btn text-slate-400 hover:text-cyan-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                        <button onclick="switchTab('employees-tab')" id="btn-employees-tab" class="tab-btn text-slate-400 hover:text-cyan-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                             <i class="fa-solid fa-users"></i> Employees
                         </button>
-                        <button onclick="switchTab('warehouse-tab')" id="btn-warehouse-tab" class="tab-btn text-slate-400 hover:text-cyan-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                        <button onclick="switchTab('warehouse-tab')" id="btn-warehouse-tab" class="tab-btn text-slate-400 hover:text-cyan-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                             <i class="fa-solid fa-warehouse"></i> Warehouse & Assets
                         </button>
-                        <button onclick="switchTab('rustdesk-tab')" id="btn-rustdesk-tab" class="tab-btn text-slate-400 hover:text-cyan-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                        <button onclick="switchTab('rustdesk-tab')" id="btn-rustdesk-tab" class="tab-btn text-slate-400 hover:text-cyan-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                             <i class="fa-solid fa-desktop"></i> RustDesk IDs
                         </button>
-                        <button onclick="switchTab('isp-tab')" id="btn-isp-tab" class="tab-btn text-slate-400 hover:text-emerald-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-                            <i class="fa-solid fa-network-wired text-emerald-500"></i> Switch Mapping
+                        <button onclick="switchTab('isp-tab')" id="btn-isp-tab" class="tab-btn text-slate-400 hover:text-emerald-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                            <i class="fa-solid fa-network-wired text-emerald-500"></i> Switch Port Mapping
                         </button>
-                        <button onclick="switchTab('helpdesk-tab')" id="btn-helpdesk-tab" class="tab-btn text-slate-400 hover:text-amber-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-                            <i class="fa-solid fa-headset text-amber-500"></i> Helpdesk
+                        <button onclick="switchTab('helpdesk-tab')" id="btn-helpdesk-tab" class="tab-btn text-slate-400 hover:text-amber-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
+                            <i class="fa-solid fa-headset text-amber-500"></i> Helpdesk Tickets
                         </button>
-                        <button onclick="switchTab('ipam-tab')" id="btn-ipam-tab" class="tab-btn text-slate-400 hover:text-blue-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                        <button onclick="switchTab('ipam-tab')" id="btn-ipam-tab" class="tab-btn text-slate-400 hover:text-blue-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                             <i class="fa-solid fa-sitemap text-blue-500"></i> IP Management
                         </button>
-                        <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn text-slate-400 hover:text-purple-300 px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                        <button onclick="switchTab('notes-tab')" id="btn-notes-tab" class="tab-btn text-slate-400 hover:text-purple-300 hover:bg-slate-800/80 px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all">
                             <i class="fa-solid fa-book-medical text-purple-500"></i> IT Notes
                         </button>
                     </div>
@@ -159,62 +175,120 @@
             </div>
         </header>
 
+        <div id="setup-warning-banner" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 py-2.5 text-xs text-amber-400 items-center justify-between">
+            <div class="flex items-center gap-2 max-w-7xl mx-auto w-full">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i>
+                <span>System passcode is not configured yet! Please set a secure passcode.</span>
+                <button onclick="openChangePasscodeModal()" class="underline font-bold ml-auto">Set Passcode Now</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT AREA -->
         <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
             
-            <!-- DASHBOARD -->
-            <div id="dashboard-tab" class="tab-content block space-y-6">
+            <!-- DASHBOARD TAB -->
+            <div id="dashboard-tab" class="tab-content space-y-6 block">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                        <span class="text-xs text-cyan-500 font-semibold uppercase">Employees</span>
-                        <h3 id="dash-total-employees" class="text-2xl font-black text-white font-mono mt-2">0</h3>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-cyan-500 font-semibold uppercase tracking-wider">Employees</span>
+                            <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20"><i class="fa-solid fa-users"></i></div>
+                        </div>
+                        <h3 id="dash-total-employees" class="text-2xl font-black text-white font-mono">0</h3>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                        <span class="text-xs text-cyan-500 font-semibold uppercase">Warehouse Assets</span>
-                        <h3 id="dash-total-warehouse" class="text-2xl font-black text-white font-mono mt-2">0</h3>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-cyan-500 font-semibold uppercase tracking-wider">Warehouse Assets</span>
+                            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20"><i class="fa-solid fa-warehouse"></i></div>
+                        </div>
+                        <h3 id="dash-total-warehouse" class="text-2xl font-black text-white font-mono">0</h3>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                        <span class="text-xs text-cyan-500 font-semibold uppercase">RustDesk Devices</span>
-                        <h3 id="dash-total-rustdesk" class="text-2xl font-black text-white font-mono mt-2">0</h3>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-cyan-500 font-semibold uppercase tracking-wider">RustDesk Devices</span>
+                            <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20"><i class="fa-solid fa-desktop"></i></div>
+                        </div>
+                        <h3 id="dash-total-rustdesk" class="text-2xl font-black text-white font-mono">0</h3>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                        <span class="text-xs text-cyan-500 font-semibold uppercase">Open Tickets</span>
-                        <h3 id="dash-total-tickets" class="text-2xl font-black text-white font-mono mt-2">0</h3>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-cyan-500 font-semibold uppercase tracking-wider">Open Tickets</span>
+                            <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20"><i class="fa-solid fa-headset"></i></div>
+                        </div>
+                        <h3 id="dash-total-tickets" class="text-2xl font-black text-white font-mono">0</h3>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                        <h4 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-chart-pie mr-2 text-cyan-400"></i> Category Breakdown</h4>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
+                        <h4 class="text-sm font-bold text-white mb-4 flex items-center"><i class="fa-solid fa-chart-pie mr-2 text-cyan-400"></i> Assets By Category</h4>
                         <div class="relative h-64 w-full"><canvas id="dashWarehouseChart"></canvas></div>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                        <h4 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-chart-column mr-2 text-cyan-400"></i> Status Distribution</h4>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-lg card-3d-effect">
+                        <h4 class="text-sm font-bold text-white mb-4 flex items-center"><i class="fa-solid fa-chart-column mr-2 text-cyan-400"></i> Assets By Status</h4>
                         <div class="relative h-64 w-full"><canvas id="dashStatusChart"></canvas></div>
                     </div>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl card-3d-effect">
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-                        <h4 class="text-sm font-bold text-white"><i class="fa-solid fa-terminal mr-2 text-cyan-400"></i> Quick Commands</h4>
-                        <button onclick="openSnippetModal()" class="bg-cyan-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Add Command</button>
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/30">
+                                <i class="fa-solid fa-terminal text-xs"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">IT Quick Command Snippets</h4>
+                        </div>
+                        <button onclick="openSnippetModal()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                            <i class="fa-solid fa-plus text-[10px]"></i> Add Snippet
+                        </button>
                     </div>
-                    <input type="text" id="snippet-search" oninput="renderCommandSnippets()" placeholder="Search commands..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white mb-4">
-                    <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto"></div>
+                    <div class="mb-4">
+                        <input type="text" id="snippet-search" oninput="renderCommandSnippets()" placeholder="Search commands (e.g. DNS, MikroTik, Windows)..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div id="snippets-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800/90 rounded-2xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden card-3d-effect">
+                    <div class="space-y-3 max-w-xl relative z-10">
+                        <div class="inline-flex items-center gap-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
+                            <i class="fa-solid fa-shield-halved"></i> IT Infrastructure Core
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-black text-white tracking-tight">Asia Aluminium IT Operations</h3>
+                        <p class="text-xs md:text-sm text-cyan-500/70 italic font-mono">"Just restart it and everything will be fine!" 💻🚀</p>
+                        <div class="flex items-center gap-2.5 pt-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></span>
+                            <span class="text-xs text-emerald-400 font-semibold tracking-wide">Ballen Saman — IT Officer at Asia Aluminium</span>
+                        </div>
+                    </div>
+                    <div class="relative rounded-2xl overflow-hidden border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.1)] w-full md:w-80 flex-shrink-0 group bg-slate-950">
+                        <img src="ballen.jpg" alt="Ballen IT Officer" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute bottom-2 left-2 right-2 bg-slate-950/85 backdrop-blur-md border border-cyan-500/30 rounded-xl px-3 py-2 text-center shadow-md">
+                            <span class="text-[10px] font-bold text-cyan-100 tracking-wider">Ballen IT Officer at Asia Aluminium</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- EMPLOYEES -->
-            <div id="employees-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="employee-search" oninput="renderEmployeesList()" placeholder="Search employees..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openEmpModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ Register Employee</button>
+            <!-- EMPLOYEES TAB -->
+            <div id="employees-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="employee-search" oninput="renderEmployeesList()" placeholder="Search employees..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
+                        <span id="employee-count" class="text-xs text-cyan-500/70 font-mono">0 Employees</span>
+                        <button onclick="openEmpModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-user-plus"></i> Register Employee
+                        </button>
+                    </div>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr class="bg-slate-950 border-b border-slate-800 text-[11px] text-cyan-500 uppercase">
-                                    <th class="p-3">#</th><th class="p-3">ID</th><th class="p-3">Name</th><th class="p-3">Position</th><th class="p-3">Dept</th><th class="p-3">Phone</th><th class="p-3">Status</th><th class="p-3 text-center">Actions</th>
+                                <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] text-cyan-500 uppercase tracking-wider">
+                                    <th class="p-3">#</th><th class="p-3">Emp ID</th><th class="p-3">Full Name</th><th class="p-3">Position</th><th class="p-3">Department</th><th class="p-3">Phone</th><th class="p-3">Status</th><th class="p-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="employees-list-body"></tbody>
@@ -223,18 +297,35 @@
                 </div>
             </div>
 
-            <!-- WAREHOUSE -->
-            <div id="warehouse-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search assets..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openWarehouseModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ Store Asset</button>
+            <!-- WAREHOUSE TAB -->
+            <div id="warehouse-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="warehouse-search" oninput="renderWarehouseList()" placeholder="Search assets..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between">
+                        <span id="stock-count" class="text-xs text-cyan-500/70 font-mono">0 Items</span>
+                        <div class="flex items-center gap-2">
+                            <label class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all border border-slate-700/50">
+                                <i class="fa-solid fa-file-csv text-emerald-400"></i> Import CSV
+                                <input type="file" id="csv-input" onchange="importWarehouseCSV(event)" accept=".csv" class="hidden">
+                            </label>
+                            <button onclick="exportToExcel()" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border border-slate-700/50">
+                                <i class="fa-solid fa-file-excel text-emerald-400"></i> Export XLSX
+                            </button>
+                        </div>
+                        <button onclick="openWarehouseModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-plus"></i> Store Asset
+                        </button>
+                    </div>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr class="bg-slate-950 border-b border-slate-800 text-[11px] text-cyan-500 uppercase">
-                                    <th class="p-3">Asset Tag</th><th class="p-3">Category & Details</th><th class="p-3">Employee</th><th class="p-3">Dates</th><th class="p-3 text-center">Status</th><th class="p-3 text-center">Actions</th>
+                                <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] text-cyan-500 uppercase tracking-wider">
+                                    <th class="p-3">Asset Tag</th><th class="p-3">Category & Details</th><th class="p-3">Assigned Employee</th><th class="p-3">Dates</th><th class="p-3 text-center">Status</th><th class="p-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="warehouse-list-body"></tbody>
@@ -243,18 +334,23 @@
                 </div>
             </div>
 
-            <!-- RUSTDESK -->
-            <div id="rustdesk-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="rd-search" oninput="renderRustDeskList()" placeholder="Search RustDesk ID..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openRustDeskModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ Add RustDesk</button>
+            <!-- RUSTDESK TAB -->
+            <div id="rustdesk-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="rd-search" oninput="renderRustDeskList()" placeholder="Search RustDesk ID..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="openRustDeskModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-plus"></i> Add RustDesk
+                    </button>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr class="bg-slate-950 border-b border-slate-800 text-[11px] text-cyan-500 uppercase">
-                                    <th class="p-3">Employee</th><th class="p-3">RustDesk ID</th><th class="p-3">Password</th><th class="p-3">Device</th><th class="p-3 text-center">Connect</th><th class="p-3 text-center">Actions</th>
+                                <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] text-cyan-500 uppercase tracking-wider">
+                                    <th class="p-3">Employee</th><th class="p-3">RustDesk ID</th><th class="p-3">Password</th><th class="p-3">Device</th><th class="p-3 text-center">Quick Connect</th><th class="p-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="rd-list-body"></tbody>
@@ -263,18 +359,23 @@
                 </div>
             </div>
 
-            <!-- SWITCH MAPPING -->
-            <div id="isp-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="isp-search" oninput="renderIspList()" placeholder="Search switch..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openIspModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ Add Switch</button>
+            <!-- SWITCH PORT MAPPING TAB -->
+            <div id="isp-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="isp-search" oninput="renderIspList()" placeholder="Search switch..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="openIspModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-plus"></i> Add Switch Mapping
+                    </button>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr class="bg-slate-950 border-b border-slate-800 text-[11px] text-cyan-500 uppercase">
-                                    <th class="p-3">Switch</th><th class="p-3">Location</th><th class="p-3">Management IP</th><th class="p-3">Uplink</th><th class="p-3">Notes</th>
+                                <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] text-cyan-500 uppercase tracking-wider">
+                                    <th class="p-3">Switch Name</th><th class="p-3">Location</th><th class="p-3">Management IP</th><th class="p-3">Uplink</th><th class="p-3">Notes</th><th class="p-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="switch-mapping-list-body"></tbody>
@@ -283,18 +384,23 @@
                 </div>
             </div>
 
-            <!-- HELPDESK -->
-            <div id="helpdesk-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="helpdesk-search" oninput="renderHelpdeskList()" placeholder="Search tickets..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openHelpdeskModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ New Ticket</button>
+            <!-- HELPDESK TICKETS TAB -->
+            <div id="helpdesk-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="helpdesk-search" oninput="renderHelpdeskList()" placeholder="Search tickets..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="openHelpdeskModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-ticket"></i> New Support Ticket
+                    </button>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr class="bg-slate-950 border-b border-slate-800 text-[11px] text-cyan-500 uppercase">
-                                    <th class="p-3">Ticket ID</th><th class="p-3">Employee</th><th class="p-3">Summary</th><th class="p-3">Date</th><th class="p-3 text-center">Status</th><th class="p-3 text-center">Actions</th>
+                                <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] text-cyan-500 uppercase tracking-wider">
+                                    <th class="p-3">Ticket ID</th><th class="p-3">Employee</th><th class="p-3">Issue Summary</th><th class="p-3">Date</th><th class="p-3 text-center">Status</th><th class="p-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="helpdesk-list-body"></tbody>
@@ -303,18 +409,23 @@
                 </div>
             </div>
 
-            <!-- IP MANAGEMENT -->
-            <div id="ipam-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="ipam-search" oninput="renderIpamList()" placeholder="Search IP..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openIpamModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ Add Static IP</button>
+            <!-- IP MANAGEMENT (IPAM) TAB -->
+            <div id="ipam-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="ipam-search" oninput="renderIpamList()" placeholder="Search IP, device, location..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="openIpamModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-network-wired"></i> Add Static IP Entry
+                    </button>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr class="bg-slate-950 border-b border-slate-800 text-[11px] text-cyan-500 uppercase">
-                                    <th class="p-3">IP Address</th><th class="p-3">Device Name</th><th class="p-3">Status</th><th class="p-3">Type</th><th class="p-3">Location</th><th class="p-3">Password</th><th class="p-3 text-center">Actions</th>
+                                <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] text-cyan-500 uppercase tracking-wider">
+                                    <th class="p-3">IP Address</th><th class="p-3">Device Name</th><th class="p-3">Status</th><th class="p-3">Type</th><th class="p-3">Location</th><th class="p-3">Password</th><th class="p-3">Notes</th><th class="p-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="ipam-list-body"></tbody>
@@ -323,27 +434,32 @@
                 </div>
             </div>
 
-            <!-- IT NOTES -->
-            <div id="notes-tab" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <input type="text" id="note-search" oninput="renderNotesList()" placeholder="Search notes..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-80">
-                    <button onclick="openNoteModal()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ Add Note</button>
+            <!-- IT NOTES TAB -->
+            <div id="notes-tab" class="tab-content hidden space-y-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-4 rounded-2xl shadow-lg w-full">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="note-search" oninput="renderNotesList()" placeholder="Search notes..." class="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="openNoteModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-plus"></i> Add Note
+                    </button>
                 </div>
-                <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"></div>
             </div>
         </main>
     </div>
 
-    <!-- FIXED CENTER MODALS WRAPPER FOR ALL FORMS -->
+    <!-- POPUP MODALS IN FIXED CENTER -->
     
-    <!-- HANDOVER FORM MODAL -->
+    <!-- HANDOVER MODAL -->
     <div id="handover-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4">
-        <div class="bg-white text-slate-900 border border-slate-300 rounded-3xl max-w-3xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-3xl max-w-3xl w-full p-6 md:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
             <div id="handover-print-area" class="space-y-6">
                 <div class="flex justify-between items-center border-b-2 border-slate-800 pb-4">
                     <div>
                         <h2 class="text-xl font-black uppercase text-slate-900 tracking-wider">ASIA ALUMINIUM GROUP</h2>
-                        <h4 class="text-xs font-bold text-slate-600 uppercase tracking-widest">IT Equipment Handover Form</h4>
+                        <h4 class="text-xs font-bold text-slate-600 uppercase tracking-widest">IT Department — Equipment Handover Form</h4>
                     </div>
                     <div class="text-right space-y-0.5">
                         <span class="text-xs font-mono font-bold text-slate-500 block">Ref: <span id="ho-doc-ref" class="text-slate-900">AA-HO-2026-001</span></span>
@@ -351,17 +467,19 @@
                         <span class="text-xs font-mono font-bold text-slate-500 block">Expected Return: <span id="ho-doc-return-date" class="text-slate-900">N/A</span></span>
                     </div>
                 </div>
+
                 <div>
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 bg-slate-100 p-2 rounded mb-3 border-l-4 border-cyan-600">
-                        1. Employee Information
+                        1. Employee / Recipient Information
                     </h3>
                     <div class="grid grid-cols-2 gap-4 text-xs">
                         <div><strong class="text-slate-600">Full Name:</strong> <span id="ho-emp-name" class="font-bold text-slate-900">--</span></div>
                         <div><strong class="text-slate-600">Employee ID:</strong> <span id="ho-emp-id" class="font-bold text-slate-900 font-mono">--</span></div>
-                        <div><strong class="text-slate-600">Position:</strong> <span id="ho-emp-pos" class="font-bold text-slate-900">--</span></div>
+                        <div><strong class="text-slate-600">Position / Title:</strong> <span id="ho-emp-pos" class="font-bold text-slate-900">--</span></div>
                         <div><strong class="text-slate-600">Department:</strong> <span id="ho-emp-dept" class="font-bold text-slate-900">--</span></div>
                     </div>
                 </div>
+
                 <div>
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 bg-slate-100 p-2 rounded mb-3 border-l-4 border-cyan-600">
                         2. Issued Equipment Specifications
@@ -381,36 +499,81 @@
                         </table>
                     </div>
                     <div class="mt-3 text-xs bg-slate-50 p-2.5 rounded border border-slate-200">
-                        <strong class="text-slate-600 block mb-1">Additional Condition Notes:</strong>
+                        <strong class="text-slate-600 block mb-1">Additional Condition Notes & Accessories:</strong>
                         <p id="ho-asset-details" class="text-slate-800 italic">No extra notes.</p>
                     </div>
                 </div>
+
                 <div>
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 bg-slate-100 p-2 rounded mb-2 border-l-4 border-cyan-600">
-                        3. Terms & Conditions
+                        3. Terms & Acknowledgement Policy
                     </h3>
                     <ul class="text-[11px] text-slate-600 space-y-1 list-disc pl-4 leading-relaxed">
-                        <li>The assigned equipment remains property of <strong>Asia Aluminium Group</strong>.</li>
-                        <li>The employee accepts full responsibility for taking standard care of the hardware.</li>
+                        <li>The assigned equipment remains exclusive property of <strong>Asia Aluminium Group</strong>.</li>
+                        <li>The employee accepts full responsibility for taking standard care of hardware.</li>
+                        <li>This equipment must be returned to IT Department upon request or leaving the company.</li>
                     </ul>
                 </div>
+
                 <div class="pt-6 border-t border-slate-200 grid grid-cols-2 gap-8 text-xs">
                     <div>
-                        <p class="font-bold text-slate-800 mb-8">Issued By (IT Dept):</p>
+                        <p class="font-bold text-slate-800 mb-8">Issued By (IT Department):</p>
                         <div class="border-b border-slate-400 w-3/4 mb-1"></div>
                         <p class="font-bold text-slate-900">Ballen Saman</p>
+                        <p class="text-[10px] text-slate-500">IT Officer || Asia Aluminium</p>
                     </div>
                     <div>
-                        <p class="font-bold text-slate-800 mb-8">Received By (Employee):</p>
+                        <p class="font-bold text-slate-800 mb-8">Received & Accepted By (Employee):</p>
                         <div class="border-b border-slate-400 w-3/4 mb-1"></div>
                         <p id="ho-sign-name" class="font-bold text-slate-900">--</p>
+                        <p class="text-[10px] text-slate-500">Signature & Date</p>
                     </div>
                 </div>
             </div>
+
             <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 no-print">
-                <button onclick="closeHandoverModal()" class="bg-slate-200 text-slate-700 px-5 py-2 rounded-xl text-xs font-bold">Close</button>
-                <button onclick="window.print()" class="bg-cyan-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg"><i class="fa-solid fa-print mr-1"></i> Print / Save PDF</button>
+                <button onclick="closeHandoverModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2 rounded-xl text-xs font-bold transition-all">Close</button>
+                <button onclick="window.print()" class="bg-cyan-600 hover:bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-print"></i> Print / Save PDF
+                </button>
             </div>
+        </div>
+    </div>
+
+    <!-- WORK SCHEDULE MODAL -->
+    <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-4xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+                <h3 class="text-base font-black text-white">IT Work Schedule & Operations</h3>
+                <button onclick="closeScheduleModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                        <div><label class="block text-[10px] text-slate-400 mb-1">Date</label><input type="date" id="plan-task-date" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white"></div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Priority</label>
+                            <select id="plan-task-priority" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white">
+                                <option value="High">🔴 High Priority</option>
+                                <option value="Medium" selected>🟡 Medium Priority</option>
+                                <option value="Low">🟢 Low Priority</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-[10px] text-slate-400 mb-1">Details</label>
+                        <textarea id="plan-task-details" rows="2" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-white"></textarea>
+                    </div>
+                    <button onclick="addPlannedTaskToList()" class="w-full bg-cyan-600 text-white font-bold py-2 rounded-xl text-xs">Add Task</button>
+                </div>
+                <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                    <table class="w-full text-left">
+                        <thead><tr class="bg-slate-950 text-cyan-500 text-[11px]"><th class="p-3">Date</th><th class="p-3">Details</th><th class="p-3 text-center">Priority</th><th class="p-3 text-center">Actions</th></tr></thead>
+                        <tbody id="planned-tasks-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-6 text-right"><button onclick="closeScheduleModal()" class="bg-slate-800 text-slate-300 px-5 py-2 rounded-xl text-xs">Close</button></div>
         </div>
     </div>
 
@@ -427,7 +590,6 @@
                 <div><label class="block text-[10px] text-slate-400 mb-1">Section</label><input type="text" id="emp-section" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
                 <div><label class="block text-[10px] text-slate-400 mb-1">Phone</label><input type="text" id="emp-phone" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
                 <div><label class="block text-[10px] text-slate-400 mb-1">Status</label><select id="emp-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"><option value="Active">Active</option><option value="Left">Left</option></select></div>
-                <div><label class="block text-[10px] text-slate-400 mb-1">Start Date</label><input type="date" id="emp-start-date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
             </div>
             <div class="flex justify-end gap-2">
                 <button onclick="closeEmpModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
@@ -441,6 +603,15 @@
         <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <h3 id="w-form-title" class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-barcode text-cyan-400 mr-2"></i> Store Asset</h3>
             <input type="hidden" id="w-edit-id">
+            <div class="bg-slate-950 p-3 rounded-xl mb-4">
+                <label class="block text-[10px] text-amber-400 mb-1">Quick Assign Employee</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input type="text" id="w-emp-search" oninput="populateWarehouseEmployeeDropdown()" placeholder="Filter..." class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white">
+                    <select id="w-emp-select" onchange="onWarehouseEmployeeSelected()" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white">
+                        <option value="">-- Choose Employee --</option>
+                    </select>
+                </div>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 <div><label class="block text-[10px] text-slate-400 mb-1">Asset Tag *</label><input type="text" id="w-asset-tag" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-cyan-400 font-mono"></div>
                 <div>
@@ -453,10 +624,11 @@
                 <div><label class="block text-[10px] text-slate-400 mb-1">Serial Number</label><input type="text" id="w-serial" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
                 <div><label class="block text-[10px] text-slate-400 mb-1">Quantity</label><input type="number" id="w-quantity" value="1" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
                 <div><label class="block text-[10px] text-slate-400 mb-1">Status</label><select id="w-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"><option value="In Stock">In Stock</option><option value="In Use">In Use</option><option value="Under Maintenance">Under Maintenance</option><option value="Damaged">Damaged</option></select></div>
-                <div><label class="block text-[10px] text-slate-400 mb-1">Employee Name</label><input type="text" id="w-emp-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
-                <div><label class="block text-[10px] text-slate-400 mb-1">Employee ID</label><input type="text" id="w-emp-id" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Assigned Name</label><input type="text" id="w-emp-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Assigned ID</label><input type="text" id="w-emp-id" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
                 <div><label class="block text-[10px] text-slate-400 mb-1">Handover Date</label><input type="date" id="w-handover-date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
                 <div><label class="block text-[10px] text-slate-400 mb-1">Return Date</label><input type="date" id="w-return-date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div class="sm:col-span-2"><label class="block text-[10px] text-slate-400 mb-1">Details / Notes</label><textarea id="w-details" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
             </div>
             <div class="flex justify-end gap-2">
                 <button onclick="closeWarehouseModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
@@ -465,31 +637,133 @@
         </div>
     </div>
 
-    <!-- SCHEDULE MODAL -->
-    <div id="schedule-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-4xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <h3 class="text-base font-black text-white mb-4"><i class="fa-solid fa-calendar-check text-cyan-400 mr-2"></i> Work Schedule</h3>
-            <div class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div><label class="block text-[10px] text-slate-400 mb-1">Date</label><input type="date" id="plan-task-date" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
-                    <div><label class="block text-[10px] text-slate-400 mb-1">Priority</label><select id="plan-task-priority" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select></div>
-                    <div class="sm:col-span-3"><label class="block text-[10px] text-slate-400 mb-1">Details</label><textarea id="plan-task-details" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
-                </div>
-                <button onclick="addPlannedTaskToList()" class="w-full bg-cyan-600 text-white font-bold py-2 rounded-xl text-xs">Add Schedule Task</button>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead><tr class="bg-slate-950 text-cyan-500 text-[11px]"><th class="p-2">Date</th><th class="p-2">Details</th><th class="p-2 text-center">Priority</th><th class="p-2 text-center">Action</th></tr></thead>
-                        <tbody id="planned-tasks-tbody"></tbody>
-                    </table>
-                </div>
+    <!-- RUSTDESK MODAL -->
+    <div id="rustdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-desktop text-cyan-400 mr-2"></i> RustDesk Device</h3>
+            <input type="hidden" id="rd-edit-id">
+            <div class="space-y-3 mb-4">
+                <div><label class="block text-[10px] text-slate-400 mb-1">Employee Name *</label><input type="text" id="rd-emp-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">RustDesk ID *</label><input type="text" id="rd-id" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-cyan-400 font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Password</label><input type="text" id="rd-password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Device Name</label><input type="text" id="rd-device" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
             </div>
-            <div class="mt-4 text-right"><button onclick="closeScheduleModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Close</button></div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeRustDeskModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
+                <button onclick="saveRustDeskEntry()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Record</button>
+            </div>
         </div>
     </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-cyan-500/30 text-white px-4 py-3 rounded-2xl shadow-xl transform translate-y-28 transition-transform duration-300">
-        <span id="toast-msg" class="text-xs font-semibold">Saved</span>
+    <!-- SWITCH MAPPING MODAL -->
+    <div id="isp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-network-wired text-cyan-400 mr-2"></i> Switch Mapping</h3>
+            <input type="hidden" id="isp-edit-id">
+            <div class="space-y-3 mb-4">
+                <div><label class="block text-[10px] text-slate-400 mb-1">Switch Name *</label><input type="text" id="isp-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Location</label><input type="text" id="isp-speed" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Management IP</label><input type="text" id="isp-ip" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Uplink & VLANs</label><input type="text" id="isp-pass" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Notes</label><textarea id="isp-notes" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeIspModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
+                <button onclick="saveIspEntry()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Switch</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HELPDESK MODAL -->
+    <div id="helpdesk-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-headset text-amber-400 mr-2"></i> New Support Ticket</h3>
+            <input type="hidden" id="helpdesk-edit-id">
+            <div class="space-y-3 mb-4">
+                <div><label class="block text-[10px] text-slate-400 mb-1">Employee Name *</label><input type="text" id="hd-emp" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Issue Summary *</label><input type="text" id="hd-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Status</label><select id="hd-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Resolved">Resolved</option></select></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Details</label><textarea id="hd-details" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeHelpdeskModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
+                <button onclick="saveHelpdeskEntry()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Ticket</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IPAM MODAL -->
+    <div id="ipam-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-network-wired text-cyan-400 mr-2"></i> Static IP Record</h3>
+            <input type="hidden" id="ipam-edit-id">
+            <div class="space-y-3 mb-4">
+                <div><label class="block text-[10px] text-slate-400 mb-1">IP Address *</label><input type="text" id="ipam-ip" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Device Name *</label><input type="text" id="ipam-device" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Device Status (Online / Offline) *</label>
+                    <select id="ipam-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <option value="Online">Online</option>
+                        <option value="Offline">Offline</option>
+                    </select>
+                </div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Subnet / Type</label><input type="text" id="ipam-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Location / Owner</label><input type="text" id="ipam-owner" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Device Password</label><input type="password" id="ipam-password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Notes</label><textarea id="ipam-notes" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeIpamModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
+                <button onclick="saveIpamEntry()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Save IP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMMAND SNIPPET MODAL -->
+    <div id="snippet-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <h3 id="snippet-form-title" class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-terminal text-cyan-400 mr-2"></i> Add Snippet</h3>
+            <input type="hidden" id="snippet-edit-id">
+            <div class="space-y-3 mb-4">
+                <div><label class="block text-[10px] text-slate-400 mb-1">Command Title *</label><input type="text" id="snippet-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Category *</label><input type="text" id="snippet-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Command Code *</label><input type="text" id="snippet-cmd" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-emerald-400 font-mono"></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Description</label><textarea id="snippet-desc" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeSnippetModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
+                <button onclick="saveSnippetEntry()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Snippet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTES MODAL -->
+    <div id="notes-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
+            <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-book-medical text-cyan-400 mr-2"></i> IT Troubleshooting Note</h3>
+            <input type="hidden" id="note-edit-id">
+            <div class="space-y-3 mb-4">
+                <div><label class="block text-[10px] text-slate-400 mb-1">Issue Title *</label><input type="text" id="note-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Category</label>
+                    <select id="note-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <option value="Network & Router">Network & Router</option><option value="CCTV & NVR">CCTV & NVR</option><option value="Printer & Scanner">Printer & Scanner</option><option value="Windows & Domain">Windows & Domain</option><option value="General Note">General Note</option>
+                    </select>
+                </div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Problem Description</label><textarea id="note-problem" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white"></textarea></div>
+                <div><label class="block text-[10px] text-slate-400 mb-1">Solution Steps *</label><textarea id="note-solution" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></textarea></div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeNoteModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs">Cancel</button>
+                <button onclick="saveNoteEntry()" class="bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-cyan-500/30 text-white px-4 py-3 rounded-2xl shadow-xl transform translate-y-28 transition-transform duration-300 flex items-center gap-3">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></div>
+        <span id="toast-msg" class="text-xs font-semibold">Action completed</span>
     </div>
 
     <script src="script.js"></script>
