@@ -135,10 +135,11 @@ function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
 
-    // بەروار و ساتی دروستکردنی فۆرمەکە بۆ سەرەوەی لاپەڕەکە
     const now = new Date();
     const issueDateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('ho-doc-issue-date').innerText = issueDateTime;
+    
+    const issueDateEl = document.getElementById('ho-doc-issue-date');
+    if (issueDateEl) issueDateEl.innerText = issueDateTime;
     
     document.getElementById('ho-emp-name').innerText = item.empName || 'N/A';
     document.getElementById('ho-emp-id').innerText = item.empId || 'N/A';
@@ -146,7 +147,6 @@ function openHandoverModal(id) {
     document.getElementById('ho-emp-dept').innerText = item.empDepartment || 'N/A';
     document.getElementById('ho-sign-name').innerText = item.empName || 'Employee';
 
-    // گەڕان بەدوای هەموو ئامێرەکانی هەمان کارمەند
     let empAssets = [];
     if (item.empId && item.empId.trim() !== '') {
         empAssets = wDb.filter(a => a.empId && a.empId.trim() === item.empId.trim());
@@ -180,7 +180,8 @@ function openHandoverModal(id) {
         .filter(Boolean)
         .join('<br>');
 
-    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
+    const detailsEl = document.getElementById('ho-asset-details');
+    if (detailsEl) detailsEl.innerHTML = allDetails || 'No additional notes provided.';
 
     showModalCentered('handover-modal');
 }
@@ -188,32 +189,6 @@ function openHandoverModal(id) {
 function closeHandoverModal() {
     const modal = document.getElementById('handover-modal');
     if (!modal) return;
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
-    const allDetails = empAssets
-        .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
-        .filter(Boolean)
-        .join('<br>');
-
-    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
-
-    showModalCentered('handover-modal');
-}
-
-    const allDetails = empAssets
-        .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
-        .filter(Boolean)
-        .join('<br>');
-
-    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
-
-    showModalCentered('handover-modal');
-
-
-function closeHandoverModal() {
-    const modal = document.getElementById('handover-modal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
 }
