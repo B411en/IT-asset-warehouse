@@ -337,6 +337,7 @@
                         <button onclick="openWarehouseModal()" class="bg-cyan-600 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] flex items-center gap-2 transition-all">
                             <i class="fa-solid fa-plus"></i> Store Asset
                         </button>
+                        
                     </div>
                 </div>
                 <div class="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl w-full">
@@ -480,6 +481,7 @@
                                     <th class="p-3">IP Address</th>
                                     <th class="p-3">Device Name</th>
                                     <th class="p-3">Type / Subnet</th>
+                                    <th class="p-3 text-center">Status</th>
                                     <th class="p-3">Location / Owner</th>
                                     <th class="p-3">Password</th>
                                     <th class="p-3">Notes</th>
@@ -918,6 +920,13 @@
                     <label class="block text-[10px] text-slate-400 mb-1">Location / Owner</label>
                     <input type="text" id="ipam-owner" placeholder="Main Office 1st Floor" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none">
                 </div>
+                <div>
+    <label class="block text-[10px] text-slate-400 mb-1">Device Status *</label>
+    <select id="ipam-status" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        <option value="Online">Online</option>
+        <option value="Offline">Offline</option>
+    </select>
+</div>
                 <div>
     <label class="block text-[10px] text-slate-400 mb-1">Device Password</label>
     <div class="relative">
