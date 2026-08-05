@@ -71,11 +71,11 @@
         input:focus, textarea:focus, select:focus { box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
         input, select, textarea { font-size: 1rem !important; }
 
-        /* Print Styling - Optimized to prevent blank/extra pages */
+        /* Print Styling - Clean & Dynamic Page Flow */
         @media print {
             @page {
-                size: auto;
-                margin: 10mm;
+                size: A4;
+                margin: 8mm;
             }
             body, html {
                 background: white !important;
@@ -123,10 +123,14 @@
             }
             .no-print { display: none !important; }
             
-            /* ڕێگریکردن لە دابەشبوونی هەڵەی تابلۆ و سەکشەنەکان بەسەر چەند پەڕەیەکدا */
-            table, tr, td, th, div {
-                page-break-inside: avoid;
-                break-inside: avoid;
+            /* ڕێگەدان بە تابلۆکان کە بە شێوازێکی سروشتی بشکێن بێ دروستکردنی پەڕەی بەتاڵ */
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            td, th { padding: 6px 8px !important; }
+            
+            /* ڕێگەدان بە div کان بۆ ئەوەی بە پێی پێویست دابەش ببن */
+            #handover-modal div {
+                page-break-inside: auto;
             }
         }
     </style>
