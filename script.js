@@ -131,13 +131,15 @@ function closeScheduleModal() {
 }
 
 /* ================= HANDOVER FORM LOGIC (MULTI-ITEM & CENTERED) ================= */
+/* ================= HANDOVER FORM LOGIC (MULTI-ITEM & CENTERED) ================= */
 function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
 
-    document.getElementById('ho-doc-ref').innerText = `AA-HO-${new Date().getFullYear()}-${item.assetTag || '001'}`;
-    document.getElementById('ho-doc-handover-date').innerText = item.handoverDate || new Date().toLocaleDateString('en-GB');
-    document.getElementById('ho-doc-return-date').innerText = item.returnDate || 'N/A (Permanent)';
+    // بەروار و ساتی دروستکردنی فۆرمەکە بۆ سەرەوەی لاپەڕەکە
+    const now = new Date();
+    const issueDateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('ho-doc-issue-date').innerText = issueDateTime;
     
     document.getElementById('ho-emp-name').innerText = item.empName || 'N/A';
     document.getElementById('ho-emp-id').innerText = item.empId || 'N/A';
@@ -167,10 +169,22 @@ function openHandoverModal(id) {
                 <td class="p-2.5">${asset.desc || 'N/A'}</td>
                 <td class="p-2.5 font-mono">${asset.serial || 'N/A'}</td>
                 <td class="p-2.5 font-bold">${asset.quantity || '1'}</td>
+                <td class="p-2.5 font-mono text-cyan-800">${asset.handoverDate || 'N/A'}</td>
+                <td class="p-2.5 font-mono text-slate-700">${asset.returnDate || 'Permanent'}</td>
             `;
             tbody.appendChild(tr);
         });
     }
+
+    const allDetails = empAssets
+        .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
+        .filter(Boolean)
+        .join('<br>');
+
+    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
+
+    showModalCentered('handover-modal');
+}
 
     const allDetails = empAssets
         .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
