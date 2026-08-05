@@ -71,31 +71,44 @@
         input:focus, textarea:focus, select:focus { box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
         input, select, textarea { font-size: 1rem !important; }
 
-        /* Print Styling - Definitive Fix for Modal and Blank Pages */
+        /* Print Styling - Definitive Blank Page Elimination */
         @media print {
             @page {
                 size: A4;
                 margin: 10mm;
             }
+
+            /* شاردنەوەی تەواوەتی هەموو بەشەکانی پەیج بە جۆرێک هیچ بۆشاییەک نەهێڵنەوە */
+            #lock-screen, #app-root, #toast, 
+            #emp-modal, #warehouse-modal, #rustdesk-modal, #isp-modal, 
+            #helpdesk-modal, #ipam-modal, #snippet-modal, #notes-modal, #change-pin-modal {
+                display: none !important;
+            }
+
             body, html {
                 background: white !important;
                 color: black !important;
                 height: auto !important;
                 overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
-            body * { visibility: hidden !important; }
-            #handover-modal, #handover-modal * { visibility: visible !important; }
             
+            /* نیشدان و ڕێکخستنی تەنها فۆرمی تسلیمکردن */
             #handover-modal {
+                display: block !important;
                 position: absolute !important;
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
                 height: auto !important;
                 background: white !important;
-                display: block !important;
-                overflow: visible !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
                 z-index: 999999 !important;
+                overflow: visible !important;
+                backdrop-filter: none !important;
             }
             
             #handover-modal > div {
@@ -118,14 +131,17 @@
                 color: black !important; 
                 background-color: transparent !important; 
             }
+            
             #handover-modal .bg-slate-100 { 
                 background-color: #f1f5f9 !important; 
                 -webkit-print-color-adjust: exact; 
                 print-color-adjust: exact; 
             }
+            
             .no-print { display: none !important; }
             
-            table { page-break-inside: auto; width: 100% !important; }
+            /* ڕێکخستنی تابلۆکان بۆ ئەوەی بە پێی پێویست بە بێ کەلێن دابەش ببن */
+            table { page-break-inside: auto; width: 100% !important; border-collapse: collapse; }
             tr { page-break-inside: avoid; page-break-after: auto; }
             td, th { padding: 6px 8px !important; }
         }
