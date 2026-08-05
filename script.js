@@ -591,10 +591,10 @@ function updateDashboardCharts() {
 
 /* ================= AUTO ASSET TAG GENERATOR ================= */
 const categoryPrefixes = {
-    "Laptop": "LAP", "PC": "PC", "Cable": "CBL", "Printer": "PRN", 
-    "Monitor": "MON", "Switch": "SW", "Hub": "HUB", "IP camera": "CAM", 
-    "NVR": "NVR", "Access point": "AP", "Hard": "Hard", "Ram": "RAM", "Mouse": "MSE", "Keyboard": "KBD",
-    "Printer cartridge": "CRT", "Other": "OTH"
+    "Laptop": "LAP", "PC": "PC", "Mouse": "MSE", "Keyboard": "KBD", 
+    "Cable": "CBL", "Printer": "PRN", "Monitor": "MON", "Switch": "SW", 
+    "Hub": "HUB", "IP camera": "CAM", "NVR": "NVR", "Access point": "AP", 
+    "Hard": "HDD", "Ram": "RAM", "Printer cartridge": "CRT", "Other": "OTH"
 };
 function generateAutoAssetTag() {
     try {
