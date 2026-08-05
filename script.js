@@ -816,6 +816,7 @@ function renderWarehouseList() {
     const tbody = document.getElementById('warehouse-list-body'); if(!tbody) return;
     const searchInput = document.getElementById('warehouse-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     const filtered = wDb.filter(item => {
         const tag = (item.assetTag || "").toLowerCase();
@@ -992,6 +993,7 @@ function saveHelpdeskEntry() {
 function renderHelpdeskList() {
     const tbody = document.getElementById('helpdesk-list-body'); if(!tbody) return;
     const s = document.getElementById('helpdesk-search')?.value.toLowerCase() || '';
+    helpdeskDb.sort((a, b) => new Date(b.id.replace('HD-', '')) - new Date(a.id.replace('HD-', '')));
     tbody.innerHTML = "";
     const filtered = helpdeskDb.filter(t => (t.emp || '').toLowerCase().includes(s) || (t.title || '').toLowerCase().includes(s) || (t.details || '').toLowerCase().includes(s));
     if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No support tickets found.</td></tr>`; return; }
