@@ -133,13 +133,15 @@ function closeScheduleModal() {
     modal.classList.add('hidden');
 }
 
-/* ================= HANDOVER FORM LOGIC (MULTI-ITEM & CENTERED) ================= */
+/* ================= HANDOVER FORM LOGIC (WITH HANDOVER & RETURN DATES) ================= */
 function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
 
+    // ڕێکخستنی زانیاری سەرەکی و بەروارەکانی Handover & Return
     document.getElementById('ho-doc-ref').innerText = `AA-HO-${new Date().getFullYear()}-${item.assetTag || '001'}`;
-    document.getElementById('ho-doc-date').innerText = item.handoverDate || new Date().toLocaleDateString('en-GB');
+    document.getElementById('ho-doc-handover-date').innerText = item.handoverDate || new Date().toLocaleDateString('en-GB');
+    document.getElementById('ho-doc-return-date').innerText = item.returnDate || 'N/A (Permanent)';
     
     document.getElementById('ho-emp-name').innerText = item.empName || 'N/A';
     document.getElementById('ho-emp-id').innerText = item.empId || 'N/A';
@@ -172,6 +174,17 @@ function openHandoverModal(id) {
             `;
             tbody.appendChild(tr);
         });
+    }
+
+    const allDetails = empAssets
+        .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
+        .filter(Boolean)
+        .join('<br>');
+
+    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
+
+    showModalCentered('handover-modal');
+}
     }
 
     const allDetails = empAssets
