@@ -170,7 +170,7 @@ document.getElementById('ho-doc-date').innerText = formattedDate;
                 <td class="p-2.5 font-mono">${asset.serial || 'N/A'}</td>
                 <td class="p-2.5 font-bold">${asset.quantity || '1'}</td>
                 <td class="p-2.5 font-mono text-cyan-800">${asset.handoverDate || 'N/A'}</td>
-                <td class="p-2.5 font-mono text-slate-700">${asset.returnDate || 'Permanent'}</td>
+                <td class="p-2.5 font-mono text-slate-700">${asset.returnDate || 'N/A'}</td>
             `;
             tbody.appendChild(tr);
         });
