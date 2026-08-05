@@ -283,7 +283,6 @@ function initDefaultDates() {
     if(document.getElementById('plan-task-date')) document.getElementById('plan-task-date').valueAsDate = today;
     if(document.getElementById('daily-task-date')) document.getElementById('daily-task-date').valueAsDate = today;
 }
-
 function attachDataListeners() {
     database.ref('it_employees_directory').on('value', (s) => {
         employeesDb = s.val() ? Object.values(s.val()) : [];
@@ -309,11 +308,20 @@ function attachDataListeners() {
         switchesDb = s.val() ? Object.values(s.val()) : [];
         renderIspList();
     });
-    database.ref('it_helpdesk_tickets').on('value', (s) => {
+   database.ref('it_helpdesk_tickets').on('value', (s) => {
         helpdeskDb = s.val() ? Object.values(s.val()) : [];
-        const openTickets = helpdeskDb.filter(t => t.status === 'Open' || t.status === 'In Progress').length;
-        const el = document.getElementById('dash-total-tickets');
-        if(el) el.innerText = openTickets;
+        
+        const openCount = helpdeskDb.filter(t => t.status === 'Open' || t.status === 'In Progress').length;
+        
+        const resolvedCount = helpdeskDb.filter(t => t.status === 'Resolved').length;
+        
+       if(document.getElementById('dash-open-tickets')) {
+            document.getElementById('dash-open-tickets').innerText = openCount;
+        }
+        if(document.getElementById('dash-resolved-tickets')) {
+            document.getElementById('dash-resolved-tickets').innerText = resolvedCount;
+        }
+        
         renderHelpdeskList();
     });
     database.ref('it_ipam_subnets').on('value', (s) => {
