@@ -542,7 +542,7 @@ function updateDashboardCharts() {
     wDb.forEach(item => { 
          if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1);
     });
-    const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
+    const bgColors = ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#d97706','#ea580c','#dc2626','#e11d48','#db2777','#7c3aed','#475569','#0284c7'];
     const ctxW = document.getElementById('dashWarehouseChart')?.getContext('2d');
     if(ctxW) {
         if (dashWarehouseChartInstance) dashWarehouseChartInstance.destroy();
