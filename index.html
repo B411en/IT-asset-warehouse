@@ -71,24 +71,22 @@
         input:focus, textarea:focus, select:focus { box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
         input, select, textarea { font-size: 1rem !important; }
 
-        /* Print Styling for Handover Form - Fixed to 1 Page cleanly */
+        /* Print Styling for Handover Form - Fixed */
         @media print {
             body * { visibility: hidden !important; }
             #handover-modal, #handover-modal * { visibility: visible !important; }
             #handover-modal {
-                position: fixed !important;
+                position: absolute !important;
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
-                height: 100% !important;
+                height: auto !important;
                 background: white !important;
                 color: black !important;
-                padding: 10px !important;
+                padding: 0 !important;
                 margin: 0 !important;
                 z-index: 999999 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
+                display: block !important;
             }
             #handover-modal > div {
                 background: white !important;
@@ -97,11 +95,12 @@
                 box-shadow: none !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                max-height: 100% !important;
+                max-height: none !important;
                 overflow: visible !important;
+                padding: 0 !important;
             }
             #handover-modal * { color: black !important; background-color: transparent !important; }
-            #handover-modal .bg-slate-100 { background-color: #f1f5f9 !important; }
+            #handover-modal .bg-slate-100 { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .no-print { display: none !important; }
         }
     </style>
