@@ -134,10 +134,12 @@ function closeScheduleModal() {
 }
 
 /* ================= HANDOVER FORM LOGIC ================= */
+/* ================= HANDOVER FORM LOGIC (MULTI-ITEM AUTOMATIC) ================= */
 function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
 
+    // ڕێکخستنی زانیاری سەرەکی و فۆرمەکە
     document.getElementById('ho-doc-ref').innerText = `AA-HO-${new Date().getFullYear()}-${item.assetTag || '001'}`;
     document.getElementById('ho-doc-date').innerText = item.handoverDate || new Date().toLocaleDateString('en-GB');
     
@@ -147,24 +149,46 @@ function openHandoverModal(id) {
     document.getElementById('ho-emp-dept').innerText = item.empDepartment || 'N/A';
     document.getElementById('ho-sign-name').innerText = item.empName || 'Employee';
 
-    document.getElementById('ho-asset-tag').innerText = item.assetTag || 'N/A';
-    document.getElementById('ho-asset-cat').innerText = item.category || 'N/A';
-    document.getElementById('ho-asset-desc').innerText = item.desc || 'N/A';
-    document.getElementById('ho-asset-sn').innerText = item.serial || 'N/A';
-    document.getElementById('ho-asset-qty').innerText = item.quantity || '1';
-    document.getElementById('ho-asset-details').innerText = item.details || 'No additional notes provided.';
+    // گەڕان بەدوای هەموو ئامێرەکانی هەمان کارمەند (بەپێی Employee ID یان Full Name)
+    let empAssets = [];
+    if (item.empId && item.empId.trim() !== '') {
+        empAssets = wDb.filter(a => a.empId && a.empId.trim() === item.empId.trim());
+    } else if (item.empName && item.empName.trim() !== '') {
+        empAssets = wDb.filter(a => a.empName && a.empName.trim().toLowerCase() === item.empName.trim().toLowerCase());
+    } else {
+        empAssets = [item];
+    }
+
+    // دروستکردنی ڕیزەکانی خشتەکە بۆ هەموو ئامێرەکان بەیەکەوە
+    const tbody = document.querySelector('#handover-print-area table tbody');
+    if (tbody) {
+        tbody.innerHTML = '';
+        empAssets.forEach(asset => {
+            const tr = document.createElement('tr');
+            tr.className = "border-b border-slate-200";
+            tr.innerHTML = `
+                <td class="p-2.5 font-mono font-bold text-cyan-800">${asset.assetTag || 'N/A'}</td>
+                <td class="p-2.5 font-semibold">${asset.category || 'N/A'}</td>
+                <td class="p-2.5">${asset.desc || 'N/A'}</td>
+                <td class="p-2.5 font-mono">${asset.serial || 'N/A'}</td>
+                <td class="p-2.5 font-bold">${asset.quantity || '1'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // کۆکردنەوەی سەرجەم تێبینی و وردەکاری ئامێرەکان
+    const allDetails = empAssets
+        .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
+        .filter(Boolean)
+        .join('<br>');
+
+    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
 
     const modal = document.getElementById('handover-modal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 }
-
-function closeHandoverModal() {
-    const modal = document.getElementById('handover-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
 /* ================= ACCESS LOCK SCREEN ================= */
 function bytesToHex(bytes) {
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
