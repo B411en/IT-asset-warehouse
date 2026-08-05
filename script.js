@@ -593,7 +593,7 @@ function updateDashboardCharts() {
 const categoryPrefixes = {
     "Laptop": "LAP", "PC": "PC", "Cable": "CBL", "Printer": "PRN", 
     "Monitor": "MON", "Switch": "SW", "Hub": "HUB", "IP camera": "CAM", 
-    "NVR": "NVR", "Access point": "AP", "Hard": "Hard", "Ram": "RAM", :"Mouse & Keyboard": "Mouse & Keyboard",
+    "NVR": "NVR", "Access point": "AP", "Hard": "Hard", "Ram": "RAM", "Mouse": "MSE", "Keyboard": "KBD",
     "Printer cartridge": "CRT", "Other": "OTH"
 };
 function generateAutoAssetTag() {
