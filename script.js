@@ -312,14 +312,15 @@ function attachDataListeners() {
         helpdeskDb = s.val() ? Object.values(s.val()) : [];
         
         const openCount = helpdeskDb.filter(t => t.status === 'Open' || t.status === 'In Progress').length;
-        
         const resolvedCount = helpdeskDb.filter(t => t.status === 'Resolved').length;
-        
-       if(document.getElementById('dash-open-tickets')) {
-            document.getElementById('dash-open-tickets').innerText = openCount;
+        const openCard = document.getElementById('dash-open-tickets') || document.getElementById('dash-total-tickets');
+        const resolvedCard = document.getElementById('dash-resolved-tickets');
+
+        if(openCard) {
+            openCard.innerText = openCount;
         }
-        if(document.getElementById('dash-resolved-tickets')) {
-            document.getElementById('dash-resolved-tickets').innerText = resolvedCount;
+        if(resolvedCard) {
+            resolvedCard.innerText = resolvedCount;
         }
         
         renderHelpdeskList();
