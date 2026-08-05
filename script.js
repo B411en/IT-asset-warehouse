@@ -594,7 +594,7 @@ const categoryPrefixes = {
     "Laptop": "LAP", "PC": "PC", "Mouse": "MSE", "Keyboard": "KBD", 
     "Cable": "CBL", "Printer": "PRN", "Monitor": "MON", "Switch": "SW", 
     "Hub": "HUB", "IP camera": "CAM", "NVR": "NVR", "Access point": "AP", 
-    "Hard": "HDD", "Ram": "RAM", "Printer cartridge": "CRT", "Other": "OTH"
+    "Hard": "HDD", "Ram": "RAM", "Mouse&Keyboard": "MKD", "Printer cartridge": "CRT", "Other": "OTH"
 };
 function generateAutoAssetTag() {
     try {
