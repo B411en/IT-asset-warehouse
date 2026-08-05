@@ -72,13 +72,13 @@
         input, select, textarea { font-size: 1rem !important; }
 
         /* Print Styling - Definitive Blank Page Elimination */
+      /* Print Styling - Optimized for Long Tables and Signatures */
         @media print {
             @page {
                 size: A4;
                 margin: 10mm;
             }
 
-            /* شاردنەوەی تەواوەتی هەموو بەشەکانی پەیج بە جۆرێک هیچ بۆشاییەک نەهێڵنەوە */
             #lock-screen, #app-root, #toast, 
             #emp-modal, #warehouse-modal, #rustdesk-modal, #isp-modal, 
             #helpdesk-modal, #ipam-modal, #snippet-modal, #notes-modal, #change-pin-modal {
@@ -94,7 +94,6 @@
                 padding: 0 !important;
             }
             
-            /* نیشدان و ڕێکخستنی تەنها فۆرمی تسلیمکردن */
             #handover-modal {
                 display: block !important;
                 position: absolute !important;
@@ -108,7 +107,6 @@
                 margin: 0 !important;
                 z-index: 999999 !important;
                 overflow: visible !important;
-                backdrop-filter: none !important;
             }
             
             #handover-modal > div {
@@ -140,10 +138,19 @@
             
             .no-print { display: none !important; }
             
-            /* ڕێکخستنی تابلۆکان بۆ ئەوەی بە پێی پێویست بە بێ کەلێن دابەش ببن */
-            table { page-break-inside: auto; width: 100% !important; border-collapse: collapse; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            td, th { padding: 6px 8px !important; }
+            /* ڕێگریکردن لە پچڕانی خشتەکان و واژۆکان بە شێوەیەکی هەڕەمەکی */
+            table { width: 100% !important; border-collapse: collapse; page-break-inside: auto; }
+            thead { display: table-header-group !important; }
+            tr { page-break-inside: avoid !important; page-break-after: auto; }
+            td, th { padding: 5px 8px !important; }
+
+            /* دڵنیابوونەوە لەوەی بەشی مەرجەکان و واژۆکان لە دواپەڕەدا بێ پچڕان پێکەوە دەردەکەون */
+            #handover-modal .space-y-6 > div:last-child,
+            #handover-modal ul,
+            #handover-modal .grid-cols-2 {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
         }
     </style>
 </head>
