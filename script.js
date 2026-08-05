@@ -131,7 +131,6 @@ function closeScheduleModal() {
 }
 
 /* ================= HANDOVER FORM LOGIC (MULTI-ITEM & CENTERED) ================= */
-/* ================= HANDOVER FORM LOGIC (MULTI-ITEM & CENTERED) ================= */
 function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
@@ -175,6 +174,23 @@ function openHandoverModal(id) {
             tbody.appendChild(tr);
         });
     }
+
+    const allDetails = empAssets
+        .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
+        .filter(Boolean)
+        .join('<br>');
+
+    document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
+
+    showModalCentered('handover-modal');
+}
+
+function closeHandoverModal() {
+    const modal = document.getElementById('handover-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
 
     const allDetails = empAssets
         .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
