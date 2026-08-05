@@ -37,10 +37,20 @@ let notesDb = [];
 let currentEditPlannedIdx = -1;
 let currentEditDailyIdx = -1;
 
+/* ================= HELPER FOR CENTER POPUP MODALS ================= */
+function showModalCentered(modalId) {
+    const m = document.getElementById(modalId);
+    if(!m) return;
+    m.classList.remove('hidden');
+    m.classList.add('flex');
+    // ڕاگیرکردنی سکرۆڵی لاپەڕەکە بۆ ئەوەی ڕاستەوخۆ بێتە بەردەم چاوی بەکارهێنەر
+    m.scrollIntoView({ behavior: 'instant', block: 'center' });
+    window.scrollTo({ top: window.scrollY }); 
+}
+
 /* ================= MODAL LOGICS ================= */
 function openEmpModal() {
-    const m = document.getElementById('emp-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('emp-modal');
 }
 function closeEmpModal() {
     const m = document.getElementById('emp-modal');
@@ -49,8 +59,7 @@ function closeEmpModal() {
 }
 
 function openWarehouseModal() {
-    const m = document.getElementById('warehouse-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('warehouse-modal');
     generateAutoAssetTag();
 }
 function closeWarehouseModal() {
@@ -60,8 +69,7 @@ function closeWarehouseModal() {
 }
 
 function openRustDeskModal() {
-    const m = document.getElementById('rustdesk-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('rustdesk-modal');
 }
 function closeRustDeskModal() {
     const m = document.getElementById('rustdesk-modal');
@@ -70,8 +78,7 @@ function closeRustDeskModal() {
 }
 
 function openIspModal() {
-    const m = document.getElementById('isp-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('isp-modal');
 }
 function closeIspModal() {
     const m = document.getElementById('isp-modal');
@@ -80,8 +87,7 @@ function closeIspModal() {
 }
 
 function openHelpdeskModal() {
-    const m = document.getElementById('helpdesk-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('helpdesk-modal');
 }
 function closeHelpdeskModal() {
     const m = document.getElementById('helpdesk-modal');
@@ -90,8 +96,7 @@ function closeHelpdeskModal() {
 }
 
 function openIpamModal() {
-    const m = document.getElementById('ipam-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('ipam-modal');
 }
 function closeIpamModal() {
     const m = document.getElementById('ipam-modal');
@@ -100,8 +105,7 @@ function closeIpamModal() {
 }
 
 function openSnippetModal() {
-    const m = document.getElementById('snippet-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('snippet-modal');
 }
 function closeSnippetModal() {
     const m = document.getElementById('snippet-modal');
@@ -110,8 +114,7 @@ function closeSnippetModal() {
 }
 
 function openNoteModal() {
-    const m = document.getElementById('notes-modal');
-    m.classList.remove('hidden'); m.classList.add('flex');
+    showModalCentered('notes-modal');
 }
 function closeNoteModal() {
     const m = document.getElementById('notes-modal');
@@ -120,10 +123,7 @@ function closeNoteModal() {
 }
 
 function openScheduleModal() {
-    const modal = document.getElementById('schedule-modal');
-    if(!modal) return;
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+    showModalCentered('schedule-modal');
     initDefaultDates();
 }
 function closeScheduleModal() {
@@ -133,13 +133,11 @@ function closeScheduleModal() {
     modal.classList.add('hidden');
 }
 
-/* ================= HANDOVER FORM LOGIC ================= */
-/* ================= HANDOVER FORM LOGIC (MULTI-ITEM AUTOMATIC) ================= */
+/* ================= HANDOVER FORM LOGIC (MULTI-ITEM & CENTERED) ================= */
 function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
 
-    // ڕێکخستنی زانیاری سەرەکی و فۆرمەکە
     document.getElementById('ho-doc-ref').innerText = `AA-HO-${new Date().getFullYear()}-${item.assetTag || '001'}`;
     document.getElementById('ho-doc-date').innerText = item.handoverDate || new Date().toLocaleDateString('en-GB');
     
@@ -149,7 +147,7 @@ function openHandoverModal(id) {
     document.getElementById('ho-emp-dept').innerText = item.empDepartment || 'N/A';
     document.getElementById('ho-sign-name').innerText = item.empName || 'Employee';
 
-    // گەڕان بەدوای هەموو ئامێرەکانی هەمان کارمەند (بەپێی Employee ID یان Full Name)
+    // گەڕان بەدوای هەموو ئامێرەکانی هەمان کارمەند
     let empAssets = [];
     if (item.empId && item.empId.trim() !== '') {
         empAssets = wDb.filter(a => a.empId && a.empId.trim() === item.empId.trim());
@@ -159,7 +157,6 @@ function openHandoverModal(id) {
         empAssets = [item];
     }
 
-    // دروستکردنی ڕیزەکانی خشتەکە بۆ هەموو ئامێرەکان بەیەکەوە
     const tbody = document.querySelector('#handover-print-area table tbody');
     if (tbody) {
         tbody.innerHTML = '';
@@ -177,7 +174,6 @@ function openHandoverModal(id) {
         });
     }
 
-    // کۆکردنەوەی سەرجەم تێبینی و وردەکاری ئامێرەکان
     const allDetails = empAssets
         .map(a => a.details ? `• [${a.assetTag}]: ${a.details}` : null)
         .filter(Boolean)
@@ -185,10 +181,15 @@ function openHandoverModal(id) {
 
     document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
 
-    const modal = document.getElementById('handover-modal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+    showModalCentered('handover-modal');
 }
+
+function closeHandoverModal() {
+    const modal = document.getElementById('handover-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
 /* ================= ACCESS LOCK SCREEN ================= */
 function bytesToHex(bytes) {
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -447,8 +448,7 @@ function openChangePasscodeModal() {
     if(document.getElementById('cp-modal-subtitle')) document.getElementById('cp-modal-subtitle').classList.toggle('hidden', !isSetMode);
     if(document.getElementById('cp-current-wrap')) document.getElementById('cp-current-wrap').classList.toggle('hidden', isSetMode);
     if(document.getElementById('cp-submit-text')) document.getElementById('cp-submit-text').innerText = isSetMode ? 'Save Passcode' : 'Save New Passcode';
-    const modal = document.getElementById('change-pin-modal');
-    modal.classList.remove('hidden'); modal.classList.add('flex');
+    showModalCentered('change-pin-modal');
     const focusInput = document.getElementById(isSetMode ? 'cp-new' : 'cp-current');
     if(focusInput) focusInput.focus();
 }
