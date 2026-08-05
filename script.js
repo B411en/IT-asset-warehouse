@@ -135,11 +135,12 @@ function openHandoverModal(id) {
     const item = wDb.find(i => i.id === id);
     if (!item) return;
 
-    const now = new Date();
-    const issueDateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
-    const issueDateEl = document.getElementById('ho-doc-issue-date');
-    if (issueDateEl) issueDateEl.innerText = issueDateTime;
+    // دۆزینەوە و داڕشتنی بەرواری ئەمڕۆ بە شێوازی (Y-M-D) یان (D/M/Y)
+const now = new Date();
+const formattedDate = String(now.getDate()).padStart(2, '0') + '/' + 
+                      String(now.getMonth() + 1).padStart(2, '0') + '/' + 
+                      now.getFullYear();
+document.getElementById('ho-doc-date').innerText = formattedDate;
     
     document.getElementById('ho-emp-name').innerText = item.empName || 'N/A';
     document.getElementById('ho-emp-id').innerText = item.empId || 'N/A';
