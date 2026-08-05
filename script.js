@@ -23,8 +23,6 @@ let snippetsDb = [];
 let plannedTasks = [];
 let dailyTasks = [];
 let notesDb = [];
-let currentEditPlannedIdx = -1;
-let currentEditDailyIdx = -1;
 
 /* ================= MODAL DISPLAY CENTER & AUTO SCROLL ================= */
 function showModalCentered(id) {
@@ -41,7 +39,6 @@ function hideModal(id) {
     modal.classList.remove('flex');
 }
 
-/* ================= MODAL OPENERS & CLOSERS ================= */
 function openEmpModal() { showModalCentered('emp-modal'); }
 function closeEmpModal() { hideModal('emp-modal'); clearEmployeeForm(); }
 
@@ -199,7 +196,6 @@ function attachDataListeners() {
 
 function initDefaultDates() {
     const today = new Date();
-    if(document.getElementById('wr-date')) document.getElementById('wr-date').valueAsDate = today;
     if(document.getElementById('plan-task-date')) document.getElementById('plan-task-date').valueAsDate = today;
 }
 
@@ -226,6 +222,23 @@ function updateDashboardCharts() {
         dashWarehouseChartInstance = new Chart(ctxW, {
             type: 'doughnut',
             data: { labels: Object.keys(wCounts), datasets: [{ data: Object.values(wCounts), backgroundColor: ['#4f46e5','#2563eb','#0891b2','#0d9488','#059669','#65a30d','#d97706','#ea580c','#dc2626','#7c3aed'] }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    const statusCounts = { "In Stock": 0, "In Use": 0, "Under Maintenance": 0, "Damaged": 0 };
+    wDb.forEach(doc => {
+        if(statusCounts[doc.status] !== undefined) statusCounts[doc.status] += parseInt(doc.quantity || 1);
+    });
+    const ctxS = document.getElementById('dashStatusChart')?.getContext('2d');
+    if(ctxS) {
+        if (dashStatusChartInstance) dashStatusChartInstance.destroy();
+        dashStatusChartInstance = new Chart(ctxS, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(statusCounts),
+                datasets: [{ label: 'Devices By Status', data: Object.values(statusCounts), backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'], borderRadius: 8 }]
+            },
             options: { responsive: true, maintainAspectRatio: false }
         });
     }
@@ -285,11 +298,7 @@ function editEmployeeItem(id) {
     document.getElementById('emp-department').value = item.department || '';
     openEmpModal();
 }
-function clearEmployeeForm() {
-    document.getElementById('emp-edit-id').value = '';
-    document.getElementById('emp-code-id').value = '';
-    document.getElementById('emp-fullname').value = '';
-}
+function clearEmployeeForm() { document.getElementById('emp-edit-id').value = ''; }
 function deleteEmp(id) { if(confirm("Delete this employee?")) database.ref('it_employees_directory/' + id).remove(); }
 
 /* ================= WAREHOUSE LOGIC ================= */
@@ -301,6 +310,15 @@ function populateWarehouseEmployeeDropdown() {
         opt.value = emp.id; opt.textContent = `${emp.fullName} (${emp.department || 'General'})`;
         select.appendChild(opt);
     });
+}
+
+function onWarehouseEmployeeSelected() {
+    const select = document.getElementById('w-emp-select'); if(!select) return;
+    const emp = employeesDb.find(e => e.id === select.value);
+    if(emp) {
+        document.getElementById('w-emp-name').value = emp.fullName || '';
+        document.getElementById('w-emp-id').value = emp.empId || '';
+    }
 }
 
 function renderWarehouseList() {
@@ -332,7 +350,7 @@ function logItemToWarehouse() {
         id: key, assetTag, category: document.getElementById('w-category').value, desc,
         serial: document.getElementById('w-serial').value, quantity: document.getElementById('w-quantity').value || "1",
         empName: document.getElementById('w-emp-name').value, empId: document.getElementById('w-emp-id').value,
-        handoverDate: document.getElementById('w-handover-date').value, returnDate: document.getElementById('w-return-date').value, status: document.getElementById('w-status').value
+        details: document.getElementById('w-details').value, handoverDate: document.getElementById('w-handover-date').value, returnDate: document.getElementById('w-return-date').value, status: document.getElementById('w-status').value
     }).then(() => { closeWarehouseModal(); showToast("Asset Saved!"); });
 }
 
@@ -345,6 +363,7 @@ function editWarehouseItem(id) {
     document.getElementById('w-serial').value = item.serial || '';
     document.getElementById('w-emp-name').value = item.empName || '';
     document.getElementById('w-emp-id').value = item.empId || '';
+    document.getElementById('w-details').value = item.details || '';
     document.getElementById('w-handover-date').value = item.handoverDate || '';
     document.getElementById('w-return-date').value = item.returnDate || '';
     document.getElementById('w-status').value = item.status || 'In Stock';
@@ -387,6 +406,7 @@ function renderIspList() {
             <td class="p-3 font-mono text-blue-400">${s.ip || '-'}</td>
             <td class="p-3 text-slate-300">${s.uplink || '-'}</td>
             <td class="p-3 text-slate-400">${s.notes || '-'}</td>
+            <td class="p-3 text-center"><button onclick="deleteIsp('${s.id}')" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td>
         </tr>
     `).join('');
 }
@@ -397,6 +417,7 @@ function saveIspEntry() {
     database.ref('it_switches/' + key).set({ id: key, name, location: document.getElementById('isp-speed').value, ip: document.getElementById('isp-ip').value, uplink: document.getElementById('isp-pass').value, notes: document.getElementById('isp-notes').value }).then(() => { closeIspModal(); showToast("Switch Saved!"); });
 }
 function clearIspForm() {}
+function deleteIsp(id) { database.ref('it_switches/' + id).remove(); }
 
 /* ================= HELPDESK TICKETS ================= */
 function renderHelpdeskList() {
@@ -422,7 +443,7 @@ function saveHelpdeskEntry() {
 function clearHelpdeskForm() {}
 function deleteHelpdesk(id) { database.ref('it_helpdesk_tickets/' + id).remove(); }
 
-/* ================= IP MANAGEMENT (IPAM) ================= */
+/* ================= IP MANAGEMENT (IPAM WITH ONLINE/OFFLINE STATUS) ================= */
 function renderIpamList() {
     const tbody = document.getElementById('ipam-list-body'); if(!tbody) return;
     tbody.innerHTML = ipamDb.map(i => {
@@ -436,6 +457,7 @@ function renderIpamList() {
             <td class="p-3 text-amber-400">${i.type || '-'}</td>
             <td class="p-3 text-slate-300">${i.owner || '-'}</td>
             <td class="p-3 font-mono text-emerald-400">${i.password ? '••••••••' : '-'}</td>
+            <td class="p-3 text-slate-400">${i.notes || '-'}</td>
             <td class="p-3 text-center"><button onclick="deleteIpam('${i.id}')" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td>
         </tr>`;
     }).join('');
@@ -445,7 +467,7 @@ function saveIpamEntry() {
     const device = document.getElementById('ipam-device').value;
     if(!ip || !device) return alert("Fill IP and Device Name");
     const key = "IPAM-" + Date.now();
-    database.ref('it_ipam_subnets/' + key).set({ id: key, ip, device, status: document.getElementById('ipam-status').value, type: document.getElementById('ipam-type').value, owner: document.getElementById('ipam-owner').value, password: document.getElementById('ipam-password').value }).then(() => { closeIpamModal(); showToast("IP Recorded!"); });
+    database.ref('it_ipam_subnets/' + key).set({ id: key, ip, device, status: document.getElementById('ipam-status').value, type: document.getElementById('ipam-type').value, owner: document.getElementById('ipam-owner').value, password: document.getElementById('ipam-password').value, notes: document.getElementById('ipam-notes').value }).then(() => { closeIpamModal(); showToast("IP Recorded!"); });
 }
 function clearIpamForm() {}
 function deleteIpam(id) { database.ref('it_ipam_subnets/' + id).remove(); }
