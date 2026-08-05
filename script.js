@@ -538,7 +538,7 @@ function switchTab(tabId) {
 }
 
 function updateDashboardCharts() {
-    const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
+    const wCounts = { "Laptop": 0, "PC": 0, "Cable": 0, "Printer": 0, "Monitor": 0, "Switch": 0, "Hub": 0, "IP camera": 0, "NVR": 0, "Hard":0, "Ram":0,"Mouse & keyboard":0, "Access point": 0, "Printer cartridge": 0, "Other": 0 };
     wDb.forEach(item => { 
          if(wCounts[item.category] !== undefined) wCounts[item.category] += parseInt(item.quantity || 1); else wCounts["Other"] += parseInt(item.quantity || 1);
     });
@@ -593,7 +593,7 @@ function updateDashboardCharts() {
 const categoryPrefixes = {
     "Laptop": "LAP", "PC": "PC", "Cable": "CBL", "Printer": "PRN", 
     "Monitor": "MON", "Switch": "SW", "Hub": "HUB", "IP camera": "CAM", 
-    "NVR": "NVR", "Access point": "AP", "Hard": "HDD", "Ram": "RAM", 
+    "NVR": "NVR", "Access point": "AP", "Hard": "Hard", "Ram": "RAM", :"Mouse & Keyboard": "Mouse & Keyboard",
     "Printer cartridge": "CRT", "Other": "OTH"
 };
 function generateAutoAssetTag() {
