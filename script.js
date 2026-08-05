@@ -644,6 +644,7 @@ function renderEmployeesList() {
     const tbody = document.getElementById('employees-list-body'); if(!tbody) return;
     const searchInput = document.getElementById('employee-search');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     const filtered = employeesDb.filter(emp => {
         const id = (emp.empId || "").toLowerCase();
@@ -1061,6 +1062,7 @@ function saveIpamEntry() {
 function renderIpamList() {
     const tbody = document.getElementById('ipam-list-body'); if(!tbody) return;
     const s = document.getElementById('ipam-search')?.value.toLowerCase() || '';
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     
     const filtered = ipamDb.filter(i => 
@@ -1176,6 +1178,7 @@ function renderCommandSnippets() {
     if (!grid) return;
     const searchInput = document.getElementById('snippet-search');
     const term = searchInput ? searchInput.value.toLowerCase().trim() : "";
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
      
     grid.innerHTML = "";
     const filtered = snippetsDb.filter(s => 
@@ -1273,6 +1276,7 @@ function editPlannedTask(index) {
 }
 function renderPlannedTasksTable() {
     const tbody = document.getElementById('planned-tasks-tbody'); if(!tbody) return;
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     if(plannedTasks.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-slate-500">No upcoming planned tasks.</td></tr>`; return; }
     plannedTasks.forEach((t, idx) => {
@@ -1327,6 +1331,7 @@ function editDailyTask(index) {
 }
 function renderDailyTasksTable() {
     const tbody = document.getElementById('daily-tasks-tbody'); if(!tbody) return;
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     if(dailyTasks.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-slate-500">No daily tasks logged yet.</td></tr>`; return; }
     dailyTasks.forEach((t, idx) => {
@@ -1376,6 +1381,7 @@ function saveIspEntry() {
 function renderIspList() {
     const tbody = document.getElementById('switch-mapping-list-body'); if(!tbody) return;
     const s = document.getElementById('isp-search')?.value.toLowerCase() || '';
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     const filtered = switchesDb.filter(d => (d.name || '').toLowerCase().includes(s) || (d.ip || '').toLowerCase().includes(s) || (d.location || '').toLowerCase().includes(s));
     if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center p-6 text-slate-500">No switch port mappings found.</td></tr>`; return; }
@@ -1440,6 +1446,7 @@ function saveNoteEntry() {
 function renderNotesList() {
     const container = document.getElementById('notes-container'); if(!container) return;
     const s = document.getElementById('note-search')?.value.toLowerCase() || '';
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     container.innerHTML = "";
     const filtered = notesDb.filter(n => (n.title || '').toLowerCase().includes(s) || (n.problem || '').toLowerCase().includes(s) || (n.solution || '').toLowerCase().includes(s));
     if(filtered.length === 0) {
@@ -1507,6 +1514,7 @@ function saveRustDeskEntry() {
 function renderRustDeskList() {
     const tbody = document.getElementById('rd-list-body'); if(!tbody) return;
     const s = document.getElementById('rd-search')?.value.toLowerCase() || '';
+    wDb.sort((a, b) => new Date(b.id.replace('W-', '')) - new Date(a.id.replace('W-', '')));
     tbody.innerHTML = "";
     const filtered = rustdeskDb.filter(d => (d.empName || '').toLowerCase().includes(s) || (d.rdId || '').toLowerCase().includes(s) || (d.dept && d.dept.toLowerCase().includes(s)));
     if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-500">No RustDesk devices recorded.</td></tr>`; return; }
