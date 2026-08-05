@@ -194,7 +194,7 @@ function openHandoverModal(id) {
     document.getElementById('ho-asset-details').innerHTML = allDetails || 'No additional notes provided.';
 
     showModalCentered('handover-modal');
-}
+
 
 function closeHandoverModal() {
     const modal = document.getElementById('handover-modal');
